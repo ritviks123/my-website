@@ -1,7 +1,16 @@
 :root {
-  --text: #1a1a1a;
+  --ink: #16161a;
+  --text: #3f3f46;
+  --muted: #71717a;
+  --border: #d4d4d8;
+  --surface: #f4f4f5;
   --bg: #ffffff;
-  --muted: #5a5a5a;
+
+  --accent: #5b21b6;
+  --accent-dark: #4c1d95;
+  --accent-tint: #ede9fe;
+
+  --radius: 8px;
 
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   line-height: 1.6;
@@ -19,17 +28,39 @@ body {
   min-height: 100vh;
 }
 
+h1,
+h2,
+h3 {
+  color: var(--ink);
+}
+
 a {
-  color: inherit;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 button {
   font-family: inherit;
-  border: 1px solid var(--muted);
-  background: transparent;
-  color: inherit;
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
 
 button:hover {
-  background: #f2f2f2;
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
