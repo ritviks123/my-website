@@ -1,12 +1,18 @@
-/* Nav bar (sticks to the top while scrolling) */
+/* Nav bar: invisible at the top, frosted once you scroll */
 .header-nav {
   position: sticky;
   top: 0;
   z-index: 10;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.header-nav.is-scrolled {
   background: color-mix(in srgb, var(--bg) 80%, transparent);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border);
+  border-bottom-color: var(--border);
 }
 
 .header-nav-inner {
@@ -154,3 +160,4 @@
     padding: 3rem 0;
   }
 }
+

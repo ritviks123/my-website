@@ -1,9 +1,26 @@
+import { useEffect, useState } from 'react';
 import './Header.css';
 
 function Header() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    function handleScroll() {
+      setScrolled(window.scrollY > 8);
+    }
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <>
-      <nav className="header-nav" aria-label="Main">
+      <nav
+        className={`header-nav ${scrolled ? 'is-scrolled' : ''}`}
+        aria-label="Main"
+      >
         <div className="header-nav-inner">
           <a href="#top" className="header-logo">
             ritvik.singh
