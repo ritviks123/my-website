@@ -1,24 +1,29 @@
-.header {
-  max-width: 64rem;
-  margin: 0 auto;
-  padding: 0 1rem;
+/* Nav bar (sticks to the top while scrolling) */
+.header-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
 }
 
-/* Nav bar */
-.header-nav {
+.header-nav-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
-  padding: 1.25rem 0;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.9rem 1rem;
 }
 
 .header-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  color: var(--ink);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 1rem;
   font-weight: 600;
+  color: var(--ink);
 }
 
 .header-logo:hover {
@@ -54,8 +59,14 @@
 }
 
 /* Hero */
+.header {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
 .header-hero {
-  padding: 3rem 0 2rem;
+  padding: 2rem 0;
 }
 
 .header-status {
@@ -127,8 +138,10 @@
 
 /* Tablets and desktops */
 @media (min-width: 640px) {
+  .header-nav-inner,
   .header {
-    padding: 0 1.25rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
 
   .header-links {
@@ -138,6 +151,6 @@
   }
 
   .header-hero {
-    padding: 5rem 0 3rem;
+    padding: 3rem 0;
   }
 }
