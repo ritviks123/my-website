@@ -1,23 +1,11 @@
 .home {
-  max-width: 42rem;
+  max-width: 64rem;
   margin: 0 auto;
-  padding: 3rem 1.25rem;
-}
-
-.home-hero h1 {
-  font-size: 2.5rem;
-  margin: 0 0 0.5rem;
-  line-height: 1.2;
-}
-
-.home-tagline {
-  font-size: 1.15rem;
-  color: var(--muted);
-  margin: 0;
+  padding: 0 1rem 3rem;
 }
 
 .home-about {
-  margin-top: 3rem;
+  max-width: 42rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border);
 }
@@ -37,12 +25,8 @@
   margin-top: 0.5rem;
 }
 
-@media (max-width: 480px) {
+@media (min-width: 640px) {
   .home {
-    padding: 2rem 1rem;
-  }
-
-  .home-hero h1 {
-    font-size: 2rem;
+    padding: 0 1.25rem 3rem;
   }
 }
