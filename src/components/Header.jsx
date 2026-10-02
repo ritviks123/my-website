@@ -26,8 +26,7 @@ function Header() {
             ritvik.singh
           </a>
 
-          <div className="header-links">
-            <a href="#about">About</a>
+        <div className="header-links">
             <a href="#projects">Projects</a>
           </div>
 
@@ -64,7 +63,7 @@ function Header() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Résumé <span aria-hidden="true">↗</span>
+              Resume <span aria-hidden="true">↗</span>
             </a>
           </div>
         </div>
