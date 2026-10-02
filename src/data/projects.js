@@ -7,7 +7,8 @@ export const projects = [
     blurb:
       'A benchtop supply with adjustable voltage and current limiting, designed from schematic through fabricated PCB.',
     tags: ['KiCad', 'Analog Design', 'PCB'],
-    image: '/projects/power-supply.jpg',
+    image: '',
+    imageAlt: '',
     link: 'https://github.com/ritviks123',
   },
   {
@@ -18,7 +19,8 @@ export const projects = [
     blurb:
       'A microcontroller-based data logger that samples sensor readings and writes them to storage for later analysis.',
     tags: ['C', 'STM32', 'I2C'],
-    image: '/projects/sensor-logger.jpg',
+    image: '',
+    imageAlt: '',
     link: '',
   },
   {
@@ -29,6 +31,7 @@ export const projects = [
     blurb: 'One or two sentences on what it does and what problem it solved.',
     tags: ['Python', 'Tool'],
     image: '',
+    imageAlt: '',
     link: '',
   },
 ];
