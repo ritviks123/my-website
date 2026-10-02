@@ -1,0 +1,163 @@
+.featured {
+  display: grid;
+  gap: 1.5rem;
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.featured:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* Image */
+.featured-media {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.featured-media:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+}
+
+.featured-media img,
+.featured-placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.featured-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+}
+
+.featured-placeholder span {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Text */
+.featured-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.featured-number {
+  color: var(--ink);
+}
+
+.featured-category {
+  color: var(--accent);
+}
+
+.featured-title {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.featured-title a {
+  color: var(--ink);
+  transition: color 0.15s ease;
+}
+
+.featured-title a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.featured-subtitle {
+  margin: 0 0 1rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.featured-description {
+  margin: 0 0 1.25rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.featured-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.featured-tags li {
+  padding: 0.15rem 0.55rem;
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+/* Links */
+.featured-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.9rem;
+}
+
+.featured-link-main {
+  color: var(--accent);
+}
+
+.featured-link-main:hover {
+  color: var(--accent-dark);
+  text-decoration: none;
+}
+
+.featured-link {
+  color: var(--muted);
+}
+
+.featured-link:hover {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* Wide screens: side by side, image alternates sides */
+@media (min-width: 800px) {
+  .featured {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 3rem;
+    padding: 3.5rem 0;
+  }
+
+  .featured:nth-child(even) .featured-media {
+    order: 2;
+  }
+}

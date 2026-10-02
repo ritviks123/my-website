@@ -45,7 +45,10 @@ function Projects({
   showAllLink = false,
 }) {
   const HeadingTag = headingTag;
-  const shownProjects = limit ? projects.slice(0, limit) : projects;
+  const featuredProjects = projects.filter((project) => project.featured);
+  const shownProjects = limit
+    ? featuredProjects.slice(0, limit)
+    : featuredProjects;
 
   return (
     <section className="projects" id="projects">
