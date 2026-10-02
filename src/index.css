@@ -60,12 +60,13 @@ button {
   background: var(--accent);
   color: var(--bg);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
 button:hover {
   background: var(--accent-dark);
   border-color: var(--accent-dark);
+  transform: translateY(-2px);
 }
 
 button:focus-visible {
