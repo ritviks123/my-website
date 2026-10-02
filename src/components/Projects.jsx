@@ -1,9 +1,10 @@
+import { Link } from 'react-router';
 import { projects } from '../data/projects';
 import './Projects.css';
 
-function ProjectCardContent({ project }) {
+function ProjectCard({ project }) {
   return (
-    <>
+    <Link to={`/projects/${project.id}`} className="project-card">
       {project.image ? (
         <img
           className="project-image"
@@ -19,14 +20,7 @@ function ProjectCardContent({ project }) {
 
       <div className="project-body">
         <div className="project-meta">
-          <h3>
-            {project.title}
-            {project.link && (
-              <span className="project-arrow" aria-hidden="true">
-                {' '}↗
-              </span>
-            )}
-          </h3>
+          <h3>{project.title}</h3>
           <span className="project-year">{project.year}</span>
         </div>
 
@@ -40,35 +34,41 @@ function ProjectCardContent({ project }) {
           </ul>
         )}
       </div>
-    </>
+    </Link>
   );
 }
 
-function Projects() {
+function Projects({
+  heading = 'selected work',
+  headingTag = 'h2',
+  limit,
+  showAllLink = false,
+}) {
+  const HeadingTag = headingTag;
+  const featuredProjects = projects.filter((project) => project.featured);
+  const shownProjects = limit
+    ? featuredProjects.slice(0, limit)
+    : featuredProjects;
+
   return (
     <section className="projects" id="projects">
-      <h2 className="projects-heading">
-        <span aria-hidden="true">// </span>selected work
-      </h2>
+      <div className="projects-top">
+        <HeadingTag className="projects-heading">
+          <span aria-hidden="true">// </span>
+          {heading}
+        </HeadingTag>
+
+        {showAllLink && (
+          <Link to="/projects" className="projects-all">
+            All projects <span aria-hidden="true">→</span>
+          </Link>
+        )}
+      </div>
 
       <div className="projects-grid">
-        {projects.map((project) =>
-          project.link ? (
-            <a
-              key={project.id}
-              className="project-card is-link"
-              href={project.link}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ProjectCardContent project={project} />
-            </a>
-          ) : (
-            <article key={project.id} className="project-card">
-              <ProjectCardContent project={project} />
-            </article>
-          )
-        )}
+        {shownProjects.map((project) => (
+          <ProjectCard key={project.id} project={project} />
+        ))}
       </div>
     </section>
   );

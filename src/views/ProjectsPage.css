@@ -1,0 +1,4 @@
+/* No divider line at the top of this page (nothing above it) */
+.projects-page .projects {
+  border-top: 0;
+}
