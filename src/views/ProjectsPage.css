@@ -1,4 +1,51 @@
+/* ===== projects list page ===== */
+.projects-page {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.projects-intro {
+  max-width: 42rem;
+  margin-bottom: 3rem;
+}
+
+.projects-eyebrow {
+  margin: 0 0 1rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.projects-intro h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2.25rem, 7vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.projects-lede {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.projects-featured {
+  margin-bottom: 1rem;
+}
+
 /* No divider line at the top of this page (nothing above it) */
 .projects-page .projects {
   border-top: 0;
+}
+
+@media (min-width: 640px) {
+  .projects-page {
+    padding: 3rem 1.25rem 5rem;
+  }
+
+  .projects-intro {
+    margin-bottom: 4rem;
+  }
 }

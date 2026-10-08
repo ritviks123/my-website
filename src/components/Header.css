@@ -82,12 +82,15 @@
 }
 
 .header-link {
+  display: inline-block;
   color: var(--muted);
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.header-link:hover {
-  color: var(--ink);
-  text-decoration: none;
+.header-link:hover,
+.header-link:focus-visible {
+  color: var(--accent);
+  transform: scale(1.08);
 }
 
 /* Tablets and up */
