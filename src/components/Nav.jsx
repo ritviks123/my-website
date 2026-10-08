@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import './Nav.css';
 
+// Swap later: add Work and About here once those pages exist
+const PAGE_LINKS = [
+  { to: '/projects', label: 'Projects' },
+];
+
 function Nav() {
   const [scrolled, setScrolled] = useState(false);
 
@@ -23,13 +28,21 @@ function Nav() {
           ritvik.singh
         </Link>
 
-        <div className="nav-links">
-          <Link to="/projects">Projects</Link>
-        </div>
+        <ul className="nav-links">
+          {PAGE_LINKS.map((link) => (
+            <li key={link.to}>
+              <Link to={link.to} className="nav-link">
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
 
-        <Link to="/#contact" className="nav-cta">
-          Get in touch
-        </Link>
+        <div className="nav-actions">
+          <Link to="/#contact" className="nav-cta">
+            Get in touch
+          </Link>
+        </div>
       </div>
     </nav>
   );
