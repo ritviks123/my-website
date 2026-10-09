@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500">
+  <defs>
+    <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="1.5" fill="#27272a" />
+    </pattern>
+  </defs>
+
+  <!-- Board + perfboard dots -->
+  <rect width="800" height="500" fill="#09090b" />
+  <rect width="800" height="500" fill="url(#dots)" />
+
+  <!-- Traces -->
+  <g fill="none" stroke="#a78bfa" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 130 H220 L260 170 H316" />
+    <path d="M60 370 H200 L240 330 H316" />
+    <path d="M484 210 H560 L600 170 H740" />
+    <path d="M484 250 H740" />
+    <path d="M484 290 H540 L590 340 H740" />
+    <path d="M370 140 V80 H520" />
+    <path d="M430 360 V420 H620" />
+  </g>
+
+  <!-- Resistors -->
+  <rect x="110" y="120" width="44" height="20" rx="4" fill="#18181b" stroke="#a1a1aa" stroke-width="2" />
+  <rect x="620" y="240" width="44" height="20" rx="4" fill="#18181b" stroke="#a1a1aa" stroke-width="2" />
+
+  <!-- Chip -->
+  <rect x="330" y="140" width="140" height="220" rx="8" fill="#18181b" stroke="#27272a" stroke-width="2" />
+  <g fill="#a1a1aa">
+    <rect x="316" y="166" width="14" height="8" />
+    <rect x="316" y="206" width="14" height="8" />
+    <rect x="316" y="246" width="14" height="8" />
+    <rect x="316" y="286" width="14" height="8" />
+    <rect x="316" y="326" width="14" height="8" />
+    <rect x="470" y="166" width="14" height="8" />
+    <rect x="470" y="206" width="14" height="8" />
+    <rect x="470" y="246" width="14" height="8" />
+    <rect x="470" y="286" width="14" height="8" />
+    <rect x="470" y="326" width="14" height="8" />
+  </g>
+  <circle cx="350" cy="160" r="5" fill="#27272a" />
+  <text x="400" y="257" text-anchor="middle" font-family="ui-monospace, Consolas, monospace" font-size="20" fill="#a1a1aa">MCU</text>
+
+  <!-- Vias (trace end points) -->
+  <g fill="#09090b" stroke="#a78bfa" stroke-width="3">
+    <circle cx="60" cy="130" r="7" />
+    <circle cx="60" cy="370" r="7" />
+    <circle cx="740" cy="170" r="7" />
+    <circle cx="740" cy="250" r="7" />
+    <circle cx="740" cy="340" r="7" />
+    <circle cx="520" cy="80" r="7" />
+    <circle cx="620" cy="420" r="7" />
+  </g>
+</svg>
