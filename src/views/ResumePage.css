@@ -1,0 +1,155 @@
+/* ===== resume page ===== */
+.resume {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+/* ===== header: title + actions ===== */
+.resume-header {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Page title styled as a small // label (still the page's one h1) */
+.resume-intro h1 {
+  margin: 0 0 0.5rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.resume-updated {
+  margin: 0 0 1rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.resume-summary {
+  max-width: 36rem;
+  margin: 0;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+/* ===== highlights (phones only) ===== */
+.resume-highlights {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resume-highlights li {
+  position: relative;
+  padding-left: 1.25rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.resume-highlights li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.8em;
+  width: 0.6rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+/* ===== actions ===== */
+.resume-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.resume-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.resume-button:hover,
+.resume-button:focus-visible {
+  background: var(--accent-dark);
+  transform: translateY(-2px);
+}
+
+.resume-link {
+  display: inline-block;
+  color: var(--muted);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.resume-link:hover,
+.resume-link:focus-visible {
+  color: var(--accent);
+  transform: scale(1.08);
+}
+
+.resume-note {
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* ===== PDF preview (laptop only) ===== */
+.resume-preview {
+  display: none;
+}
+
+/* Letter-size shape, so the whole page shows with no inner scrollbar */
+.resume-frame {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8.5 / 11;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+/* ===== tablet+ ===== */
+@media (min-width: 640px) {
+  .resume {
+    padding: 3rem 1.25rem 5rem;
+  }
+}
+
+/* ===== laptop: title left, buttons right, full-width preview ===== */
+@media (min-width: 900px) {
+  .resume-header {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 2rem;
+  }
+
+  .resume-highlights,
+  .resume-note {
+    display: none;
+  }
+
+  .resume-preview {
+    display: block;
+  }
+}
+
+/* ===== reduced motion: color only ===== */
+@media (prefers-reduced-motion: reduce) {
+  .resume-link {
+    transition: color 0.2s ease;
+  }
+}

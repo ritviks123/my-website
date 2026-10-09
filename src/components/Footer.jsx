@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { FaGithub, FaLinkedin, FaEnvelope } from 'react-icons/fa6';
+import { FaGithub, FaLinkedin, FaEnvelope, FaFileLines } from 'react-icons/fa6';
 import './Footer.css';
 
 // Swap later
@@ -8,8 +8,8 @@ const TAGLINE = 'Computer engineering student';
 const LOCATION = 'UC Irvine';
 const BOTTOM_LINE = 'Designed and coded by hand.';
 const GITHUB_URL = 'https://github.com/ritviks123';
-const LINKEDIN_URL = 'https://www.linkedin.com/in/your-handle';
-const EMAIL = 'you@example.com';
+const LINKEDIN_URL = 'https://www.linkedin.com/in/singhritvik';
+const EMAIL = 'ritvikchandersingh@gmail.com';
 
 const YEAR = new Date().getFullYear();
 
@@ -31,26 +31,33 @@ function Footer() {
             </ul>
           </nav>
 
-          <ul className="footer-links footer-socials" aria-label="Social links">
-            <li>
-              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="footer-link">
-                <FaGithub className="footer-icon" aria-hidden="true" />
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="footer-link">
-                <FaLinkedin className="footer-icon" aria-hidden="true" />
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href={`mailto:${EMAIL}`} className="footer-link">
-                <FaEnvelope className="footer-icon" aria-hidden="true" />
-                Email
-              </a>
-            </li>
-          </ul>
+          <div className="footer-connect">
+            <ul className="footer-links" aria-label="Social links">
+              <li>
+                <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="footer-link">
+                  <FaGithub className="footer-icon" aria-hidden="true" />
+                  GitHub
+                </a>
+              </li>
+              <li>
+                <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="footer-link">
+                  <FaLinkedin className="footer-icon" aria-hidden="true" />
+                  LinkedIn
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${EMAIL}`} className="footer-link">
+                  <FaEnvelope className="footer-icon" aria-hidden="true" />
+                  Email
+                </a>
+              </li>
+            </ul>
+
+            <Link to="/resume" className="footer-link">
+              <FaFileLines className="footer-icon" aria-hidden="true" />
+              Resume
+            </Link>
+          </div>
         </div>
 
         <div className="footer-bottom">
