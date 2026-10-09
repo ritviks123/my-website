@@ -63,6 +63,10 @@ function Nav() {
         </ul>
 
         <div className="nav-actions">
+          <Link to="/resume" className="nav-link nav-resume">
+            Resume
+          </Link>
+
           <Link to="/#contact" className="nav-cta">
             Get in touch
           </Link>
@@ -89,6 +93,11 @@ function Nav() {
               </Link>
             </li>
           ))}
+          <li>
+            <Link to="/resume" className="nav-menu-link" onClick={closeMenu}>
+              Resume
+            </Link>
+          </li>
           <li>
             <Link to="/#contact" className="nav-menu-link nav-menu-cta" onClick={closeMenu}>
               Get in touch

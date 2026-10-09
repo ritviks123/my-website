@@ -8,6 +8,7 @@ import ProjectsPage from './views/ProjectsPage';
 import ProjectPage from './views/ProjectPage';
 import AboutPage from './views/AboutPage';
 import WorkPage from './views/WorkPage';
+import ResumePage from './views/ResumePage';
 import NotFoundPage from './views/NotFoundPage';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
             <Route path="/projects/:projectId" element={<ProjectPage />} />
             <Route path="/work" element={<WorkPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/resume" element={<ResumePage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
