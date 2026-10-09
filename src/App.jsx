@@ -7,6 +7,7 @@ import HomePage from './views/HomePage';
 import ProjectsPage from './views/ProjectsPage';
 import ProjectPage from './views/ProjectPage';
 import AboutPage from './views/AboutPage';
+import WorkPage from './views/WorkPage';
 import NotFoundPage from './views/NotFoundPage';
 
 function App() {
@@ -19,7 +20,8 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:projectId" element={<ProjectPage />} />
-            <Route path="*" element={<NotFoundPage />} />
+            <Route path="/work" element={<WorkPage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
