@@ -1,0 +1,187 @@
+/* ===== about page ===== */
+.about {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.about-eyebrow {
+  margin: 0 0 1rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* Phone order: headline, photo + facts, bio */
+.about-layout {
+  display: grid;
+  grid-template-areas:
+    "title"
+    "side"
+    "body";
+  gap: 2rem;
+}
+
+.about-title {
+  grid-area: title;
+  max-width: 22ch;
+  margin: 0;
+  font-size: clamp(1.75rem, 5.5vw, 2.75rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.about-side {
+  grid-area: side;
+}
+
+.about-body {
+  grid-area: body;
+}
+
+/* ===== photo ===== */
+.about-photo {
+  display: block;
+  width: 100%;
+  max-width: 20rem;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+/* Placeholder: perfboard dot pattern */
+.about-photo-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+}
+
+.about-photo-empty span {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ===== quick facts ===== */
+.about-facts {
+  margin: 1.5rem 0 0;
+}
+
+.about-fact {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.about-fact:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.about-fact dt {
+  flex-shrink: 0;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.about-fact dd {
+  margin: 0;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  text-align: right;
+  color: var(--ink);
+}
+
+/* ===== bio ===== */
+.about-bio p {
+  margin: 0 0 1.1rem;
+  line-height: 1.75;
+  color: var(--text);
+}
+
+.about-bio p:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== now ===== */
+.about-now {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.about-heading {
+  margin: 0 0 1rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.about-now-list {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-now-list li {
+  display: grid;
+  gap: 0.15rem;
+  line-height: 1.6;
+}
+
+.about-now-label {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ===== tablet+ ===== */
+@media (min-width: 640px) {
+  .about {
+    padding: 3rem 1.25rem 5rem;
+  }
+}
+
+/* ===== laptop: photo + facts left, text right ===== */
+@media (min-width: 900px) {
+  .about-layout {
+    grid-template-columns: 17rem 1fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "side title"
+      "side body";
+    column-gap: 4rem;
+    row-gap: 2rem;
+  }
+
+  .about-photo {
+    max-width: none;
+  }
+
+  /* Photo column stays in view while you read */
+  .about-side {
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+  }
+}
