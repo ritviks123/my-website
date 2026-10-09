@@ -23,14 +23,18 @@
 }
 
 .projects-all {
+  display: inline-block;
   font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
   font-size: 0.85rem;
   color: var(--muted);
+  transform-origin: right center;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.projects-all:hover {
-  color: var(--ink);
-  text-decoration: none;
+.projects-all:hover,
+.projects-all:focus-visible {
+  color: var(--accent);
+  transform: scale(1.08);
 }
 
 .projects-grid {

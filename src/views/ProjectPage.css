@@ -1,45 +1,170 @@
-.projects-page {
-  max-width: 64rem;
+/* ===== article page ===== */
+.article {
+  max-width: 44rem;
   margin: 0 auto;
   padding: 2rem 1rem 4rem;
 }
 
-.projects-intro {
-  max-width: 42rem;
-  margin-bottom: 3rem;
-}
-
-.projects-eyebrow {
-  margin: 0 0 1rem;
+/* ===== back link ===== */
+.article-back {
+  display: inline-block;
+  margin-bottom: 2rem;
   font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
   font-size: 0.85rem;
   color: var(--muted);
+  transform-origin: left center;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.projects-intro h1 {
+.article-back:hover,
+.article-back:focus-visible {
+  color: var(--accent);
+  transform: scale(1.08);
+}
+
+/* ===== article header ===== */
+.article-header {
+  margin-bottom: 2rem;
+}
+
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin: 0 0 1rem;
-  font-size: clamp(2.25rem, 7vw, 3.5rem);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.article-category {
+  color: var(--accent);
+}
+
+.article h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.75rem, 6vw, 3rem);
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
 
-.projects-lede {
-  margin: 0;
-  font-size: 1.1rem;
+.article-blurb {
+  margin: 0 0 1.25rem;
+  font-size: 1rem;
   line-height: 1.7;
   color: var(--text);
 }
 
-.projects-featured {
-  margin-bottom: 1rem;
+.article-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
+.article-tags li {
+  padding: 0.15rem 0.55rem;
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+/* ===== article image ===== */
+.article-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  margin-bottom: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+/* Placeholder: perfboard dot pattern */
+.article-image-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
+}
+
+.article-image-empty span {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ===== article sections ===== */
+.article-section {
+  margin-bottom: 2.5rem;
+}
+
+.article-section h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.35rem;
+  line-height: 1.3;
+}
+
+.article-section p {
+  margin: 0 0 1rem;
+  line-height: 1.75;
+  color: var(--text);
+}
+
+.article-section p:last-child {
+  margin-bottom: 0;
+}
+
+/* ===== GitHub button ===== */
+.article-repo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1.2rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.article-repo:hover,
+.article-repo:focus-visible {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+  transform: translateY(-2px);
+}
+
+/* ===== tablet+ ===== */
 @media (min-width: 640px) {
-  .projects-page {
+  .article {
     padding: 3rem 1.25rem 5rem;
   }
 
-  .projects-intro {
-    margin-bottom: 4rem;
+  .article-image {
+    margin-bottom: 3rem;
+  }
+
+  .article-blurb {
+    font-size: 1.1rem;
+  }
+}
+
+/* ===== reduced motion: color only ===== */
+@media (prefers-reduced-motion: reduce) {
+  .article-back {
+    transition: color 0.2s ease;
   }
 }
