@@ -26,6 +26,7 @@ function Footer() {
           <nav className="footer-pages" aria-label="Footer">
             <ul className="footer-links">
               <li><Link to="/projects" className="footer-link">Projects</Link></li>
+              <li><Link to="/about" className="footer-link">About</Link></li>
             </ul>
           </nav>
 
