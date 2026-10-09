@@ -6,6 +6,7 @@ import './Nav.css';
 // Swap later: add Work and About here once those pages exist
 const PAGE_LINKS = [
   { to: '/projects', label: 'Projects' },
+  { to: '/work', label: 'Work' },
   { to: '/about', label: 'About' },
 ];
 

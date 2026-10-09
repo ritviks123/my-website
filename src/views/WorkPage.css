@@ -1,0 +1,320 @@
+/* ===== work page ===== */
+.work {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+.work-intro {
+  max-width: 42rem;
+  margin-bottom: 2.5rem;
+}
+
+.work-eyebrow {
+  margin: 0 0 1rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.work-intro h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 6.5vw, 3.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.work-lede {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+/* ===== sections ===== */
+.work-section {
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.work-heading {
+  margin: 0 0 1.5rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+.work-role {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+.work-org {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* ===== experience timeline ===== */
+.work-timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-item {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.work-item:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.work-when {
+  display: grid;
+  gap: 0.15rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.work-dates {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink);
+}
+
+.work-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.work-location {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.work-summary {
+  margin: 0 0 0.9rem;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.work-bullets {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-bullets li {
+  position: relative;
+  padding-left: 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+/* Short purple dash instead of a bullet dot */
+.work-bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.8em;
+  width: 0.6rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+/* ===== education ===== */
+.work-school {
+  margin: 0 0 0.75rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.work-gpa {
+  margin: 0 0 1.5rem;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.work-gpa strong {
+  color: var(--ink);
+}
+
+.work-subheading {
+  margin: 0 0 0.6rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.work-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-tags li {
+  padding: 0.15rem 0.55rem;
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-size: 0.75rem;
+}
+
+/* ===== certifications ===== */
+.work-certs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-cert {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.work-cert:first-child {
+  border-top: 1px solid var(--border);
+}
+
+.work-cert p {
+  margin: 0;
+}
+
+.work-cert-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.work-cert-issuer,
+.work-cert-meta {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.work-cert-meta {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.work-cert-link {
+  display: inline-block;
+  color: var(--accent);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.work-cert-link:hover,
+.work-cert-link:focus-visible {
+  color: var(--accent-dark);
+  transform: scale(1.08);
+}
+
+/* ===== tools ===== */
+.work-tools {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.work-tool-label {
+  margin: 0 0 0.75rem;
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.work-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.work-chips li {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--surface);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.75rem;
+  color: var(--text);
+}
+
+/* ===== tablet+ ===== */
+@media (min-width: 640px) {
+  .work {
+    padding: 3rem 1.25rem 5rem;
+  }
+
+  .work-intro {
+    margin-bottom: 3.5rem;
+  }
+
+  .work-lede {
+    font-size: 1.1rem;
+  }
+
+  .work-tools {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ===== laptop: dates column + text column ===== */
+@media (min-width: 800px) {
+  .work-item {
+    grid-template-columns: 11rem 1fr;
+    gap: 2.5rem;
+  }
+}
+
+/* ===== wide: education and certs side by side, 4 tool columns ===== */
+@media (min-width: 900px) {
+  .work-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 4rem;
+  }
+
+  .work-tools {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ===== reduced motion: color only ===== */
+@media (prefers-reduced-motion: reduce) {
+  .work-cert-link {
+    transition: color 0.2s ease;
+  }
+}
