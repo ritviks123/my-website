@@ -10,8 +10,10 @@ import AboutPage from './views/AboutPage';
 import WorkPage from './views/WorkPage';
 import ResumePage from './views/ResumePage';
 import NotFoundPage from './views/NotFoundPage';
+import useScrollReveal from './hooks/useScrollReveal';
 
 function App() {
+  useScrollReveal();
   return (
     <div className="App">
       <ScrollToTop />
