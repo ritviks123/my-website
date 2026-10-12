@@ -74,3 +74,8 @@ button:focus-visible {
 html {
   scroll-padding-top: 5rem;
 }
+
+/* Scroll reveal: hidden until it scrolls into view (added only by JavaScript) */
+.reveal-pending {
+  opacity: 0;
+}
