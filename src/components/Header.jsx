@@ -1,11 +1,10 @@
+import { Link } from 'react-router';
+import HeroVisual from './HeroVisual';
+import SerialMonitor from './SerialMonitor';
 import './Header.css';
 
 /* ===== Swap these later ===== */
-const HERO_IMAGE = '/hero/hero-placeholder.svg';
-const HERO_ALT = 'Placeholder illustration of a circuit board';
-const HERO_WIDTH = 800;
-const HERO_HEIGHT = 600;
-const RESUME_URL = '/resume.pdf';
+const RESUME_PAGE = '/resume';
 /* ============================ */
 
 function Header() {
@@ -24,7 +23,7 @@ function Header() {
           </h1>
 
           <p className="header-intro">
-            Electrical and computer engineering student building circuits,
+            Computer engineering student building circuits,
             embedded systems, and the occasional piece of software.
           </p>
 
@@ -32,24 +31,18 @@ function Header() {
             <a href="#projects" className="header-button">
               See my projects
             </a>
-            <a
-              href={RESUME_URL}
-              className="header-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Resume <span aria-hidden="true">↗</span>
-            </a>
+            <Link to={RESUME_PAGE} className="header-link">
+              Resume <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+
+          <div className="header-terminal" aria-hidden="true">
+            <SerialMonitor />
           </div>
         </div>
 
         <div className="header-media">
-          <img
-            src={HERO_IMAGE}
-            alt={HERO_ALT}
-            width={HERO_WIDTH}
-            height={HERO_HEIGHT}
-          />
+          <HeroVisual />
         </div>
       </div>
     </header>

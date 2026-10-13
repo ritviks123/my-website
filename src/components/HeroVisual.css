@@ -1,0 +1,129 @@
+/* ===== hero visual: live circuit + serial monitor ===== */
+.hero-visual {
+  position: relative;
+}
+
+.hero-visual-board {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+/* ===== circuit drawing ===== */
+.circuit {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.circuit-bg {
+  fill: var(--bg);
+}
+
+.circuit-dot {
+  fill: var(--border);
+}
+
+.circuit-trace,
+.circuit-pulse {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.circuit-trace {
+  stroke: var(--accent);
+  stroke-width: 3;
+  opacity: 0.35;
+}
+
+/* A short bright dash that travels along each trace */
+.circuit-pulse {
+  stroke: var(--accent-dark);
+  stroke-width: 4;
+  stroke-dasharray: 8 92;
+  stroke-dashoffset: 100;
+  filter: drop-shadow(0 0 4px var(--accent));
+  animation: circuit-flow 2.8s linear infinite;
+}
+
+.circuit-part {
+  fill: var(--surface);
+  stroke: var(--muted);
+  stroke-width: 2;
+}
+
+.circuit-chip {
+  fill: var(--surface);
+  stroke: var(--border);
+  stroke-width: 2;
+}
+
+.circuit-pin {
+  fill: var(--muted);
+}
+
+.circuit-mark {
+  fill: var(--border);
+}
+
+.circuit-label {
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 20px;
+  fill: var(--muted);
+}
+
+.circuit-led {
+  fill: var(--accent);
+  animation: circuit-blink 1.6s ease-in-out infinite;
+}
+
+.circuit-via {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 3;
+  animation: circuit-glow 2.8s ease-in-out infinite;
+}
+
+@keyframes circuit-flow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes circuit-blink {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes circuit-glow {
+  0%,
+  100% {
+    stroke-opacity: 0.45;
+  }
+  50% {
+    stroke-opacity: 1;
+  }
+}
+
+/* ===== reduced motion: still circuit ===== */
+@media (prefers-reduced-motion: reduce) {
+  .circuit-pulse {
+    display: none;
+  }
+
+  .circuit-led,
+  .circuit-via {
+    animation: none;
+  }
+
+  .circuit-trace {
+    opacity: 0.7;
+  }
+}

@@ -81,6 +81,11 @@
   text-decoration: none;
 }
 
+.header-terminal {
+  max-width: 26rem;
+  margin-top: 2rem;
+}
+
 .header-link {
   display: inline-block;
   color: var(--muted);
@@ -118,5 +123,10 @@
 
   .header-media {
     max-width: none;
+  }
+
+  /* Hero fills one screen (minus the nav), content centered */
+  .header-hero {
+    min-height: calc(100svh - 4.5rem);
   }
 }
