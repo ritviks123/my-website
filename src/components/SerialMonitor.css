@@ -1,0 +1,95 @@
+/* ===== serial monitor ===== */
+.serial {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 16px 40px color-mix(in srgb, var(--bg) 80%, transparent);
+  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: 0.72rem;
+}
+
+/* ===== title bar ===== */
+.serial-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+.serial-port {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.serial-led {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.serial-rx {
+  letter-spacing: 0.08em;
+}
+
+/* RX flickers while data is "arriving" */
+.serial-rx.is-active {
+  color: var(--accent);
+  animation: serial-flicker 0.4s steps(1) infinite;
+}
+
+/* ===== log lines ===== */
+.serial-body {
+  padding: 0.75rem 0.85rem 0.9rem;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+.serial-line {
+  display: block;
+  overflow: hidden;
+  white-space: pre;
+  text-overflow: ellipsis;
+}
+
+.serial-prefix {
+  color: var(--accent);
+}
+
+.serial-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1em;
+  margin-left: 1px;
+  vertical-align: -0.15em;
+  background: var(--accent);
+  animation: serial-blink 1s steps(1) infinite;
+}
+
+@keyframes serial-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes serial-flicker {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ===== reduced motion: no blinking ===== */
+@media (prefers-reduced-motion: reduce) {
+  .serial-cursor,
+  .serial-rx.is-active {
+    animation: none;
+  }
+}
