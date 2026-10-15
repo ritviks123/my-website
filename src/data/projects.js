@@ -44,7 +44,7 @@ export const projects = [
     description:
       "Field Relay Neighboring Data Points: an emergency chat network that needs no internet, no app and no account. A drone-carried Raspberry Pi turns any phone into a line to a first responder, and when no human is free, an LLM running on an Arduino Uno Q answers instead. Built in 3 days by a 4-person team for the Qualcomm sponsor track.",
     tags: ["Raspberry Pi", "Arduino Uno Q", "WebSockets", "Llama"],
-    image: "",
+    image: "/projects/drone-v1.webp",
     imageAlt: "",
     links: [
       { label: "Demo video", url: "" }, // [FILL] link, or leave empty to hide
@@ -97,7 +97,7 @@ export const projects = [
     description:
       "A rover that steers around obstacles on its own, built as the capstone of IEEE at UCI's year-long embedded systems program. Five separate modules collapse onto one 2-layer PCB I designed in KiCad, and a PD controller on the ESP32 fuses IR and ultrasonic distance into a single steering signal. 90% obstacle avoidance in testing, with every gain earned from data, not guessed.",
     tags: ["ESP32", "KiCad", "C++", "PD control"],
-    image: "",
+    image: "/projects/rover-v1.webp",
     imageAlt: "",
     links: [
       { label: "Test-run video", url: "" }, // [FILL] link, or leave empty to hide
@@ -150,7 +150,7 @@ export const projects = [
     description:
       "A class radio project grown into a cloud-connected sensor node. It started as two Arduino Nanos, a DHT11 and an NRF24 radio printing to an LCD. I rebuilt it on an ESP32 that publishes over MQTT to an Amazon MQ broker, and made the same battery last 4 weeks instead of 3 days.",
     tags: ["ESP32", "MQTT", "Amazon MQ", "Low power"],
-    image: "",
+    image: "/projects/weather-v1.webp",
     imageAlt: "",
     links: [
       { label: "Source", url: "" }, // [FILL] link, or leave empty to hide
@@ -218,7 +218,7 @@ export const projects = [
     description:
       "A 7-page React portfolio built in 3 to 4 weeks by directing Claude and Cursor against a written spec, scoring 100 in all four Lighthouse categories. Every feature branch passed a production build before it merged. The AI wrote the code; it never got to make a decision.",
     tags: ["React", "Vite", "Firebase", "Cloudflare"],
-    image: "",
+    image: "og-image.png",
     imageAlt: "",
     links: [
       { label: "Live site", url: "https://ritviksingh.net" },
