@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { projects } from '../data/projects';
 import FeaturedProject from '../components/FeaturedProject';
-import MoreWork from '../components/MoreWork';
 import './ProjectsPage.css';
 
 function ProjectsPage() {
@@ -12,8 +11,6 @@ function ProjectsPage() {
       document.title = previousTitle;
     };
   }, []);
-
-  const featuredProjects = projects.filter((project) => project.featured);
 
   return (
     <main className="projects-page">
@@ -28,13 +25,11 @@ function ProjectsPage() {
         </p>
       </header>
 
-      <section className="projects-featured" aria-label="Featured projects">
-        {featuredProjects.map((project, index) => (
+      <section className="projects-featured" aria-label="Projects">
+        {projects.map((project, index) => (
           <FeaturedProject key={project.id} project={project} index={index} />
         ))}
       </section>
-
-      <MoreWork />
     </main>
   );
 }
