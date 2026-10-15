@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import './AboutPage.css';
 
 // Swap later: rewrite all text in your own voice
-const ABOUT_IMAGE = ''; // e.g. '/about/portrait-v1.webp'
+const ABOUT_IMAGE = '/projects/headshot.webp'; // e.g. '/about/portrait-v1.webp'
 const ABOUT_ALT = 'Portrait of Ritvik Singh';
 
 const HEADLINE = 'I design the board, then write the code that runs on it.';
