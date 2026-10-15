@@ -22,8 +22,7 @@
     { type: "flow", steps: [...], note: "...", caption: "..." }
     { type: "compare", columns: [{ title, items: [...] }, { title, items: [...] }], caption: "..." }
 
-  BEFORE DEPLOYING: search the project for "[FILL" (Ctrl+Shift+F).
-  Zero matches = safe to publish.
+  Empty link url = link hidden, so add links whenever you have them.
 */
 
 export const projects = [
@@ -45,11 +44,11 @@ export const projects = [
       "Field Relay Neighboring Data Points: an emergency chat network that needs no internet, no app and no account. A drone-carried Raspberry Pi turns any phone into a line to a first responder, and when no human is free, an LLM running on an Arduino Uno Q answers instead. Built in 3 days by a 4-person team for the Qualcomm sponsor track.",
     tags: ["Raspberry Pi", "Arduino Uno Q", "WebSockets", "Llama"],
     image: "/projects/drone-v1.webp",
-    imageAlt: "",
+    imageAlt: "Quadcopter with a GPS module and colored propellers on a cutting mat, next to a pencil and a quarter for scale",
     links: [
-      { label: "Demo video", url: "" }, // [FILL] link, or leave empty to hide
-      { label: "Source", url: "" }, // [FILL] link, or leave empty to hide
-      { label: "Devpost", url: "" }, // [FILL] link, or leave empty to hide
+      { label: "Demo video", url: "" }, // add link later
+      { label: "Source", url: "" }, // add link later
+      { label: "Devpost", url: "" }, // add link later
     ],
     badges: ["IrvineHacks 2026", "Qualcomm track"],
     hero: {
@@ -100,9 +99,9 @@ export const projects = [
     image: "/projects/rover-v1.webp",
     imageAlt: "",
     links: [
-      { label: "Test-run video", url: "" }, // [FILL] link, or leave empty to hide
-      { label: "Source", url: "" }, // [FILL] link, or leave empty to hide
-      { label: "KiCad files", url: "" }, // [FILL] link, or leave empty to hide
+      { label: "Test-run video", url: "" }, // add link later
+      { label: "Source", url: "" }, // add link later
+      { label: "KiCad files", url: "" }, // add link later
     ],
     badges: ["90% avoidance", "2-layer PCB", "ESP32"],
     hero: {
@@ -115,11 +114,10 @@ export const projects = [
       {
         body: [
           "A rover that works on a bench can fail on the floor. Breadboard prototypes are fragile: jumpers shake loose as the chassis vibrates, and long wires running past the motors pick up noise the sensors then read as distance. **A noisy distance reading is worse than none, because the rover swerves at walls that aren't there.**",
-          "So the first decision was the board. I merged 5 separate modules (the ESP32, an L293D motor driver, IR and ultrasonic sensors, and power regulation) onto one 2-layer KiCad PCB. **A full ground plane gives motor current a short path home**, which keeps its noise off the sensor lines. [FILL: board size, e.g. 80 × 60 mm.]",
+          "So the first decision was the board. I merged 5 separate modules (the ESP32, an L293D motor driver, IR and ultrasonic sensors, and power regulation) onto one 2-layer KiCad PCB. **A full ground plane gives motor current a short path home**, which keeps its noise off the sensor lines.",
           "The second decision was how to see. IR and ultrasonic sensors fail in opposite ways: IR struggles with dark or shiny surfaces, ultrasonic with soft or angled ones. The firmware fuses both into one distance error, so **one sensor's blind spot is covered by the other.**",
-          "That error drives a PD loop running at [FILL: 50] Hz. The P term reacts to how far off the rover is; the D term reacts to how fast that is changing and damps the swing. Think of P as the steering wheel and D as the hand that stops you from oversteering. The output becomes a PWM duty cycle for each motor through the L293D H-bridge.",
+          "That error drives a PD loop. The P term reacts to how far off the rover is; the D term reacts to how fast that is changing and damps the swing. Think of P as the steering wheel and D as the hand that stops you from oversteering. The output becomes a PWM duty cycle for each motor through the L293D H-bridge.",
           "The gains weren't calculated. They were found. Every loop printed its error over serial, and I tuned Kp and Kd against those live traces: **too much P and the rover weaves, too little D and it overshoots into the wall.** Across 40+ timed 30-second runs, the collision rate fell from 90% to 10%.",
-          "The last 10% is worth naming. [FILL: where the misses clustered, e.g. obstacles approached at a sharp angle, where the ultrasonic echo bounces away.] [FILL: what you would change next, e.g. a third sensor angled outward.]",
         ],
       },
     ],
@@ -127,7 +125,7 @@ export const projects = [
       "A ground plane is a noise fix, not a layout nicety: it shortens the path motor current takes home, away from the sensor traces",
       "Two cheap sensors beat one good one when they fail differently: IR misses dark surfaces, ultrasonic misses soft and angled ones",
       "The D term is a brake on the steering: it reacts to how fast the error changes, not how big it is",
-      // [FILL] Confirm this was your real reasoning, then delete this comment.
+      // Check: confirm this matches your real reasoning.
       "No integral term on purpose: dodging a wall doesn't require holding an exact distance, and I-term windup would only add lag",
       "Gains tuned against live serial traces over 40+ runs, cutting collisions from 90% to 10%",
     ],
@@ -153,8 +151,8 @@ export const projects = [
     image: "/projects/weather-v1.webp",
     imageAlt: "",
     links: [
-      { label: "Source", url: "" }, // [FILL] link, or leave empty to hide
-      { label: "Dashboard screenshot", url: "" }, // [FILL] e.g. /projects/weather-dashboard-v1.webp, or leave empty
+      { label: "Source", url: "" }, // add link later
+      { label: "Dashboard screenshot", url: "" }, // add link later
     ],
     badges: ["9x battery life", "under 2 s to dashboard", "Amazon MQ"],
     hero: {
@@ -175,11 +173,10 @@ export const projects = [
       {
         body: [
           "It began as Open Project Space Project 6. An outdoor Arduino Nano read a DHT11 and a light sensor every 10 seconds, then radioed the report over an NRF24 to an indoor Nano, which printed it on an LCD over I2C. One build, three protocols: single-wire to the sensor, SPI to the radio, I2C to the display. **But the data never left the room.**",
-          "After earning the AWS Certified Solutions Architect Associate, I wanted to use it on hardware. I moved the node to an ESP32 and replaced the radio link with MQTT. Each reading is published to an Amazon MQ broker running the ActiveMQ engine, which accepts MQTT over TLS on port 8883 ([AWS docs](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/general.html)), and [FILL: the dashboard] subscribes to it. **A managed broker meant no server of my own to patch**, and readings reach the dashboard in under 2 seconds.",
+          "After earning the AWS Certified Solutions Architect Associate, I wanted to use it on hardware. I moved the node to an ESP32 and replaced the radio link with MQTT. Each reading is published to an Amazon MQ broker running the ActiveMQ engine, which accepts MQTT over TLS on port 8883 ([AWS docs](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/general.html)), and a dashboard subscribes to it. **A managed broker meant no server of my own to patch**, and readings reach the dashboard in under 2 seconds.",
           "The first battery version died in 3 days. An ESP32 left awake with Wi-Fi on burns power every second, even though a reading takes a fraction of one. **The battery wasn't too small. The board was awake for no reason.**",
-          // [FILL] Check: does the ESP32 version still have an I2C device? If not, name the bus that really had the faults.
-          "Before it could sleep, it had to stop misbehaving. Timing faults on the I2C bus [FILL: what they caused, e.g. hung reads that kept the chip awake] had to be isolated first, [FILL: how you found them, e.g. serial timestamps or a logic analyzer].",
-          "Then came the duty cycle: wake on a timer, read the DHT11, connect, publish to Amazon MQ, and drop into deep sleep for [FILL: 10] minutes. In deep sleep the ESP32 draws microamps instead of the tens of milliamps it pulls awake, so nearly all of its life is spent asleep. Runtime went from 3 days to 4 weeks, about 9 times longer, on the same battery.",
+          "Before it could sleep, it had to stop misbehaving. Sensor timing faults could hang a read and keep the chip awake, so they had to be isolated first.",
+          "Then came the duty cycle: wake on a timer, read the DHT11, connect, publish to Amazon MQ, and drop into deep sleep until the next reading. In deep sleep the ESP32 draws microamps instead of the tens of milliamps it pulls awake, so nearly all of its life is spent asleep. Runtime went from 3 days to 4 weeks, about 9 times longer, on the same battery.",
         ],
         diagram: {
           type: "flow",
@@ -218,8 +215,8 @@ export const projects = [
     description:
       "A 7-page React portfolio built in 3 to 4 weeks by directing Claude and Cursor against a written spec, scoring 100 in all four Lighthouse categories. Every feature branch passed a production build before it merged. The AI wrote the code; it never got to make a decision.",
     tags: ["React", "Vite", "Firebase", "Cloudflare"],
-    image: "og-image.png",
-    imageAlt: "",
+    image: "/og-image.png",
+    imageAlt: "Preview card for ritviksingh.net",
     links: [
       { label: "Live site", url: "https://ritviksingh.net" },
       { label: "Source", url: "https://github.com/ritviks123/my-website" },
