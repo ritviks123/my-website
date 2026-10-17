@@ -1,21 +1,26 @@
 :root {
-  --ink: #fafafa;
-  --text: #d4d4d8;
-  --muted: #a1a1aa;
-  --border: #27272a;
-  --surface: #18181b;
-  --bg: #09090b;
+  /* PCB palette: solder mask, silkscreen, copper, gold */
+  --ink: #f2f1ea;         /* headings (silkscreen white) */
+  --text: #d3dcd5;        /* body text */
+  --muted: #9fb5a6;       /* labels, meta */
+  --border: #24573f;      /* hairlines */
+  --surface: #0b1410;     /* cards, terminal (chip body) */
+  --bg: #0f3d2a;          /* page (solder mask) */
 
-  --accent: #a78bfa;
-  /* Hover color. Name kept from the light theme, but on dark it is LIGHTER. */
-  --accent-dark: #c4b5fd;
-  --accent-tint: #2e1065;
+  --accent: #d9b45a;      /* links, buttons (gold pads) */
+  /* Hover color: lighter gold */
+  --accent-dark: #e8cc85;
+  --accent-tint: #3d3417; /* tag background (bronze) */
+  --copper: #c8814d;      /* traces and large text only (low contrast) */
   --danger: #fca5a5;
 
   --radius: 8px;
 
+  --font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "Cascadia Code", Consolas, monospace;
+
   color-scheme: dark;
-  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
   line-height: 1.6;
   color: var(--text);
   background-color: var(--bg);
@@ -41,6 +46,8 @@ h1,
 h2,
 h3 {
   color: var(--ink);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 
 a {
@@ -51,6 +58,7 @@ a {
 button {
   font-family: inherit;
   font-size: 1rem;
+  font-weight: 600;
   padding: 0.6rem 1.2rem;
   border: 1px solid var(--accent);
   border-radius: var(--radius);
