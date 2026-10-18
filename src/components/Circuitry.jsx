@@ -106,7 +106,7 @@ function measure(home) {
 
   const turnY = mcu.bottom + 32;
   // Both buses land on the contact box's sides, level with its LED row
-  const leftEndY = contactForm.top + 30;
+  const leftEndY = contactForm.top + contactForm.height / 2;
   const rightEndY = leftEndY;
   const leftEndX = contactForm.left;
 
