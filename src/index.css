@@ -1,8 +1,8 @@
 :root {
   /* PCB palette: solder mask, silkscreen, copper, gold */
-  --ink: #f2f1ea;         /* headings (silkscreen white) */
-  --text: #d3dcd5;        /* body text */
-  --muted: #9fb5a6;       /* labels, meta */
+  --ink: #f7f8f3;         /* headings: brightest white */
+  --text: #b9c4bc;        /* body text: light gray */
+  --muted: #8fa396;       /* labels, meta: dim gray (lowest that passes contrast) */
   --border: #24573f;      /* hairlines */
   --surface: #0b1410;     /* cards, terminal (chip body) */
   --bg: #0f3d2a;          /* page (solder mask) */
@@ -15,6 +15,9 @@
   --danger: #fca5a5;
 
   --radius: 8px;
+
+  /* Size knob: nav + hero on desktop (1 = Nimble's exact sizes) */
+  --desktop-zoom: 1.3;
 
   --font-sans: "Geist Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "Geist Mono Variable", ui-monospace, "Cascadia Code", Consolas, monospace;

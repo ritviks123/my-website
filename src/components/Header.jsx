@@ -1,10 +1,13 @@
-import { Link } from 'react-router';
 import HeroVisual from './HeroVisual';
-import SerialMonitor from './SerialMonitor';
 import './Header.css';
 
 /* ===== Swap these later ===== */
-const RESUME_PAGE = '/resume';
+const NAME = 'Ritvik Singh';
+const INTRO =
+  'IoT Developer focused on building connected hardware. Experienced in embedded systems, PCB design, and AWS cloud integration.';
+const META = ['UC Irvine', 'Computer Engineering', 'Located Southern California'];
+const RESUME_FILE = '/resume.pdf';
+const RESUME_DOWNLOAD_NAME = 'Ritvik_Singh_Resume.pdf';
 /* ============================ */
 
 function Header() {
@@ -12,33 +15,19 @@ function Header() {
     <header className="header">
       <div className="header-hero">
         <div className="header-text">
-          <p className="header-status">
-            <span className="header-status-dot" aria-hidden="true"></span>
-            Open to internships
-          </p>
-
-          <h1 className="header-title">
-            I turn schematics into working{' '}
-            <span className="header-highlight">hardware.</span>
-          </h1>
-
-          <p className="header-intro">
-            Computer engineering student building circuits,
-            embedded systems, and the occasional piece of software.
-          </p>
+          <h1 className="header-title">{NAME}</h1>
+          <p className="header-intro">{INTRO}</p>
 
           <div className="header-actions">
             <a href="#projects" className="header-button">
-              See my projects
+              View projects
             </a>
-            <Link to={RESUME_PAGE} className="header-link">
-              Resume <span aria-hidden="true">→</span>
-            </Link>
+            <a href={RESUME_FILE} download={RESUME_DOWNLOAD_NAME} className="header-button header-button-ghost">
+              Download resume <span aria-hidden="true">↓</span>
+            </a>
           </div>
 
-          <div className="header-terminal" aria-hidden="true">
-            <SerialMonitor />
-          </div>
+          <p className="header-meta">{META.join(' · ')}</p>
         </div>
 
         <div className="header-media">
