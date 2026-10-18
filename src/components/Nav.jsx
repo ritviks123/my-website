@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { FiMenu, FiX } from 'react-icons/fi';
+import ChipMark from './ChipMark';
 import './Nav.css';
 
 // Swap later: add Work and About here once those pages exist
@@ -9,17 +10,6 @@ const PAGE_LINKS = [
   { to: '/work', label: 'Work' },
   { to: '/about', label: 'About' },
 ];
-
-// Logo mark: a tiny IC chip with pins (dot = pin 1)
-function ChipMark() {
-  return (
-    <svg className="nav-mark" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
-      <rect x="6" y="5" width="12" height="14" rx="2" fill="none" stroke="currentColor" strokeWidth="1.75" />
-      <circle cx="9" cy="8" r="1.1" fill="currentColor" />
-      <path d="M2 8.5h4M2 12h4M2 15.5h4M18 8.5h4M18 12h4M18 15.5h4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 function Nav() {
   const [scrolled, setScrolled] = useState(false);

@@ -49,12 +49,6 @@
   transform-origin: left center;
 }
 
-/* Chip stays copper; only the text turns gold on hover */
-.nav-mark {
-  flex-shrink: 0;
-  color: var(--copper);
-}
-
 .nav-link {
   color: var(--text);
   font-size: 0.95rem;

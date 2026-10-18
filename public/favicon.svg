@@ -1,32 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="13" fill="#0B0B10" />
-  <rect
-    x="3.5"
-    y="3.5"
-    width="57"
-    height="57"
-    rx="10"
-    fill="none"
-    stroke="#8B5CF6"
-    stroke-opacity="0.35"
-    stroke-width="1.5"
-  />
-  <g transform="translate(5.78,-2) skewX(-8)" fill="none" stroke-linejoin="round">
-    <g stroke="#8B5CF6" stroke-opacity="0.09" stroke-width="13">
-      <path d="M13 51 L13 20 L22 20 C26 20 28 22.5 28 27 C28 31.5 26 34 22 34 L13 34" />
-      <path d="M52 20 L43 20 C39.5 20 38 22.5 38 27 C38 31.5 39.5 34 43 34 L47 34 C50.5 34 52 36.5 52 41 C52 45.5 50.5 48 47 48 L34 48 L21 34" />
-    </g>
-    <g stroke="#8B5CF6" stroke-opacity="0.15" stroke-width="10">
-      <path d="M13 51 L13 20 L22 20 C26 20 28 22.5 28 27 C28 31.5 26 34 22 34 L13 34" />
-      <path d="M52 20 L43 20 C39.5 20 38 22.5 38 27 C38 31.5 39.5 34 43 34 L47 34 C50.5 34 52 36.5 52 41 C52 45.5 50.5 48 47 48 L34 48 L21 34" />
-    </g>
-    <g stroke="#C9C7D1" stroke-width="7">
-      <path d="M13 51 L13 20 L22 20 C26 20 28 22.5 28 27 C28 31.5 26 34 22 34 L13 34" />
-      <path d="M52 20 L43 20 C39.5 20 38 22.5 38 27 C38 31.5 39.5 34 43 34 L47 34 C50.5 34 52 36.5 52 41 C52 45.5 50.5 48 47 48 L34 48 L21 34" />
-    </g>
-    <g stroke="#8B5CF6" stroke-width="5.5">
-      <path d="M13 51 L13 20 L22 20 C26 20 28 22.5 28 27 C28 31.5 26 34 22 34 L13 34" />
-      <path d="M52 20 L43 20 C39.5 20 38 22.5 38 27 C38 31.5 39.5 34 43 34 L47 34 C50.5 34 52 36.5 52 41 C52 45.5 50.5 48 47 48 L34 48 L21 34" />
-    </g>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#0f3d2a"/>
+  <path d="M12 4v4M16 4v4M20 4v4M12 24v4M16 24v4M20 24v4M4 12h4M4 16h4M4 20h4M24 12h4M24 16h4M24 20h4" stroke="#c8814d" stroke-width="2" stroke-linecap="round"/>
+  <rect x="8" y="8" width="16" height="16" rx="2.5" fill="#0b1410" stroke="#c8814d" stroke-width="2"/>
+  <text x="16" y="16" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, Consolas, monospace" font-weight="700" font-size="8.5" fill="#f2f1ea">RS</text>
 </svg>
