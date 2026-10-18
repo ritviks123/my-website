@@ -12,9 +12,36 @@ const CHAMFER = 12; // size of the 45° corner cuts
 const MCU_LEFT_TRACE = [[560, 392], [560, 470], [530, 500], [530, 560]];
 const MCU_RIGHT_TRACE = [[640, 392], [640, 470], [670, 500], [670, 560]];
 
-// Parts hanging off each bus: [how far down the bus (0 to 1), part, px out into the gutter]
-const DECOR = []; // gutter parts get redone next step
+// Parts in the gaps beside the projects grid and contact: [side, area, how far down (0 to 1), part]
+const SLOTS = [
+  ['left', 'row1', 0.22, 'heatsink'],
+  ['left', 'row1', 0.8, 'button'],
+  ['left', 'row2', 0.22, 'usb'],
+  ['left', 'row2', 0.78, 'ecap'],
+  ['right', 'row1', 0.24, 'northbridge'],
+  ['right', 'row1', 0.8, 'crystal'],
+  ['right', 'row2', 0.2, 'buzzer'],
+  ['right', 'row2', 0.78, 'dram'],
+  ['left', 'contact', 0.15, 'led'],
+  ['right', 'contact', 0.88, 'res'],
+];
 /* ============================ */
+
+// Width of each part, so it only appears where its gap has room
+const PART_W = {
+  heatsink: 84,
+  northbridge: 72,
+  usb: 52,
+  button: 34,
+  ecap: 32,
+  buzzer: 40,
+  crystal: 52,
+  dram: 124,
+  led: 22,
+  res: 32,
+};
+const FIN_X = [-32, -24, -16, -8, 0, 8, 16, 24, 32];
+const NB_PINS = [-24, -16, -8, 0, 8, 16, 24];
 
 const round = (n) => Math.round(n * 10) / 10;
 
@@ -41,7 +68,7 @@ function route(points) {
   return d;
 }
 
-// Reads where everything sits on the page and plans every wire
+// Reads where everything sits on the page and plans every wire and part
 function measure(home) {
   const box = home.getBoundingClientRect();
   const rect = (key) => {
@@ -59,11 +86,14 @@ function measure(home) {
   };
 
   const mcu = rect('mcu');
+  const grid = rect('projects-grid');
   const contactInfo = rect('contact-info');
   const contactForm = rect('contact-form');
   const toolCards = tools.map((_, i) => rect(`tk-${i}`));
   const projectCards = homeProjectIds.map((id) => rect(id));
-  if (!mcu || !contactInfo || !contactForm || toolCards.includes(null) || projectCards.includes(null)) return null;
+  if (!mcu || !grid || !contactInfo || !contactForm || toolCards.includes(null) || projectCards.includes(null)) {
+    return null;
+  }
 
   // Bus positions: just outside the toolkit row
   const L = toolCards[0].left - BUS_GAP;
@@ -113,25 +143,29 @@ function measure(home) {
     branches.push({ id: `tk-${i}`, side, d: route(points), end: points[2] });
   });
 
-  // Decorative parts on short 45° stubs, out in the gutters (right side shifted for variety)
-  const decor = [];
-  [
-    ['left', L, -1, leftEndY, 0],
-    ['right', R, 1, rightEndY, 0.05],
-  ].forEach(([side, busX, dir, endY, shift]) => {
-    DECOR.forEach(([at, part, out], i) => {
-      const y = turnY + (endY - turnY) * Math.min(0.95, at + shift);
-      const jog = i % 2 === 0 ? -18 : 18;
-      const x = busX + dir * out;
-      if (x < 24 || x > box.width - 24) return; // no room on this screen
-      decor.push({
-        key: `${side}-${i}`,
-        part,
-        x,
-        y: y + jog,
-        d: route([[busX, y], [busX + dir * (out - 18), y], [x, y + jog]]),
-      });
-    });
+  // Parts: centered in the gap between a bus and the content, fed by a thin trace
+  const contactTop = Math.min(contactInfo.top, contactForm.top);
+  const areas = {
+    row1: projectCards[0],
+    row2: projectCards[2] || projectCards[0],
+    contact: { top: contactTop, height: Math.max(contactInfo.bottom, contactForm.bottom) - contactTop },
+  };
+  const edges = {
+    left: { busX: L, grid: grid.left, contact: leftEndX },
+    right: { busX: R, grid: grid.right, contact: contactForm.right },
+  };
+
+  const parts = [];
+  SLOTS.forEach(([side, area, frac, part]) => {
+    const { busX } = edges[side];
+    const edge = area === 'contact' ? edges[side].contact : edges[side].grid;
+    const w = PART_W[part];
+    if (Math.abs(edge - busX) < w + 40) return; // gap too narrow on this screen
+
+    const x = (busX + edge) / 2;
+    const y = areas[area].top + areas[area].height * frac;
+    const near = side === 'left' ? x - w / 2 : x + w / 2;
+    parts.push({ key: `${side}-${area}-${part}`, part, x, y, d: route([[busX, y], [near, y]]) });
   });
 
   const vias = [
@@ -139,36 +173,96 @@ function measure(home) {
     [contactForm.right, rightEndY],
   ];
 
-  return { width: box.width, height: box.height, buses, branches, decor, vias };
+  return { width: box.width, height: box.height, buses, branches, parts, vias };
 }
 
-// Small footprints drawn at the end of each decorative stub
+// Top-view footprints, each centered on (x, y)
 function Part({ part, x, y }) {
   return (
-    <g className="circuitry-part" transform={`translate(${round(x)} ${round(y)})`}>
+    <g className={`circuitry-part is-${part}`} transform={`translate(${round(x)} ${round(y)})`}>
+      {part === 'heatsink' && (
+        <>
+          <rect x="-42" y="-32" width="84" height="64" rx="4" className="circuitry-body" />
+          {FIN_X.map((fx) => (
+            <line key={fx} x1={fx} y1="-25" x2={fx} y2="25" className="circuitry-fin" />
+          ))}
+          <circle cx="-36" cy="-26" r="2.5" className="circuitry-pad" />
+          <circle cx="36" cy="26" r="2.5" className="circuitry-pad" />
+        </>
+      )}
+      {part === 'northbridge' && (
+        <>
+          {NB_PINS.map((p) => (
+            <g key={p}>
+              <rect x={p - 1.5} y="-36" width="3" height="5" className="circuitry-pad" />
+              <rect x={p - 1.5} y="31" width="3" height="5" className="circuitry-pad" />
+              <rect x="-36" y={p - 1.5} width="5" height="3" className="circuitry-pad" />
+              <rect x="31" y={p - 1.5} width="5" height="3" className="circuitry-pad" />
+            </g>
+          ))}
+          <rect x="-30" y="-30" width="60" height="60" rx="4" className="circuitry-body" />
+          <rect x="-17" y="-17" width="34" height="34" rx="2" className="circuitry-die" />
+          <circle cx="-24" cy="-24" r="2" className="circuitry-pad" />
+        </>
+      )}
+      {part === 'usb' && (
+        <>
+          <rect x="-26" y="-12" width="5" height="6" rx="1" className="circuitry-pad" />
+          <rect x="21" y="-12" width="5" height="6" rx="1" className="circuitry-pad" />
+          <rect x="-22" y="-9" width="44" height="18" rx="9" className="circuitry-metal" />
+          <rect x="-13" y="-3.5" width="26" height="7" rx="3.5" className="circuitry-dark" />
+        </>
+      )}
+      {part === 'button' && (
+        <>
+          <rect x="-17" y="-11" width="5" height="6" className="circuitry-pad" />
+          <rect x="12" y="-11" width="5" height="6" className="circuitry-pad" />
+          <rect x="-17" y="5" width="5" height="6" className="circuitry-pad" />
+          <rect x="12" y="5" width="5" height="6" className="circuitry-pad" />
+          <rect x="-13" y="-13" width="26" height="26" rx="3" className="circuitry-metal" />
+          <circle r="8" className="circuitry-dark circuitry-edge" />
+        </>
+      )}
+      {part === 'ecap' && (
+        <>
+          <circle r="16" className="circuitry-metal" />
+          <path d="M0 -16A16 16 0 0 0 0 16A9 16 0 0 1 0 -16Z" className="circuitry-dark" />
+          <path d="M-6 0H6M0 -6V6" className="circuitry-vent" />
+        </>
+      )}
+      {part === 'buzzer' && (
+        <>
+          <circle r="20" className="circuitry-body" />
+          <circle r="12" className="circuitry-groove" />
+          <circle r="3" className="circuitry-hole" />
+        </>
+      )}
+      {part === 'crystal' && (
+        <>
+          <rect x="-26" y="-2" width="4" height="4" className="circuitry-pad" />
+          <rect x="22" y="-2" width="4" height="4" className="circuitry-pad" />
+          <rect x="-22" y="-8" width="44" height="16" rx="8" className="circuitry-metal" />
+        </>
+      )}
+      {part === 'dram' && (
+        <>
+          <rect x="-62" y="-13" width="7" height="26" rx="1.5" className="circuitry-metal" />
+          <rect x="55" y="-13" width="7" height="26" rx="1.5" className="circuitry-metal" />
+          <rect x="-55" y="-9" width="110" height="18" rx="2" className="circuitry-body" />
+          <rect x="-48" y="-2.5" width="96" height="5" rx="1" className="circuitry-die" />
+          <rect x="-6" y="-9" width="3" height="18" className="circuitry-hole" />
+        </>
+      )}
+      {part === 'led' && (
+        <>
+          <rect x="-11" y="-6" width="22" height="12" rx="2" className="circuitry-body" />
+          <rect x="-6" y="-3.5" width="12" height="7" rx="1.5" className="circuitry-lens" />
+        </>
+      )}
       {part === 'res' && (
         <>
           <path d="M-16 0h4M12 0h4" className="circuitry-lead" />
           <rect x="-12" y="-5" width="24" height="10" rx="2" className="circuitry-body" />
-        </>
-      )}
-      {part === 'cap' && (
-        <>
-          <rect x="-8" y="-6" width="6" height="12" rx="1.5" className="circuitry-pad" />
-          <rect x="2" y="-6" width="6" height="12" rx="1.5" className="circuitry-pad" />
-        </>
-      )}
-      {part === 'tp' && (
-        <>
-          <circle r="6" className="circuitry-ring" />
-          <circle r="2" className="circuitry-pad" />
-        </>
-      )}
-      {part === 'chip' && (
-        <>
-          <path d="M-9 -14v4M-3 -14v4M3 -14v4M9 -14v4M-9 10v4M-3 10v4M3 10v4M9 10v4" className="circuitry-lead" />
-          <rect x="-15" y="-10" width="30" height="20" rx="2" className="circuitry-body" />
-          <circle cx="-10" cy="-5" r="1.5" className="circuitry-pad" />
         </>
       )}
     </g>
@@ -230,9 +324,9 @@ function Circuitry({ activeTool }) {
       aria-hidden="true"
       focusable="false"
     >
-      {/* Dim decorative stubs underneath everything */}
-      {(geo?.decor || []).map((p) => (
-        <path key={`stub-${p.key}`} d={p.d} className="circuitry-decor" />
+      {/* Thin feed traces to the parts, underneath everything */}
+      {(geo?.parts || []).map((p) => (
+        <path key={`feed-${p.key}`} d={p.d} className="circuitry-decor" />
       ))}
 
       {/* Copper wires, then gold pulses on top of the lit ones */}
@@ -245,9 +339,8 @@ function Circuitry({ activeTool }) {
           <path key={`pulse-${w.key}`} d={w.d} className={`circuitry-pulse${w.bus ? ' is-bus' : ''}`} />
         ))}
 
-      {/* Parts at the end of each stub */}
-      {(geo?.decor || []).map((p) => (
-        <Part key={`part-${p.key}`} part={p.part} x={p.x} y={p.y} />
+      {(geo?.parts || []).map((p) => (
+        <Part key={p.key} part={p.part} x={p.x} y={p.y} />
       ))}
 
       {/* Vias where wires land */}

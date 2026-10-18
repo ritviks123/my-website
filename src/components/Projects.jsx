@@ -47,7 +47,7 @@ function Projects({ heading = 'Projects.', headingTag = 'h2', activeTool }) {  c
           <p className="projects-intro">{INTRO}</p>
         </div>
 
-        <div className="projects-grid">
+        <div className="projects-grid" data-wire="projects-grid">
           {shown.map((project) => (
             <ProjectCard key={project.id} project={project} lit={projectUsesTool(project, activeTool)} />
           ))}

@@ -69,25 +69,63 @@
   stroke: var(--accent);
   opacity: 1;
 }
-
-/* Decoration: dimmer than the real wires so content stays the focus */
+/* Parts: visible detail, but quieter than the real wires */
 .circuitry-decor {
   fill: none;
   stroke: var(--copper);
-  stroke-width: 2;
+  stroke-width: 1.5;
   stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.3;
+  opacity: 0.35;
 }
 
 .circuitry-part {
-  opacity: 0.55;
+  opacity: 0.8;
 }
 
 .circuitry-body {
   fill: var(--surface);
   stroke: color-mix(in srgb, var(--copper) 60%, transparent);
   stroke-width: 1.5;
+}
+
+.circuitry-metal {
+  fill: color-mix(in srgb, var(--ink) 25%, var(--surface));
+  stroke: color-mix(in srgb, var(--ink) 45%, var(--surface));
+  stroke-width: 1.2;
+}
+
+.circuitry-die {
+  fill: color-mix(in srgb, var(--ink) 12%, var(--surface));
+}
+
+.circuitry-dark {
+  fill: color-mix(in srgb, var(--ink) 8%, var(--surface));
+}
+
+.circuitry-edge {
+  stroke: color-mix(in srgb, var(--ink) 45%, var(--surface));
+  stroke-width: 1.2;
+}
+
+.circuitry-fin,
+.circuitry-groove {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 20%, var(--surface));
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.circuitry-groove {
+  stroke-width: 2;
+}
+
+.circuitry-vent {
+  stroke: color-mix(in srgb, var(--ink) 45%, var(--surface));
+  stroke-width: 1.5;
+}
+
+.circuitry-hole {
+  fill: var(--bg);
 }
 
 .circuitry-lead {
@@ -101,10 +139,20 @@
   fill: var(--copper);
 }
 
-.circuitry-ring {
-  fill: var(--bg);
-  stroke: var(--accent);
-  stroke-width: 2;
+/* The LED slowly breathes */
+.circuitry-lens {
+  fill: var(--accent);
+  animation: circuitry-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes circuitry-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @keyframes circuitry-flow {
@@ -117,6 +165,10 @@
 @media (prefers-reduced-motion: reduce) {
   .circuitry-pulse {
     display: none;
+  }
+
+  .circuitry-lens {
+    animation: none;
   }
 
   .circuitry-wire,
