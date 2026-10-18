@@ -7,7 +7,7 @@ function HomePage() {
     <>
       <Header />
       <main>
-        <Projects limit={3} showAllLink />
+        <Projects showAllLink />
         <Contact />
       </main>
     </>

@@ -1,32 +1,55 @@
+/* ===== home projects: Gumloop-style sideways cards ===== */
 .projects {
-  max-width: 64rem;
+  --projects-max: 85rem;
+  padding: 3rem 0 4rem;
+}
+
+.projects-inner {
+  max-width: var(--projects-max);
   margin: 0 auto;
-  padding: 2.5rem 1rem 3rem;
-  border-top: 1px solid var(--border);
+  padding: 0 1rem;
 }
 
 .projects-top {
   display: flex;
-  align-items: baseline;
+  flex-wrap: wrap;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 1rem;
-  margin: 0 0 1.75rem;
+  gap: 1.25rem 2rem;
+  margin-bottom: 2rem;
+}
+
+.projects-label {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  color: var(--muted);
 }
 
 .projects-heading {
   margin: 0;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-size: clamp(1.75rem, 3vw + 0.5rem, 2.25rem);
+  font-weight: 560;
+}
+
+.projects-intro {
+  max-width: 36rem;
+  margin: 0.9rem 0 0;
   font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--muted);
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.projects-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .projects-all {
   display: inline-block;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.85rem;
-  color: var(--muted);
+  margin-right: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text);
   transform-origin: right center;
   transition: color 0.2s ease, transform 0.2s ease;
 }
@@ -37,29 +60,63 @@
   transform: scale(1.08);
 }
 
-.projects-grid {
+/* Round arrow buttons (override the global gold button) */
+.projects-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--ink) 15%, transparent);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 1.1rem;
+}
+
+.projects-arrow:hover,
+.projects-arrow:focus-visible {
+  border-color: var(--accent);
+  background: var(--surface);
+  color: var(--accent);
+}
+
+/* The sideways row: starts in line with the heading, runs off the right edge */
+.projects-track {
+  --edge: max(1rem, calc((100% - var(--projects-max)) / 2 + 1rem));
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  grid-auto-flow: column;
+  grid-auto-columns: min(85%, 30rem);
   gap: 1.25rem;
+  overflow-x: auto;
+  padding: 0.5rem var(--edge) 1rem;
+  scroll-padding-inline: var(--edge);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.projects-track::-webkit-scrollbar {
+  display: none;
 }
 
 /* Card (every card is a link) */
 .project-card {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
+  padding: 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  border-radius: 12px;
   background: var(--surface);
   color: var(--text);
-  cursor: pointer;
+  scroll-snap-align: start;
   transition: border-color 0.15s ease, transform 0.15s ease;
 }
 
-.project-card:hover {
+.project-card:hover,
+.project-card:focus-visible {
   border-color: var(--accent);
   transform: translateY(-3px);
-  text-decoration: none;
 }
 
 .project-card:focus-visible {
@@ -67,92 +124,100 @@
   outline-offset: 3px;
 }
 
-/* Image (any photo is cropped to the same 16:9 shape) */
-.project-image {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-}
-
-/* Placeholder: perfboard dot pattern */
-.project-image-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg);
-  background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
-  background-size: 16px 16px;
-}
-
-.project-image-empty span {
-  padding: 0.25rem 0.6rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* Text */
-.project-body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 0.6rem;
-  padding: 1rem 1.1rem 1.2rem;
-}
-
-.project-meta {
+.project-card-top {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 0.75rem;
 }
 
-.project-body h3 {
+.project-card-title {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 1.25rem;
+  font-weight: 560;
 }
 
 .project-year {
   flex-shrink: 0;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--muted);
 }
 
-.project-body p {
-  margin: 0;
+.project-card-sub {
+  margin: 0.5rem 0 0;
   font-size: 0.95rem;
-  line-height: 1.6;
+  line-height: 1.5;
+  color: var(--muted);
 }
 
-.project-tags {
+/* Visual area (animations go here next step) */
+.project-visual {
+  margin-top: 1.5rem;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.project-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project-visual-empty {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0.2rem 0 0;
-  padding: 0;
-  list-style: none;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
+  background-size: 16px 16px;
 }
 
-.project-tags li {
-  padding: 0.15rem 0.55rem;
-  border-radius: calc(var(--radius) - 2px);
-  background: var(--accent-tint);
-  color: var(--accent);
+.project-visual-empty span {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: var(--font-mono);
   font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-/* Tablets and desktops */
 @media (min-width: 640px) {
+  .projects-inner {
+    padding: 0 1.25rem;
+  }
+
+  .projects-track {
+    --edge: max(1.25rem, calc((100% - var(--projects-max)) / 2 + 1.25rem));
+  }
+}
+
+/* Desktop: same size knob as the nav + hero */
+@media (min-width: 900px) {
   .projects {
-    padding: 3rem 1.25rem 4rem;
+    --projects-max: calc(85rem / var(--desktop-zoom));
+    zoom: var(--desktop-zoom);
+    padding: 4rem 0 5rem;
+  }
+}
+
+/* Reduced motion: color change only */
+@media (prefers-reduced-motion: reduce) {
+  .project-card,
+  .projects-all {
+    transition: border-color 0.15s ease, color 0.2s ease;
+  }
+
+  .project-card:hover,
+  .project-card:focus-visible,
+  .projects-all:hover,
+  .projects-all:focus-visible {
+    transform: none;
   }
 }
