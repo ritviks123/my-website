@@ -270,3 +270,7 @@ export const projects = [
     footnote: "",
   },
 ];
+
+
+/* ===== Home page grid: which projects, in what order (2 per row) ===== */
+export const homeProjectIds = ['frnd', 'autonomous-rc-rover', 'iot-weather-station', 'ritviksingh-net'];

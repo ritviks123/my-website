@@ -1,7 +1,5 @@
-import { useRef } from 'react';
 import { Link } from 'react-router';
-import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
-import { projects } from '../data/projects';
+import { projects, homeProjectIds } from '../data/projects';
 import ProjectThumb from './ProjectThumb';
 import { projectUsesTool } from '../data/toolLinks';
 import './Projects.css';
@@ -23,7 +21,7 @@ function ProjectCard({ project, lit }) {
         <ProjectThumb project={project} />
       </div>
 
-      {/* Slides up on hover (always visible on touch screens) */}
+      {/* Unrolls below the card on hover (always visible on touch screens) */}
       <div className="project-reveal">
         <p className="project-card-sub">{project.summary || project.blurb}</p>
         {project.tags?.length > 0 && (
@@ -38,22 +36,10 @@ function ProjectCard({ project, lit }) {
   );
 }
 
-function Projects({ heading = "Things I've built.", headingTag = 'h2', limit, activeTool }) {
+function Projects({ heading = "Things I've built.", headingTag = 'h2', activeTool }) {
   const HeadingTag = headingTag;
-  const trackRef = useRef(null);
-  const featured = projects.filter((project) => project.featured);
-  const shown = limit ? featured.slice(0, limit) : featured;
-
-  // Arrow buttons: slide exactly one card (card width + gap)
-  function slide(direction) {
-    const track = trackRef.current;
-    if (!track) return;
-    const card = track.querySelector('.project-card');
-    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-    const step = card ? card.offsetWidth + gap : track.clientWidth * 0.8;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    track.scrollBy({ left: direction * step, behavior: reduce ? 'auto' : 'smooth' });
-  }
+  // Home grid: these projects, in this order
+  const shown = homeProjectIds.map((id) => projects.find((project) => project.id === id)).filter(Boolean);
 
   return (
     <section className="projects" id="projects">
@@ -62,26 +48,15 @@ function Projects({ heading = "Things I've built.", headingTag = 'h2', limit, ac
           <Link to="/projects" className="projects-label" aria-label="All projects">
             {LABEL}
           </Link>
-
-          <div className="projects-row">
-            <HeadingTag className="projects-heading">{heading}</HeadingTag>
-            <div className="projects-controls">
-              <button type="button" className="projects-arrow" aria-label="Previous project" onClick={() => slide(-1)}>
-                <FiArrowLeft aria-hidden="true" />
-              </button>
-              <button type="button" className="projects-arrow" aria-label="Next project" onClick={() => slide(1)}>
-                <FiArrowRight aria-hidden="true" />
-              </button>
-            </div>
-          </div>
+          <HeadingTag className="projects-heading">{heading}</HeadingTag>
           <p className="projects-intro">{INTRO}</p>
         </div>
-      </div>
 
-      <div className="projects-track" ref={trackRef}>
-        {shown.map((project) => (
-          <ProjectCard key={project.id} project={project} lit={projectUsesTool(project,activeTool)} />
-        ))}
+        <div className="projects-grid">
+          {shown.map((project) => (
+            <ProjectCard key={project.id} project={project} lit={projectUsesTool(project, activeTool)} />
+          ))}
+        </div>
       </div>
     </section>
   );

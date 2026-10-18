@@ -1,10 +1,13 @@
-import { projects } from './projects';
+import { projects, homeProjectIds } from './projects';
 
 /* ===== Swap later: links the project data doesn't spell out ===== */
 // Tool name → project ids, for tools a project used but doesn't list in tags or builtWith
 const EXTRA_LINKS = {
   AWS: ['iot-weather-station'],
   SPI: ['iot-weather-station'],
+  JavaScript: ['ritviksingh-net'],
+  HTML: ['ritviksingh-net'],
+  Git: ['ritviksingh-net'],
 };
 /* ================================================================ */
 
@@ -23,5 +26,5 @@ export function projectUsesTool(project, tool) {
 }
 
 export function projectsUsingTool(tool) {
-  return projects.filter((project) => project.featured && projectUsesTool(project, tool));
+  return projects.filter((project) => homeProjectIds.includes(project.id) && projectUsesTool(project, tool));
 }
