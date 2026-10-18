@@ -2,7 +2,7 @@ import './ProjectThumb.css';
 
 /* ===== Animated card visuals, one per project (matched by project id) ===== */
 
-/* ---------- F.R.N.D.: drone relay, phones pinging it, LLM backup ---------- */
+/* ---------- F.R.N.D.: drone relay, Wi-Fi reaching phones, LLM backup ---------- */
 const DRONE = [200, 118];
 const PHONES = [
   [56, 62],
@@ -17,16 +17,18 @@ const ROTORS = [
   [-34, 34],
   [34, 34],
 ];
+// Wi-Fi arcs drawn around a phone, opening toward the drone (outer arc lights first)
+const WIFI_ARCS = [
+  'M32.2 -20.1A38 38 0 0 1 32.2 20.1',
+  'M26.3 -16.4A31 31 0 0 1 26.3 16.4',
+  'M20.4 -12.7A24 24 0 0 1 20.4 12.7',
+];
+const WAVE_SPACING_S = 0.45; // each phone catches the signal a little later
 
 function MeshThumb() {
   const [dx, dy] = DRONE;
   return (
     <svg className="thumb" viewBox="0 0 400 300" aria-hidden="true">
-      {/* Wi-Fi rings spreading from the drone */}
-      {[0, 1, 2].map((i) => (
-        <circle key={i} cx={dx} cy={dy} r="150" className="thumb-ring" style={{ animationDelay: `${i}s` }} />
-      ))}
-
       {/* Phone links: messages travel phone → drone */}
       {PHONES.map(([x, y], i) => {
         const d = `M${x} ${y} L${dx} ${dy}`;
@@ -42,12 +44,30 @@ function MeshThumb() {
       <path d={`M${dx} ${dy} L${LLM[0]} ${LLM[1]}`} className="thumb-link" />
       <path d={`M${dx} ${dy} L${LLM[0]} ${LLM[1]}`} pathLength="100" className="thumb-packet thumb-packet-slow" />
 
-      {PHONES.map(([x, y]) => (
-        <g key={`${x}-${y}`} transform={`translate(${x} ${y})`}>
-          <rect x="-11" y="-18" width="22" height="36" rx="5" className="thumb-phone" />
-          <rect x="-7.5" y="-12.5" width="15" height="22" rx="2" className="thumb-screen" />
-        </g>
-      ))}
+      {/* Phones, each with Wi-Fi arcs facing the drone */}
+      {PHONES.map(([x, y], i) => {
+        const angle = (Math.atan2(dy - y, dx - x) * 180) / Math.PI;
+        const delay = i * WAVE_SPACING_S;
+        return (
+          <g key={`${x}-${y}`} transform={`translate(${x} ${y})`}>
+            <g transform={`rotate(${angle})`}>
+              {WIFI_ARCS.map((d, a) => (
+                <path key={d} d={d} className="thumb-wave" style={{ animationDelay: `${delay + a * 0.18}s` }} />
+              ))}
+            </g>
+            <rect x="-11" y="-18" width="22" height="36" rx="5" className="thumb-phone" />
+            <rect
+              x="-7.5"
+              y="-12.5"
+              width="15"
+              height="22"
+              rx="2"
+              className="thumb-screen"
+              style={{ animationDelay: `${delay + 0.4}s` }}
+            />
+          </g>
+        );
+      })}
 
       {/* LLM chip */}
       <g transform={`translate(${LLM[0]} ${LLM[1]})`}>
@@ -74,24 +94,34 @@ function MeshThumb() {
   );
 }
 
-/* ---------- Rover: weaves past obstacles, PD error settles ---------- */
+/* ---------- Rover: sonar pings, obstacles light up, PD error + motor PWM react ---------- */
 const ROVER_ROUTE =
   'M-30 170 L70 170 L110 118 L150 108 L190 118 L230 170 L270 218 L310 226 L350 214 L380 180 L430 170';
 const BLOCKS = [
-  [130, 145],
-  [290, 160],
+  { x: 130, y: 145, cls: 'thumb-block-a' },
+  { x: 290, y: 160, cls: 'thumb-block-b' },
 ];
 const PD_CURVE =
   'M0 48 L3 44.8 L6 39.6 L9 33.5 L12 27.6 L15 22.8 L18 19.6 L21 18.2 L24 18.6 L27 20.3 L30 22.9 ' +
   'L33 25.8 L36 28.6 L39 30.8 L42 32.2 L45 32.7 L48 32.4 L51 31.5 L54 30.3 L57 28.8 L60 27.6 L63 26.5 ' +
   'L66 25.9 L69 25.7 L72 25.9 L75 26.4 L78 27 L81 27.7 L84 28.3 L87 28.7 L90 29 L93 29.1 L96 29 L99 28.7 L102 28.4';
+// Sonar arcs in front of the rover (inner arc fires first)
+const SONAR_ARCS = [
+  'M31.5 -8A14 14 0 0 1 31.5 8',
+  'M39.7 -13.8A24 24 0 0 1 39.7 13.8',
+  'M47.9 -19.5A34 34 0 0 1 47.9 19.5',
+];
 
 function RoverThumb() {
   return (
     <svg className="thumb" viewBox="0 0 400 300" aria-hidden="true">
+      {/* Planned route (dashed) and the trail it has actually driven (solid) */}
       <path d={ROVER_ROUTE} className="thumb-route" />
-      {BLOCKS.map(([x, y]) => (
-        <rect key={x} x={x} y={y} width="40" height="40" rx="6" className="thumb-block" />
+      <path d={ROVER_ROUTE} pathLength="100" className="thumb-trail" />
+
+      {/* Obstacles glow when the sensors pick them up */}
+      {BLOCKS.map(({ x, y, cls }) => (
+        <rect key={x} x={x} y={y} width="40" height="40" rx="6" className={`thumb-block ${cls}`} />
       ))}
 
       {/* PD error plot: big swing, then it settles */}
@@ -102,9 +132,24 @@ function RoverThumb() {
         <path d={PD_CURVE} transform="translate(4 8)" pathLength="100" className="thumb-trace" />
       </g>
 
+      {/* Motor PWM: the outside wheel speeds up on each turn */}
+      <g transform="translate(18 222)">
+        <rect width="124" height="60" rx="6" className="thumb-panel" />
+        <text x="9" y="16" className="thumb-label">pwm</text>
+        <text x="9" y="34" className="thumb-label">L</text>
+        <text x="9" y="50" className="thumb-label">R</text>
+        <rect x="24" y="26" width="88" height="8" rx="2" className="thumb-meter-bg" />
+        <rect x="24" y="42" width="88" height="8" rx="2" className="thumb-meter-bg" />
+        <rect x="24" y="26" width="88" height="8" rx="2" className="thumb-meter thumb-meter-l" />
+        <rect x="24" y="42" width="88" height="8" rx="2" className="thumb-meter thumb-meter-r" />
+      </g>
+
       {/* Rover (drawn facing right, centered on 0,0) */}
       <g className="thumb-rover">
-        <path d="M20 0L84 -30A72 72 0 0 1 84 30Z" className="thumb-beam" />
+        <path d="M20 0H110" className="thumb-ir" />
+        {SONAR_ARCS.map((d, i) => (
+          <path key={d} d={d} className="thumb-sonar" style={{ animationDelay: `${i * 0.15}s` }} />
+        ))}
         <rect x="-15" y="-19" width="11" height="6" rx="2" className="thumb-wheel" />
         <rect x="5" y="-19" width="11" height="6" rx="2" className="thumb-wheel" />
         <rect x="-15" y="13" width="11" height="6" rx="2" className="thumb-wheel" />
@@ -116,7 +161,6 @@ function RoverThumb() {
     </svg>
   );
 }
-
 /* ---------- Weather station: wake, read, publish, deep sleep ---------- */
 const BAR_HEIGHTS = [26, 40, 32, 48, 36, 54];
 

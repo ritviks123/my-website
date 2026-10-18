@@ -77,16 +77,15 @@
   animation-duration: 4s;
   animation-delay: -1.5s;
 }
-
 /* ----- F.R.N.D. ----- */
-.thumb-ring {
+/* Wi-Fi arcs: outer one lights first, so the signal "arrives" at the phone */
+.thumb-wave {
   fill: none;
   stroke: var(--accent);
-  stroke-width: 1.5;
-  opacity: 0;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: thumb-ring 3s ease-out infinite;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  opacity: 0.12;
+  animation: thumb-wave 1.8s ease-out infinite;
 }
 
 .thumb-phone {
@@ -95,8 +94,10 @@
   stroke-width: 1.5;
 }
 
+/* Screen brightens just after the signal reaches it */
 .thumb-screen {
   fill: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  animation: thumb-screen 1.8s ease-out infinite;
 }
 
 .thumb-arm {
@@ -120,19 +121,61 @@
   animation: thumb-spin 0.4s linear infinite;
 }
 
+@keyframes thumb-wave {
+  0%,
+  40%,
+  100% {
+    opacity: 0.12;
+  }
+  12% {
+    opacity: 1;
+  }
+}
+
+@keyframes thumb-screen {
+  0%,
+  45%,
+  100% {
+    fill: color-mix(in srgb, var(--accent) 22%, var(--surface));
+  }
+  15% {
+    fill: color-mix(in srgb, var(--accent) 65%, var(--surface));
+  }
+}
+
 /* ----- Rover ----- */
 .thumb-route {
   fill: none;
   stroke: var(--copper);
   stroke-width: 2;
   stroke-dasharray: 3 7;
-  opacity: 0.55;
+  opacity: 0.4;
+}
+
+/* Solid trail drawn behind the rover at the same speed it drives */
+.thumb-trail {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: thumb-trail 7s linear infinite, thumb-fade 7s linear infinite;
 }
 
 .thumb-block {
   fill: color-mix(in srgb, var(--ink) 10%, var(--bg));
   stroke: color-mix(in srgb, var(--ink) 25%, transparent);
   stroke-width: 1.5;
+}
+
+.thumb-block-a {
+  animation: thumb-spot-a 7s linear infinite;
+}
+
+.thumb-block-b {
+  animation: thumb-spot-b 7s linear infinite;
 }
 
 .thumb-rover {
@@ -147,10 +190,23 @@
   fill: color-mix(in srgb, var(--ink) 55%, var(--surface));
 }
 
-.thumb-beam {
-  fill: var(--accent);
-  opacity: 0.12;
-  animation: thumb-beam 0.9s ease-in-out infinite;
+/* IR beam: dotted, flickering */
+.thumb-ir {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 5;
+  opacity: 0.5;
+  animation: thumb-ir 0.5s steps(2) infinite;
+}
+
+/* Ultrasonic pings: inner arc fires first */
+.thumb-sonar {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0;
+  animation: thumb-sonar 0.9s ease-out infinite;
 }
 
 .thumb-zero {
@@ -165,6 +221,101 @@
   stroke-dasharray: 100;
   stroke-dashoffset: 100;
   animation: thumb-draw 7s linear infinite;
+}
+
+.thumb-meter-bg {
+  fill: color-mix(in srgb, var(--ink) 10%, var(--surface));
+}
+
+.thumb-meter {
+  fill: var(--accent);
+  transform-box: fill-box;
+  transform-origin: left;
+}
+
+.thumb-meter-l {
+  animation: thumb-pwm-l 7s linear infinite;
+}
+
+.thumb-meter-r {
+  animation: thumb-pwm-r 7s linear infinite;
+}
+
+@keyframes thumb-trail {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Each block lights up while the rover's sensors are on it */
+@keyframes thumb-spot-a {
+  0%,
+  16%,
+  46%,
+  100% {
+    stroke: color-mix(in srgb, var(--ink) 25%, transparent);
+    fill: color-mix(in srgb, var(--ink) 10%, var(--bg));
+  }
+  24%,
+  38% {
+    stroke: var(--accent);
+    fill: color-mix(in srgb, var(--accent) 18%, var(--bg));
+  }
+}
+
+@keyframes thumb-spot-b {
+  0%,
+  54%,
+  86%,
+  100% {
+    stroke: color-mix(in srgb, var(--ink) 25%, transparent);
+    fill: color-mix(in srgb, var(--ink) 10%, var(--bg));
+  }
+  62%,
+  78% {
+    stroke: var(--accent);
+    fill: color-mix(in srgb, var(--accent) 18%, var(--bg));
+  }
+}
+
+@keyframes thumb-ir {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+@keyframes thumb-sonar {
+  0%,
+  60%,
+  100% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+}
+
+/* Motor duty: turning left speeds up the right wheel, and the reverse */
+@keyframes thumb-pwm-l {
+  0%, 18% { transform: scaleX(0.6); }
+  25% { transform: scaleX(0.4); }
+  37% { transform: scaleX(0.6); }
+  45% { transform: scaleX(0.9); }
+  56% { transform: scaleX(0.8); }
+  68% { transform: scaleX(0.4); }
+  82% { transform: scaleX(0.45); }
+  91%, 100% { transform: scaleX(0.6); }
+}
+
+@keyframes thumb-pwm-r {
+  0%, 18% { transform: scaleX(0.6); }
+  25% { transform: scaleX(0.9); }
+  37% { transform: scaleX(0.6); }
+  45% { transform: scaleX(0.4); }
+  56% { transform: scaleX(0.45); }
+  68% { transform: scaleX(0.85); }
+  82% { transform: scaleX(0.8); }
+  91%, 100% { transform: scaleX(0.6); }
 }
 
 /* ----- Weather station (4s cycle: wake, publish, sleep) ----- */
