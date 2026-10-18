@@ -1,6 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#0f3d2a"/>
-  <path d="M12 4v4M16 4v4M20 4v4M12 24v4M16 24v4M20 24v4M4 12h4M4 16h4M4 20h4M24 12h4M24 16h4M24 20h4" stroke="#c8814d" stroke-width="2" stroke-linecap="round"/>
-  <rect x="8" y="8" width="16" height="16" rx="2.5" fill="#0b1410" stroke="#c8814d" stroke-width="2"/>
-  <text x="16" y="16" text-anchor="middle" dominant-baseline="central" font-family="ui-monospace, Consolas, monospace" font-weight="700" font-size="8.5" fill="#f2f1ea">RS</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <g id="pins" fill="#c8814d"><rect x="11" width="6" height="10" rx="2"/><rect x="23" width="6" height="10" rx="2"/><rect x="35" width="6" height="10" rx="2"/><rect x="47" width="6" height="10" rx="2"/></g>
+  </defs>
+  <use href="#pins"/>
+  <use href="#pins" transform="rotate(90 32 32)"/>
+  <use href="#pins" transform="rotate(180 32 32)"/>
+  <use href="#pins" transform="rotate(270 32 32)"/>
+  <rect x="6" y="6" width="52" height="52" rx="6" fill="#0b1410"/>
+  <g transform="translate(10.4 21.2) scale(1.08)" fill="none" stroke="#f2f1ea" stroke-width="4">
+    <path d="M0 2H11.75A4.25 4.25 0 0 1 11.75 10.5H0M2 8.5V20M38 2H27.88A3.88 3.88 0 0 0 27.88 9.75H33.88A4.13 4.13 0 0 1 33.88 18H22"/>
+    <path d="M11.2 12H15.2L18 20H14Z" fill="#f2f1ea" stroke="none"/>
+  </g>
 </svg>
