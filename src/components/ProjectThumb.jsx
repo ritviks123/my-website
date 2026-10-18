@@ -225,12 +225,86 @@ function WeatherThumb() {
     </svg>
   );
 }
+/* ---------- This website: page builds itself, Lighthouse fills to 100, branch merges ---------- */
+const SITE_BLOCKS = [
+  { x: 48, y: 86, w: 200, h: 54 },
+  { x: 48, y: 150, w: 96, h: 60 },
+  { x: 152, y: 150, w: 96, h: 60 },
+  { x: 48, y: 220, w: 200, h: 20 },
+];
+const SCORES = [
+  [310, 92],
+  [358, 92],
+  [310, 140],
+  [358, 140],
+];
+const COMMITS = [
+  [300, 222],
+  [322, 206],
+  [340, 206],
+  [362, 222],
+  [382, 222],
+];
+
+function WebsiteThumb() {
+  return (
+    <svg className="thumb" viewBox="0 0 400 300" aria-hidden="true">
+      {/* Browser window */}
+      <rect x="32" y="46" width="232" height="208" rx="10" className="thumb-chip" />
+      <path d="M32 72H264" className="thumb-zero" />
+      {[48, 60, 72].map((cx) => (
+        <circle key={cx} cx={cx} cy="59" r="3" className="thumb-die" />
+      ))}
+      <rect x="92" y="52" width="150" height="14" rx="7" className="thumb-die" />
+      <text x="167" y="63" textAnchor="middle" className="thumb-label thumb-url">ritviksingh.net</text>
+
+      {/* The page assembles itself, block by block */}
+      {SITE_BLOCKS.map((b, i) => (
+        <rect
+          key={i}
+          x={b.x}
+          y={b.y}
+          width={b.w}
+          height={b.h}
+          rx="4"
+          className={`thumb-site${i === 0 ? ' thumb-site-hero' : ''}`}
+          style={{ animationDelay: `${i * 0.35}s` }}
+        />
+      ))}
+
+      {/* Lighthouse: four scores fill to 100 */}
+      {SCORES.map(([cx, cy], i) => (
+        <g key={`${cx}-${cy}`}>
+          <circle cx={cx} cy={cy} r="18" className="thumb-score-track" />
+          <circle
+            cx={cx}
+            cy={cy}
+            r="18"
+            pathLength="100"
+            transform={`rotate(-90 ${cx} ${cy})`}
+            className="thumb-score"
+            style={{ animationDelay: `${i * 0.2}s` }}
+          />
+          <text x={cx} y={cy + 4} textAnchor="middle" className="thumb-label thumb-label-ink thumb-score-num">100</text>
+        </g>
+      ))}
+
+      {/* Git: a feature branch splits off main and merges back */}
+      <path d="M288 222H392" className="thumb-route" />
+      <path d="M300 222L316 206H346L362 222" className="thumb-route" />
+      {COMMITS.map(([cx, cy], i) => (
+        <circle key={cx} cx={cx} cy={cy} r="5" className="thumb-commit" style={{ animationDelay: `${i * 0.45}s` }} />
+      ))}
+    </svg>
+  );
+}
 
 /* ===== Swap later: which animation each project id gets ===== */
 const THUMBS = {
   frnd: MeshThumb,
   'autonomous-rc-rover': RoverThumb,
   'iot-weather-station': WeatherThumb,
+  'ritviksingh-net': WebsiteThumb,
 };
 
 // Animated visual if the project has one, else its photo, else the perfboard placeholder

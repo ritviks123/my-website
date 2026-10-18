@@ -530,6 +530,95 @@
   }
 }
 
+/* ----- This website (6s cycle: build, score, merge) ----- */
+.thumb-url {
+  font-size: 10px;
+}
+
+.thumb-site {
+  fill: color-mix(in srgb, var(--ink) 10%, var(--surface));
+  opacity: 0;
+  animation: thumb-build 6s ease-out infinite;
+}
+
+.thumb-site-hero {
+  fill: color-mix(in srgb, var(--accent) 22%, var(--surface));
+}
+
+.thumb-score-track {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 12%, var(--surface));
+  stroke-width: 4;
+}
+
+.thumb-score {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: thumb-score 6s ease-out infinite;
+}
+
+.thumb-score-num {
+  font-size: 10px;
+}
+
+.thumb-commit {
+  fill: var(--bg);
+  stroke: var(--copper);
+  stroke-width: 2;
+  animation: thumb-commit 6s linear infinite;
+}
+
+@keyframes thumb-build {
+  0%,
+  4% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  12%,
+  88% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  96%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes thumb-score {
+  0%,
+  30% {
+    stroke-dashoffset: 100;
+  }
+  55%,
+  90% {
+    stroke-dashoffset: 0;
+  }
+  98%,
+  100% {
+    stroke-dashoffset: 100;
+  }
+}
+
+@keyframes thumb-commit {
+  0%,
+  4% {
+    fill: var(--bg);
+  }
+  10%,
+  90% {
+    fill: var(--accent);
+  }
+  96%,
+  100% {
+    fill: var(--bg);
+  }
+}
+
 /* ===== reduced motion: a still frame of each scene ===== */
 @media (prefers-reduced-motion: reduce) {
   .thumb *,
@@ -547,7 +636,12 @@
     transform: translate(150px, 108px);
   }
 
-  .thumb-trace {
+  .thumb-trace,
+  .thumb-score {
     stroke-dashoffset: 0;
+  }
+
+  .thumb-site {
+    opacity: 1;
   }
 }
