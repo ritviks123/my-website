@@ -1,0 +1,275 @@
+/* ===== Media carousel on the article page ===== */
+.carousel {
+  position: relative;
+  padding: 0.75rem;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
+}
+
+.carousel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* The stage: a 16:9 mini PCB (gold mounting holes + faint dot grid) */
+.carousel-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--copper) 25%, transparent);
+  background:
+    radial-gradient(circle at 14px 14px, var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at calc(100% - 14px) 14px, var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at 14px calc(100% - 14px), var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(color-mix(in srgb, var(--ink) 9%, transparent) 1px, transparent 1.5px) 0 0 / 16px 16px,
+    var(--bg);
+}
+
+/* Slides sit on top of each other; only the active one shows */
+.carousel-slide {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+}
+
+.carousel-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s ease;
+}
+
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The animation keeps its 4:3 shape, centered on the board */
+.carousel-thumb {
+  height: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+/* ===== arrows (override the site-wide gold button style) ===== */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--surface) 85%, transparent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  color: var(--accent);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, opacity 0.25s ease;
+}
+
+.carousel-arrow.is-prev {
+  left: 0.75rem;
+}
+
+.carousel-arrow.is-next {
+  right: 0.75rem;
+}
+
+.carousel-arrow:hover,
+.carousel-arrow:focus-visible {
+  background: var(--accent);
+  color: var(--surface);
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* ===== progress bars: the active one fills, then the slide changes ===== */
+.carousel-progress {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.carousel-segment {
+  flex: 1;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--copper) 30%, transparent);
+}
+
+.carousel-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--accent);
+}
+
+.carousel-fill.is-done {
+  width: 100%;
+}
+
+.carousel-fill.is-active {
+  animation: carousel-fill linear forwards;
+}
+
+.carousel.is-paused .carousel-fill.is-active {
+  animation-play-state: paused;
+}
+
+@keyframes carousel-fill {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* ===== caption + counter ===== */
+.carousel-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.6rem;
+}
+
+.carousel-caption {
+  min-height: 1.4em;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.carousel-count {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ===== previews: a row of small slides along the bottom of the stage ===== */
+.carousel-strip {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2.5rem 0.75rem 0.75rem;
+  background: linear-gradient(transparent, color-mix(in srgb, var(--surface) 85%, transparent));
+  transition: opacity 0.25s ease;
+}
+
+.carousel-pick {
+  display: block;
+  width: 5.5rem;
+  aspect-ratio: 16 / 10;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 6px;
+  background: var(--bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
+  opacity: 0.7;
+  cursor: pointer;
+  transform: none;
+  transition: opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+.carousel-pick:hover,
+.carousel-pick:focus-visible,
+.carousel-pick.is-active {
+  background: var(--bg);
+  opacity: 1;
+  transform: none;
+}
+
+.carousel-pick.is-active {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.carousel-pick img,
+.carousel-pick svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Mouse screens: arrows and previews stay hidden until you hover (or tab in) */
+@media (hover: hover) {
+  .carousel-arrow,
+  .carousel-strip {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .carousel:hover .carousel-arrow,
+  .carousel:hover .carousel-strip,
+  .carousel:focus-within .carousel-arrow,
+  .carousel:focus-within .carousel-strip {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Touch screens: no hover, so keep the stage clear and show arrows only */
+@media (hover: none) {
+  .carousel-strip {
+    display: none;
+  }
+}
+
+/* Phones: smaller arrows, tucked closer to the edges */
+@media (max-width: 639px) {
+  .carousel-arrow {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1.3rem;
+  }
+
+  .carousel-arrow.is-prev {
+    left: 0.4rem;
+  }
+
+  .carousel-arrow.is-next {
+    right: 0.4rem;
+  }
+}
+
+/* Reduced motion: no auto-advance (bars stay still), no fades */
+@media (prefers-reduced-motion: reduce) {
+  .carousel-fill.is-active {
+    width: 100%;
+    animation: none;
+  }
+
+  .carousel-slide,
+  .carousel-slide.is-active,
+  .carousel-arrow,
+  .carousel-strip,
+  .carousel-pick {
+    transition: none;
+  }
+
+  .carousel-arrow:hover,
+  .carousel-arrow:focus-visible {
+    transform: translateY(-50%);
+  }
+}

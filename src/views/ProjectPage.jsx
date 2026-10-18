@@ -1,7 +1,10 @@
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { Link, useParams } from 'react-router';
-import { FaGithub } from 'react-icons/fa6';
+import { FaGithub, FaCirclePlay } from 'react-icons/fa6';
 import { projects } from '../data/projects';
+import MediaCarousel from '../components/MediaCarousel';
+import ProjectThumb from '../components/ProjectThumb';
+import ArticleCircuitry from '../components/ArticleCircuitry';
 import NotFoundPage from './NotFoundPage';
 import './ProjectPage.css';
 
@@ -122,6 +125,39 @@ function ProjectTable({ table, label }) {
   );
 }
 
+// Small icon in front of a link: GitHub for source, play button for videos and demos
+function LinkIcon({ label }) {
+  if (/source|github/i.test(label)) return <FaGithub aria-hidden="true" />;
+  if (/video|demo/i.test(label)) return <FaCirclePlay aria-hidden="true" />;
+  return null;
+}
+
+// Previous / next project card with a mini animated thumbnail
+function NearbyProject({ project, direction }) {
+  const isNext = direction === 'next';
+  return (
+    <Link to={`/projects/${project.id}`} className={`project-nearby${isNext ? ' is-next' : ''}`}>
+      <span className="project-nearby-thumb" aria-hidden="true">
+        <ProjectThumb project={project} />
+      </span>
+      <span className="project-nearby-text">
+        <span className="project-label">
+          {isNext ? (
+            <>
+              Next <span aria-hidden="true">→</span>
+            </>
+          ) : (
+            <>
+              <span aria-hidden="true">←</span> Previous
+            </>
+          )}
+        </span>
+        <span className="project-nearby-title">{project.title}</span>
+      </span>
+    </Link>
+  );
+}
+
 export function ProjectPage() {
   const { projectId } = useParams();
   const index = projects.findIndex((p) => p.id === projectId);
@@ -141,169 +177,169 @@ export function ProjectPage() {
   }
 
   const next = projects[(index + 1) % projects.length];
+  const previous = projects[(index - 1 + projects.length) % projects.length];
   const links = (project.links ?? []).filter((link) => link.url);
-  const badges = project.badges ?? [];
-  const tags = project.tags ?? [];
   const highlights = project.highlights ?? [];
   const builtWith = project.builtWith ?? [];
   const article = project.article ?? [];
+  const stats = project.stats ?? [];
+  // Where the big diagram sits: 'top', 'bottom', or a number (after that paragraph)
+  const heroAt = project.heroAt ?? 'top';
+  const heroFigure = project.hero && (
+    <div className="project-figure">
+      <ProjectDiagram diagram={project.hero} />
+    </div>
+  );
+  // Spec strip cells (like a datasheet header); empty ones are skipped
+  const spec = [
+    ['Role', project.role],
+    ['Team', project.team],
+    ['Timeline', project.timeline],
+  ].filter(([, value]) => value);
 
   return (
-    <main className="project-page">
-      <div className="project-container">
-        {/* ===== Top: back link, meta, title, lede, links, chips ===== */}
-        <Link to="/projects" className="project-back">
-          <span aria-hidden="true">← </span>All projects
-        </Link>
+    <div className="project-board">
+      <ArticleCircuitry />
+      <main className="project-page">
+        <div className="project-container">
+          {/* ===== Top: back link, meta, title, lede, chips ===== */}
+          <Link to="/projects" className="project-back">
+            <span aria-hidden="true">← </span>All projects
+          </Link>
 
-        <p className="project-topline">
-          <span className="project-topline-year">{project.year}</span>
-          {project.tagline && (
-            <>
-              <span className="project-topline-rule" aria-hidden="true" />
-              <span>{project.tagline}</span>
-            </>
-          )}
-          {project.status && (
-            <>
-              <span className="project-topline-rule" aria-hidden="true" />
-              <span className="project-topline-status">
-                <span className="project-topline-dot" aria-hidden="true">
-                  ●
-                </span>
-                {project.status}
-              </span>
-            </>
-          )}
-        </p>
-
-        <h1 className="project-title">{project.title}</h1>
-
-        {(project.category || project.subtitle) && (
-          <p className="project-subtitle">
+          <p className="project-topline">
+            <span className="project-topline-year">{project.year}</span>
             {project.category && (
-              <span className="project-subtitle-category">{project.category}</span>
+              <>
+                <span aria-hidden="true">·</span>
+                <span>{project.category}</span>
+              </>
             )}
-            {project.category && project.subtitle && <span aria-hidden="true"> · </span>}
-            {project.subtitle}
           </p>
-        )}
 
-        {project.description && <p className="project-lede">{renderInline(project.description)}</p>}
+          <h1 className="project-title">{project.title}</h1>
 
-        {links.length > 0 && (
-          <ul className="project-links">
-            {links.map((link) => (
-              <li key={link.label}>
-                <a
-                  className="project-link"
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {link.label === 'Source' && <FaGithub aria-hidden="true" />}
-                  {link.label}
-                  <span aria-hidden="true">↗</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
+          {/* ===== Spec strip: role, team, timeline, status, links in one compact card ===== */}
+          {(spec.length > 0 || project.status || links.length > 0) && (
+            <dl className="project-spec">
+              {spec.map(([label, value]) => (
+                <div key={label} className="project-spec-cell is-short">
+                  <dt>{label}</dt>
+                  <dd>{renderInline(value)}</dd>
+                </div>
+              ))}
+              {project.status && (
+                <div className="project-spec-cell">
+                  <dt>Status</dt>
+                  <dd className="project-spec-status">
+                    <span className="project-led" aria-hidden="true" />
+                    {project.status}
+                  </dd>
+                </div>
+              )}
+              {links.length > 0 && (
+                <div className="project-spec-cell">
+                  <dt>Links</dt>
+                  <dd>
+                    <ul className="project-links">
+                      {links.map((link) => (
+                        <li key={link.label}>
+                          <a className="project-link" href={link.url} target="_blank" rel="noopener noreferrer">
+                            <LinkIcon label={link.label} />
+                            {link.label}
+                            <span aria-hidden="true">↗</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+              )}
+            </dl>
+          )}
 
-        {(badges.length > 0 || tags.length > 0) && (
-          <ul className="project-chips" aria-label="Key facts and tags">
-            {badges.map((badge) => (
-              <li key={badge} className="project-chip">
-                {badge}
-              </li>
-            ))}
-            {tags.map((tag) => (
-              <li key={tag} className="project-chip project-chip-tag">
-                {tag}
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* ===== Hero frame: photo if you have one, otherwise the hero diagram ===== */}
-        <div className="project-hero">
-          <div className="project-hero-bar" aria-hidden="true">
-            <span />
-            <span />
-            <span />
+          {/* ===== Media: animation first, then photos (arrows, auto-advance) ===== */}
+          <div className="project-media">
+            <MediaCarousel project={project} />
           </div>
-          {project.image ? (
-            <img className="project-hero-image" src={project.image} alt={project.imageAlt} />
-          ) : project.hero ? (
-            <div className="project-hero-body">
-              <ProjectDiagram diagram={project.hero} />
-            </div>
-          ) : (
-            <div className="project-hero-empty" aria-hidden="true" />
+
+          {/* ===== Key numbers ===== */}
+          {stats.length > 0 && (
+            <ul className="project-stats" aria-label="Key numbers">
+              {stats.map((stat) => (
+                <li key={stat.label} className="project-stat">
+                  <span className="project-stat-value">{stat.value}</span>
+                  <span className="project-stat-label">{stat.label}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* ===== Body: article left, sidebar right (stacked on phones) ===== */}
+          <div className="project-layout">
+            <article className="project-article">
+              {heroAt === 'top' && heroFigure}
+
+              {article.map((section, i) => (
+                <section key={i} className="project-section">
+                  {section.heading && <h2 className="project-section-heading">{section.heading}</h2>}
+                  {section.body?.map((paragraph, j) => (
+                    <Fragment key={j}>
+                      <p>{renderInline(paragraph)}</p>
+                      {i === 0 && heroAt === j + 1 && heroFigure}
+                    </Fragment>
+                  ))}
+                  {section.diagram && <ProjectDiagram diagram={section.diagram} />}
+                  {section.table && <ProjectTable table={section.table} label={section.heading || 'Table'} />}
+                </section>
+              ))}
+
+              {heroAt === 'bottom' && heroFigure}
+
+              {project.footnote && <p className="project-footnote">{renderInline(project.footnote)}</p>}
+            </article>
+
+            {(highlights.length > 0 || builtWith.length > 0) && (
+              <aside className="project-sidebar">
+                {highlights.length > 0 && (
+                  <section>
+                    <h2 className="project-label">
+                      <span aria-hidden="true">// </span>highlights
+                    </h2>
+                    <ul className="project-highlights">
+                      {highlights.map((item) => (
+                        <li key={item}>{renderInline(item)}</li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+
+                {builtWith.length > 0 && (
+                  <section>
+                    <h2 className="project-label">
+                      <span aria-hidden="true">// </span>built with
+                    </h2>
+                    <ul className="project-built">
+                      {builtWith.map((item) => (
+                        <li key={item}>{renderInline(item)}</li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+              </aside>
+            )}
+          </div>
+
+          {/* ===== Previous / next project ===== */}
+          {next && next.id !== project.id && (
+            <nav className="project-nearby-row" aria-label="More projects">
+              <NearbyProject project={previous} direction="previous" />
+              <NearbyProject project={next} direction="next" />
+            </nav>
           )}
         </div>
-
-        {/* ===== Body: article left, sidebar right (stacked on phones) ===== */}
-        <div className="project-layout">
-          <article className="project-article">
-            {article.map((section, i) => (
-              <section key={i} className="project-section">
-                {section.heading && <h2 className="project-section-heading">{section.heading}</h2>}
-                {section.body?.map((paragraph, j) => (
-                  <p key={j}>{renderInline(paragraph)}</p>
-                ))}
-                {section.diagram && <ProjectDiagram diagram={section.diagram} />}
-                {section.table && (
-                  <ProjectTable table={section.table} label={section.heading || 'Table'} />
-                )}
-              </section>
-            ))}
-
-            {project.footnote && <p className="project-footnote">{renderInline(project.footnote)}</p>}
-          </article>
-
-          <aside className="project-sidebar">
-            {highlights.length > 0 && (
-              <section>
-                <h2 className="project-label">
-                  <span aria-hidden="true">// </span>highlights
-                </h2>
-                <ul className="project-highlights">
-                  {highlights.map((item) => (
-                    <li key={item}>{renderInline(item)}</li>
-                  ))}
-                </ul>
-              </section>
-            )}
-
-            {builtWith.length > 0 && (
-              <section>
-                <h2 className="project-label">
-                  <span aria-hidden="true">// </span>built with
-                </h2>
-                <ul className="project-built">
-                  {builtWith.map((item) => (
-                    <li key={item}>{renderInline(item)}</li>
-                  ))}
-                </ul>
-              </section>
-            )}
-          </aside>
-        </div>
-
-        {/* ===== Next project ===== */}
-        {next && next.id !== project.id && (
-          <nav className="project-next" aria-label="Next project">
-            <p className="project-label">
-              <span aria-hidden="true">// </span>next project
-            </p>
-            <Link to={`/projects/${next.id}`} className="project-next-link">
-              {next.title} <span aria-hidden="true">→</span>
-            </Link>
-          </nav>
-        )}
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 

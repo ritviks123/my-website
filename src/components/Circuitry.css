@@ -256,3 +256,23 @@
   fill: var(--copper);
   opacity: 0.35;
 }
+
+/* ===== Article side boards ===== */
+/* Bottom-layer traces: dashed and dimmer, so top traces read as crossing over them */
+.circuitry-doodle.is-back {
+  stroke-dasharray: 7 6;
+  opacity: 0.2;
+}
+
+/* Small resistors sitting on a trace */
+.circuitry-doodle-part {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--copper) 55%, transparent);
+  stroke-width: 1.5;
+}
+
+/* Dots where traces join the main rail */
+.circuitry-joint {
+  fill: var(--copper);
+  opacity: 0.55;
+}

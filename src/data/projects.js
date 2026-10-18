@@ -39,6 +39,30 @@ export const projects = [
     year: "2026",
     tagline: "Nobody left in silence",
     status: "Hackathon build, IrvineHacks 2026",
+    role: "WebSocket + LLM link",
+    team: "4 people",
+    timeline: "3 days",
+    stats: [
+      { value: "8", label: "phones chatting at once" },
+      { value: "~4 s", label: "first AI reply" },
+      { value: "5 tok/s", label: "on the Uno Q" },
+      { value: "3 days", label: "from idea to demo" },
+    ],
+    media: [
+      // { src: "/projects/frnd-pi-v1.webp", alt: "Raspberry Pi relay", caption: "The relay before it flew." },
+    ],
+    role: "WebSocket + LLM link",
+    team: "4 people",
+    timeline: "3 days",
+    stats: [
+      { value: "8", label: "phones chatting at once" },
+      { value: "~4 s", label: "first AI reply" },
+      { value: "5 tok/s", label: "on the Uno Q" },
+      { value: "3 days", label: "from idea to demo" },
+    ],
+    media: [
+      // { src: "/projects/frnd-pi-v1.webp", alt: "Raspberry Pi relay", caption: "The relay before it flew." },
+    ],
     blurb:
       "An emergency chat network with no internet, no app and no account. A drone-carried hotspot connects phones to first responders, with an on-device LLM as backup.",
     description:
@@ -52,6 +76,7 @@ export const projects = [
       { label: "Devpost", url: "" }, // add link later
     ],
     badges: ["IrvineHacks 2026", "Qualcomm track"],
+    heroAt: 3,
     hero: {
       type: "flow",
       steps: ["Phone joins drone Wi-Fi", "Page opens, room ID assigned", "Pi relay picks a responder", "Human first responder"],
@@ -106,6 +131,7 @@ export const projects = [
       { label: "KiCad files", url: "" }, // add link later
     ],
     badges: ["90% avoidance", "2-layer PCB", "ESP32"],
+    heroAt: 4,
     hero: {
       type: "flow",
       steps: ["Read IR + ultrasonic", "Fuse into one error", "PD controller", "PWM duty per motor", "L293D drives motors"],
@@ -226,6 +252,7 @@ export const projects = [
       { label: "Source", url: "https://github.com/ritviks123/my-website" },
     ],
     badges: ["Lighthouse 100 · 100 · 100 · 100", "about $10/year"],
+    heroAt: 2,
     hero: {
       type: "flow",
       steps: ["Write the spec", "AI writes the code", "I check it", "Build + preview", "Merge by PR"],
