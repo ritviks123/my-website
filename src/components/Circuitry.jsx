@@ -12,20 +12,17 @@ const CHAMFER = 12; // size of the 45° corner cuts
 const MCU_LEFT_TRACE = [[560, 392], [560, 470], [530, 500], [530, 560]];
 const MCU_RIGHT_TRACE = [[640, 392], [640, 470], [670, 500], [670, 560]];
 
-// Parts in the gaps beside the projects grid and contact: [side, area, how far down (0 to 1), part]
-const SLOTS = [
-  ['left', 'row1', 0.22, 'heatsink'],
-  ['left', 'row1', 0.8, 'button'],
-  ['left', 'row2', 0.22, 'usb'],
-  ['left', 'row2', 0.78, 'ecap'],
-  ['right', 'row1', 0.24, 'northbridge'],
-  ['right', 'row1', 0.8, 'crystal'],
-  ['right', 'row2', 0.2, 'buzzer'],
-  ['right', 'row2', 0.78, 'dram'],
-  ['left', 'contact', 0.15, 'led'],
-  ['right', 'contact', 0.88, 'res'],
+// Accent parts around the page: [zone, part, how far down the zone (0 to 1), size]
+const ACCENTS = [
+  ['headingLeft', 'heatsink', 0.5, 1.3],
+  ['headingRight', 'northbridge', 0.5, 1.2],
+  ['bridge', 'dramPair', 0.5, 1],
+  ['contactLeft', 'led', 0.18, 1.2],
+  ['contactLeft', 'button', 0.72, 1.3],
+  ['contactRight', 'buzzer', 0.24, 1.4],
+  ['contactRight', 'ecap', 0.74, 1.3],
+  ['contactRight', 'crystal', 0.9, 1],
 ];
-/* ============================ */
 
 // Width of each part, so it only appears where its gap has room
 const PART_W = {
@@ -37,6 +34,7 @@ const PART_W = {
   buzzer: 40,
   crystal: 52,
   dram: 124,
+  dramPair: 264,
   led: 22,
   res: 32,
 };
@@ -143,28 +141,37 @@ function measure(home) {
     branches.push({ id: `tk-${i}`, side, d: route(points), end: points[2] });
   });
 
-  // Parts: centered in the gap between a bus and the content, fed by a thin trace
-  const areas = {
-    row1: projectCards[0],
-    row2: projectCards[2] || projectCards[0],
-    contact: contactForm,
-  };
-  const edges = {
-    left: { busX: L, grid: grid.left, contact: leftEndX },
-    right: { busX: R, grid: grid.right, contact: contactForm.right },
+    // Accent parts: placed in open zones, each fed by a thin trace from a bus
+  const cx = box.width / 2;
+  const toolBottom = Math.max(...toolCards.map((r) => r.bottom)) + 36;
+  const headingY = (toolBottom + grid.top) / 2;
+  const zones = {
+    headingLeft: () => ({ x: cx - (cx - L) * 0.62, y: headingY, from: [L], min: L + 16, max: cx - 110 }),
+    headingRight: () => ({ x: cx + (R - cx) * 0.62, y: headingY, from: [R], min: cx + 110, max: R - 16 }),
+    bridge: () => ({ x: cx, y: (grid.bottom + contactForm.top) / 2, from: [L, R], min: L + 16, max: R - 16 }),
+    contactLeft: (at) => ({
+      x: (L + contactForm.left) / 2,
+      y: contactForm.top + contactForm.height * at,
+      from: [L],
+      min: L + 16,
+      max: contactForm.left - 12,
+    }),
+    contactRight: (at) => ({
+      x: (contactForm.right + R) / 2,
+      y: contactForm.top + contactForm.height * at,
+      from: [R],
+      min: contactForm.right + 12,
+      max: R - 16,
+    }),
   };
 
   const parts = [];
-  SLOTS.forEach(([side, area, frac, part]) => {
-    const { busX } = edges[side];
-    const edge = area === 'contact' ? edges[side].contact : edges[side].grid;
-    const w = PART_W[part];
-    if (Math.abs(edge - busX) < w + 40) return; // gap too narrow on this screen
-
-    const x = (busX + edge) / 2;
-    const y = areas[area].top + areas[area].height * frac;
-    const near = side === 'left' ? x - w / 2 : x + w / 2;
-    parts.push({ key: `${side}-${area}-${part}`, part, x, y, d: route([[busX, y], [near, y]]) });
+  ACCENTS.forEach(([zone, part, at, scale]) => {
+    const { x, y, from, min, max } = zones[zone](at);
+    const half = (PART_W[part] * scale) / 2;
+    if (x - half < min || x + half > max) return; // doesn't fit on this screen
+    const feeds = from.map((busX) => route([[busX, y], [busX < x ? x - half : x + half, y]]));
+    parts.push({ key: `${zone}-${part}-${at}`, part, x, y, scale, feeds });
   });
 
   const vias = [
@@ -182,9 +189,19 @@ function measure(home) {
 }
 
 // Top-view footprints, each centered on (x, y)
-function Part({ part, x, y }) {
+function Part({ part, x, y, scale = 1 }) {
   return (
-    <g className={`circuitry-part is-${part}`} transform={`translate(${round(x)} ${round(y)})`}>
+    <g className={`circuitry-part is-${part}`} transform={`translate(${round(x)} ${round(y)}) scale(${scale})`}>
+      {part === 'dramPair' &&
+        [-16, 16].map((dy) => (
+          <g key={dy} transform={`translate(0 ${dy})`}>
+            <rect x="-132" y="-11" width="8" height="22" rx="1.5" className="circuitry-metal" />
+            <rect x="124" y="-11" width="8" height="22" rx="1.5" className="circuitry-metal" />
+            <rect x="-124" y="-8" width="248" height="16" rx="2" className="circuitry-body" />
+            <rect x="-116" y="-2" width="232" height="4" rx="1" className="circuitry-die" />
+            <rect x="-30" y="-8" width="3" height="16" className="circuitry-hole" />
+          </g>
+        ))}
       {part === 'heatsink' && (
         <>
           <rect x="-42" y="-32" width="84" height="64" rx="4" className="circuitry-body" />
@@ -330,9 +347,9 @@ function Circuitry({ activeTool }) {
       focusable="false"
     >
       {/* Thin feed traces to the parts, underneath everything */}
-      {(geo?.parts || []).map((p) => (
-        <path key={`feed-${p.key}`} d={p.d} className="circuitry-decor" />
-      ))}
+      {(geo?.parts || []).flatMap((p) =>
+        p.feeds.map((d, i) => <path key={`feed-${p.key}-${i}`} d={d} className="circuitry-decor" />)
+      )}
 
       {/* Copper wires, then gold pulses on top of the lit ones */}
       {wires.map((w) => (
@@ -345,7 +362,7 @@ function Circuitry({ activeTool }) {
         ))}
 
       {(geo?.parts || []).map((p) => (
-        <Part key={p.key} part={p.part} x={p.x} y={p.y} />
+        <Part key={p.key} part={p.part} x={p.x} y={p.y} scale={p.scale} />
       ))}
 
       {/* Vias where wires land */}
