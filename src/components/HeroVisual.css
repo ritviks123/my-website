@@ -1,28 +1,13 @@
-/* ===== hero visual: live circuit + serial monitor ===== */
+/* ===== hero MCU: borderless chip, copper traces, gold pulses ===== */
 .hero-visual {
   position: relative;
 }
 
-.hero-visual-board {
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-}
-
-/* ===== circuit drawing ===== */
 .circuit {
   display: block;
   width: 100%;
   height: auto;
-}
-
-.circuit-bg {
-  fill: var(--bg);
-}
-
-.circuit-dot {
-  fill: var(--border);
+  overflow: visible;
 }
 
 .circuit-trace,
@@ -33,45 +18,61 @@
 }
 
 .circuit-trace {
-  stroke: var(--accent);
+  stroke: var(--copper);
   stroke-width: 3;
-  opacity: 0.35;
+  opacity: 0.45;
 }
 
-/* A short bright dash that travels along each trace */
+/* A short bright dash that travels outward along each trace */
 .circuit-pulse {
   stroke: var(--accent-dark);
   stroke-width: 4;
-  stroke-dasharray: 8 92;
+  stroke-dasharray: 6 94;
   stroke-dashoffset: 100;
   filter: drop-shadow(0 0 4px var(--accent));
-  animation: circuit-flow 2.8s linear infinite;
+  animation: circuit-flow 3s linear infinite;
+}
+
+.circuit-pin {
+  fill: var(--copper);
+}
+
+.circuit-chip {
+  fill: var(--surface);
+}
+
+.circuit-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 4;
+}
+
+.circuit-mark {
+  fill: var(--muted);
+}
+
+.circuit-rs {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 4;
+}
+
+.circuit-rs-leg {
+  fill: var(--ink);
+  stroke: none;
+}
+
+.circuit-label {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  fill: var(--muted);
 }
 
 .circuit-part {
   fill: var(--surface);
   stroke: var(--muted);
   stroke-width: 2;
-}
-
-.circuit-chip {
-  fill: var(--surface);
-  stroke: var(--border);
-  stroke-width: 2;
-}
-
-.circuit-pin {
-  fill: var(--muted);
-}
-
-.circuit-mark {
-  fill: var(--border);
-}
-
-.circuit-label {
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 20px;
-  fill: var(--muted);
 }
 
 .circuit-led {
@@ -83,7 +84,7 @@
   fill: var(--bg);
   stroke: var(--accent);
   stroke-width: 3;
-  animation: circuit-glow 2.8s ease-in-out infinite;
+  animation: circuit-glow 3s ease-in-out infinite;
 }
 
 @keyframes circuit-flow {

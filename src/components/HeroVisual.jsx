@@ -1,87 +1,102 @@
 import './HeroVisual.css';
 
-// Each trace's signal travels from its first point to its last
+/* ===== Hero MCU: pulses leave its pins and travel outward ===== */
+
+// Each trace starts at a pin tip and runs outward (pulses go start → end)
 const TRACES = [
-  'M60 130 H220 L260 170 H316',
-  'M60 370 H200 L240 330 H316',
-  'M484 210 H560 L600 170 H740',
-  'M484 250 H740',
-  'M484 290 H540 L590 340 H740',
-  'M370 140 V80 H520',
-  'M430 360 V420 H620',
+  'M458 178 H400 L360 138 H120',
+  'M458 226 H300 L270 196 H40',
+  'M458 274 H340 L300 314 H60',
+  'M458 322 H420 L380 362 V440 L340 480 H180',
+  'M742 178 H800 L840 138 H1080',
+  'M742 226 H900 L930 196 H1160',
+  'M742 274 H860 L900 314 H1140',
+  'M742 322 H780 L820 362 V440 L860 480 H1020',
+  'M544 108 V70 L514 40 H260',
+  'M656 108 V60 L686 30 H980',
+  // These two exit the bottom edge (they continue down the page later)
+  'M560 392 V470 L530 500 V560',
+  'M640 392 V470 L670 500 V560',
 ];
 
+// Vias where traces end
 const VIAS = [
-  [60, 130],
-  [60, 370],
-  [740, 170],
-  [740, 250],
-  [740, 340],
-  [520, 80],
-  [620, 420],
+  [120, 138], [40, 196], [60, 314], [180, 480],
+  [1080, 138], [1160, 196], [1140, 314], [1020, 480],
+  [260, 40], [980, 30],
 ];
 
-const PIN_ROWS = [166, 206, 246, 286, 326];
-const PULSE_SPACING_S = 0.4; // offset between pulses so they don't move in sync
+// 12 pins per side, measured from the chip body's top-left corner
+const PIN_STEPS = Array.from({ length: 12 }, (_, i) => 32 + i * 16);
+const CHIP_X = 480;
+const CHIP_Y = 130;
+const PULSE_SPACING_S = 0.25; // offset so pulses don't fire in sync
+
+// Your "RS" (same shapes as the logo)
+const RS_STROKES =
+  'M0 2H11.75A4.25 4.25 0 0 1 11.75 10.5H0M2 8.5V20' +
+  'M38 2H27.88A3.88 3.88 0 0 0 27.88 9.75H33.88A4.13 4.13 0 0 1 33.88 18H22';
+const RS_LEG = 'M11.2 12H15.2L18 20H14Z';
 
 function HeroVisual() {
   return (
     <div className="hero-visual" aria-hidden="true">
-      <div className="hero-visual-board">
-        <svg className="circuit" viewBox="0 0 800 500" focusable="false">
-          <defs>
-            <pattern id="circuit-dots" width="20" height="20" patternUnits="userSpaceOnUse">
-              <circle cx="10" cy="10" r="1.5" className="circuit-dot" />
-            </pattern>
-          </defs>
+      <svg className="circuit" viewBox="0 0 1200 560" focusable="false">
+        {/* Dim copper traces, then bright pulses on top */}
+        {TRACES.map((d) => (
+          <path key={d} d={d} className="circuit-trace" />
+        ))}
+        {TRACES.map((d, index) => (
+          <path
+            key={`pulse-${d}`}
+            d={d}
+            pathLength="100"
+            className="circuit-pulse"
+            style={{ animationDelay: `-${index * PULSE_SPACING_S}s` }}
+          />
+        ))}
 
-          {/* Board + perfboard dots */}
-          <rect width="800" height="500" className="circuit-bg" />
-          <rect width="800" height="500" fill="url(#circuit-dots)" />
+        {/* Resistors + status LED sitting on traces */}
+        <rect x="150" y="186" width="40" height="20" rx="4" className="circuit-part" />
+        <rect x="1000" y="304" width="40" height="20" rx="4" className="circuit-part" />
+        <circle cx="820" cy="400" r="7" className="circuit-led" />
 
-          {/* Dim traces, then bright pulses on top */}
-          {TRACES.map((d) => (
-            <path key={d} d={d} className="circuit-trace" />
-          ))}
-          {TRACES.map((d, index) => (
-            <path
-              key={`pulse-${d}`}
-              d={d}
-              pathLength="100"
-              className="circuit-pulse"
-              style={{ animationDelay: `-${index * PULSE_SPACING_S}s` }}
-            />
-          ))}
+        {/* Pins on all four sides */}
+        {PIN_STEPS.map((s) => (
+          <g key={s} className="circuit-pin">
+            <rect x={CHIP_X + s - 4} y={CHIP_Y - 22} width="8" height="22" />
+            <rect x={CHIP_X + s - 4} y={CHIP_Y + 240} width="8" height="22" />
+            <rect x={CHIP_X - 22} y={CHIP_Y + s - 4} width="22" height="8" />
+            <rect x={CHIP_X + 240} y={CHIP_Y + s - 4} width="22" height="8" />
+          </g>
+        ))}
 
-          {/* Resistors */}
-          <rect x="110" y="120" width="44" height="20" rx="4" className="circuit-part" />
-          <rect x="620" y="240" width="44" height="20" rx="4" className="circuit-part" />
+        {/* Chip body, gold ring, pin-1 dot */}
+        <rect x={CHIP_X} y={CHIP_Y} width="240" height="240" rx="18" className="circuit-chip" />
+        <rect x="505" y="155" width="190" height="190" rx="12" className="circuit-ring" />
+        <circle cx="494" cy="144" r="4" className="circuit-mark" />
 
-          {/* Chip */}
-          <rect x="330" y="140" width="140" height="220" rx="8" className="circuit-chip" />
-          {PIN_ROWS.map((y) => (
-            <rect key={`left-${y}`} x="316" y={y} width="14" height="8" className="circuit-pin" />
-          ))}
-          {PIN_ROWS.map((y) => (
-            <rect key={`right-${y}`} x="470" y={y} width="14" height="8" className="circuit-pin" />
-          ))}
-          <circle cx="350" cy="160" r="5" className="circuit-mark" />
-          <text x="400" y="257" textAnchor="middle" className="circuit-label">MCU</text>
-          <circle cx="446" cy="336" r="6" className="circuit-led" />
+        {/* Markings */}
+        <g transform="translate(540 205) scale(3)" className="circuit-rs">
+          <path d={RS_STROKES} />
+          <path d={RS_LEG} className="circuit-rs-leg" />
+        </g>
+        <text x="600" y="306" textAnchor="middle" className="circuit-label">
+          RS-01 · REV B
+        </text>
 
-          {/* Vias */}
-          {VIAS.map(([cx, cy], index) => (
-            <circle
-              key={`${cx}-${cy}`}
-              cx={cx}
-              cy={cy}
-              r="7"
-              className="circuit-via"
-              style={{ animationDelay: `-${index * PULSE_SPACING_S}s` }}
-            />
-          ))}
-        </svg>
-      </div>
+        {/* Vias */}
+        {VIAS.map(([cx, cy], index) => (
+          <circle
+            key={`${cx}-${cy}`}
+            cx={cx}
+            cy={cy}
+            r="7"
+            className="circuit-via"
+            style={{ animationDelay: `-${index * PULSE_SPACING_S}s` }}
+          />
+        ))}
+      </svg>
     </div>
   );
 }

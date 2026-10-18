@@ -88,7 +88,7 @@
 
 /* MCU sits centered under the text (gets its final size next step) */
 .header-media {
-  max-width: 44rem;
+  max-width: 75rem;
   margin: 3.5rem auto 0;
 }
 
