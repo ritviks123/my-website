@@ -2,16 +2,15 @@ import { useState } from 'react';
 import { FaGithub, FaLinkedin, FaEnvelope, FaLocationDot } from 'react-icons/fa6';
 import './Contact.css';
 
-// Swap later
-const HEADING = "Let's talk hardware.";
-const INTRO =
-  'Open to internships, jobs, research, and project collabs. The fastest way to reach me is right here.';
+/* ===== Swap these later ===== */
+const LABEL = '/contact';
+const HEADING = 'Contact me.';
+const INTRO = 'Internships, full-time roles, research, or just to talk computers.';
 const EMAIL = 'ritvikchandersingh@gmail.com';
 const GITHUB_URL = 'https://github.com/ritviks123';
-const GITHUB_LABEL = 'github.com/ritviks123';
 const LINKEDIN_URL = 'https://www.linkedin.com/in/singhritvik';
-const LINKEDIN_LABEL = 'Ritvik Singh';
 const LOCATION = 'Irvine, CA';
+/* ============================ */
 
 // Public by design: this key can only send messages to your inbox
 const ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
@@ -63,67 +62,55 @@ function Contact() {
 
   return (
     <section id="contact" className="contact" aria-labelledby="contact-heading">
-      <p className="contact-eyebrow">
-        <span aria-hidden="true">// </span>get in touch
-      </p>
-      <h2 id="contact-heading" className="contact-title">{HEADING}</h2>
-
-      <div className="contact-grid">
-        {/* Left: intro + ways to reach me */}
+      <div className="contact-inner">
+        {/* Left: big heading, one line, ways to reach me */}
         <div className="contact-info">
+          <p className="contact-label">{LABEL}</p>
+          <h2 id="contact-heading" className="contact-title">{HEADING}</h2>
           <p className="contact-intro">{INTRO}</p>
 
           <a href={`mailto:${EMAIL}`} className="contact-email">
-            <FaEnvelope className="contact-email-icon" aria-hidden="true" />
+            <FaEnvelope aria-hidden="true" />
             {EMAIL}
           </a>
 
           <ul className="contact-links">
             <li>
               <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="contact-link">
-                <FaGithub className="contact-icon" aria-hidden="true" />
-                {GITHUB_LABEL}
+                <FaGithub aria-hidden="true" />
+                GitHub <span aria-hidden="true">↗</span>
               </a>
             </li>
             <li>
               <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="contact-link">
-                <FaLinkedin className="contact-icon" aria-hidden="true" />
-                {LINKEDIN_LABEL}
+                <FaLinkedin aria-hidden="true" />
+                LinkedIn <span aria-hidden="true">↗</span>
               </a>
             </li>
             <li className="contact-location">
-              <FaLocationDot className="contact-icon" aria-hidden="true" />
+              <FaLocationDot aria-hidden="true" />
               {LOCATION}
             </li>
           </ul>
         </div>
 
-        {/* Right: the form */}
+        {/* Right: the form, in a chip-style box */}
         <form className="contact-form" onSubmit={handleSubmit}>
-          <div className="contact-row">
-            <div className="contact-field">
-              <label htmlFor="contact-name">Name</label>
-              <input
-                id="contact-name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                placeholder="Your name"
-                required
-              />
-            </div>
+          <div className="contact-field">
+            <label htmlFor="contact-name">Name</label>
+            <input id="contact-name" name="name" type="text" autoComplete="name" placeholder="Your name" required />
+          </div>
 
-            <div className="contact-field">
-              <label htmlFor="contact-email">Email</label>
-              <input
-                id="contact-email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                placeholder="you@company.com"
-                required
-              />
-            </div>
+          <div className="contact-field">
+            <label htmlFor="contact-email">Email</label>
+            <input
+              id="contact-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@company.com"
+              required
+            />
           </div>
 
           <div className="contact-field">
@@ -138,20 +125,11 @@ function Contact() {
           </div>
 
           {/* Spam trap: humans never see or fill this */}
-          <input
-            type="checkbox"
-            name="botcheck"
-            className="contact-honeypot"
-            tabIndex={-1}
-            autoComplete="off"
-          />
+          <input type="checkbox" name="botcheck" className="contact-honeypot" tabIndex={-1} autoComplete="off" />
 
-          <div className="contact-actions">
-            <button type="submit" className="contact-submit" disabled={status === 'sending'}>
-              {status === 'sending' ? 'Sending…' : 'Send message'}
-              <span aria-hidden="true">→</span>
-            </button>
-          </div>
+          <button type="submit" className="contact-submit" disabled={status === 'sending'}>
+            {status === 'sending' ? 'Sending…' : 'Send message'}
+          </button>
 
           <p className={`contact-status is-${status}`} role="status">
             {STATUS_TEXT[status]}
