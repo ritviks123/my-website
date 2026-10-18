@@ -139,6 +139,13 @@
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
+
+/* Lit by the toolkit: this project uses the active tool */
+.project-card.is-lit {
+  box-shadow:
+    inset 0 0 0 1px var(--accent),
+    0 0 28px -8px color-mix(in srgb, var(--accent) 70%, transparent);
+}
 /* Title left, year right */
 .project-card-top {
   display: flex;

@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { projects } from '../data/projects';
 import ProjectThumb from './ProjectThumb';
+import { projectUsesTool } from '../data/toolLinks';
 import './Projects.css';
 
 /* ===== Swap these later ===== */
@@ -10,9 +11,9 @@ const LABEL = '/projects';
 const INTRO = 'Boards, firmware, and the cloud glue in between. Pick one to read the build log.';
 /* ============================ */
 
-function ProjectCard({ project }) {
+function ProjectCard({ project, lit }) {
   return (
-    <Link to={`/projects/${project.id}`} className="project-card">
+    <Link to={`/projects/${project.id}`} className={`project-card${lit ? ' is-lit' : ''}`}>
       <div className="project-card-top">
         <h3 className="project-card-title">{project.title}</h3>
         <span className="project-year">{project.year}</span>
@@ -37,7 +38,7 @@ function ProjectCard({ project }) {
   );
 }
 
-function Projects({ heading = "Things I've built.", headingTag = 'h2', limit }) {
+function Projects({ heading = "Things I've built.", headingTag = 'h2', limit, activeTool }) {
   const HeadingTag = headingTag;
   const trackRef = useRef(null);
   const featured = projects.filter((project) => project.featured);
@@ -79,7 +80,7 @@ function Projects({ heading = "Things I've built.", headingTag = 'h2', limit }) 
 
       <div className="projects-track" ref={trackRef}>
         {shown.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <ProjectCard key={project.id} project={project} lit={projectUsesTool(project,activeTool)} />
         ))}
       </div>
     </section>
