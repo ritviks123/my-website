@@ -1,93 +1,123 @@
-/* ===== home contact: big heading left, form box right (Nimble pricing style) ===== */
+/* ===== home contact: one centered "chip" box the buses plug into ===== */
 .contact {
-  --contact-max: 85rem;
-  padding: 3rem 0 4rem;
+  padding: 3rem 1rem 4rem;
 }
 
-.contact-inner {
-  display: grid;
-  gap: 2.5rem;
-  max-width: var(--contact-max);
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.contact-label {
-  margin: 0 0 1rem;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  color: var(--muted);
-}
-
-.contact-title {
-  margin: 0;
-  font-size: clamp(2.5rem, 4vw + 0.5rem, 3.5rem);
-  font-weight: 560;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-}
-
-.contact-intro {
-  max-width: 28rem;
-  margin: 1.25rem 0 0;
-  font-size: 1.1875rem;
-  line-height: 1.55;
-  color: var(--text);
-}
-
-/* Email: the main way to reach me */
-.contact-email {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-top: 2rem;
-  font-size: 1.05rem;
-  color: var(--ink);
-  transform-origin: left center;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.contact-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem 1.5rem;
-  margin: 1rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.contact-link,
-.contact-location {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-  color: var(--muted);
-}
-
-.contact-link {
-  transform-origin: left center;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.contact-email:hover,
-.contact-email:focus-visible,
-.contact-link:hover,
-.contact-link:focus-visible {
-  color: var(--accent);
-  transform: scale(1.08);
-}
-
-/* ===== the form box ===== */
 .contact-form {
+  position: relative;
   display: grid;
   gap: 1rem;
-  padding: 1.75rem;
+  max-width: 34rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.75rem 1.75rem;
   border-radius: 16px;
   background: var(--surface);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
 }
 
+/* Gold outline that draws itself from the top-left when Contact powers on */
+.contact-form::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--accent);
+  border-radius: 16px;
+  opacity: 0.7;
+  clip-path: inset(0 100% 100% 0);
+  pointer-events: none;
+}
+
+.contact.is-on .contact-form::before {
+  clip-path: inset(0);
+  transition: clip-path 0.8s ease 0.9s;
+}
+
+/* ===== status LEDs ===== */
+.contact-leds {
+  display: flex;
+  justify-content: center;
+  gap: 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.contact-led {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.contact-led::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--ink) 12%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 50%, transparent);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-led.is-on::before,
+.contact.is-on .contact-led-pwr::before {
+  background: var(--accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+/* PWR waits for the power-on pulse to arrive */
+.contact.is-on .contact-led-pwr::before {
+  transition-delay: 1s;
+}
+
+.contact-led.is-blink::before {
+  background: var(--accent);
+  animation: contact-blink 0.4s steps(2) infinite;
+}
+
+.contact-led.is-err::before {
+  background: var(--danger);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--danger) 70%, transparent);
+}
+
+/* ===== heading with a one-time gold shine ===== */
+.contact-title {
+  margin: 0.5rem 0 0.5rem;
+  font-size: clamp(2.25rem, 3vw + 1rem, 3rem);
+  font-weight: 560;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  text-align: center;
+  /* Text painted with a wide gradient: white, a gold band, white */
+  background: linear-gradient(100deg, var(--ink) 40%, var(--accent-dark) 48%, var(--accent) 52%, var(--ink) 60%);
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Slide the gradient so the gold band sweeps left to right as PWR comes on */
+.contact.is-on .contact-title {
+  animation: contact-shine 1.4s ease-in-out 1s both;
+}
+
+@keyframes contact-shine {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
+@keyframes contact-blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* ===== fields ===== */
 .contact-field {
   display: grid;
   gap: 0.4rem;
@@ -96,6 +126,10 @@
 .contact-field label {
   font-size: 0.85rem;
   color: var(--muted);
+}
+
+.contact-input-wrap {
+  position: relative;
 }
 
 .contact-field input,
@@ -112,6 +146,7 @@
 }
 
 .contact-field textarea {
+  display: block;
   resize: vertical;
   min-height: 8rem;
 }
@@ -125,6 +160,43 @@
 .contact-field textarea:focus {
   border-color: var(--accent);
   outline: none;
+}
+
+/* A pin from each field out past the box edge; lights while you type in it */
+.contact-pin {
+  position: absolute;
+  top: 50%;
+  right: calc(-1.75rem - 6px);
+  width: calc(1.75rem + 6px);
+  height: 2px;
+  background: color-mix(in srgb, var(--copper) 45%, transparent);
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: background 0.2s ease;
+}
+
+.contact-pin::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--copper);
+  transform: translateY(-50%);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-field:focus-within .contact-pin,
+.contact-field:has(input:not(:placeholder-shown), textarea:not(:placeholder-shown)) .contact-pin {
+  background: var(--accent);
+}
+
+.contact-field:focus-within .contact-pin::after,
+.contact-field:has(input:not(:placeholder-shown), textarea:not(:placeholder-shown)) .contact-pin::after {
+  background: var(--accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent);
 }
 
 .contact-honeypot {
@@ -160,40 +232,27 @@
   color: var(--danger);
 }
 
-@media (min-width: 640px) {
-  .contact-inner {
-    padding: 0 1.25rem;
-  }
-}
-
-/* Desktop: two columns, same size knob as the rest of the homepage */
+/* Desktop: same size knob as the rest of the homepage */
 @media (min-width: 900px) {
   .contact {
-    --contact-max: calc(85rem / var(--desktop-zoom));
     zoom: var(--desktop-zoom);
-    padding: 4rem 0 6rem;
-  }
-
-  .contact-inner {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
-    align-items: center;
-    gap: 4rem;
+    padding: 4rem 1.25rem 6rem;
   }
 }
 
-/* Reduced motion: color change only */
+/* Reduced motion: no drawing, sweeping, or blinking */
 @media (prefers-reduced-motion: reduce) {
-  .contact-email,
-  .contact-link,
+  .contact.is-on .contact-form::before,
+  .contact-led::before,
+  .contact-pin,
+  .contact-pin::after,
   .contact-field input,
   .contact-field textarea {
-    transition: color 0.2s ease, border-color 0.15s ease;
+    transition: none;
   }
 
-  .contact-email:hover,
-  .contact-email:focus-visible,
-  .contact-link:hover,
-  .contact-link:focus-visible {
-    transform: none;
+  .contact.is-on .contact-title,
+  .contact-led.is-blink::before {
+    animation: none;
   }
 }

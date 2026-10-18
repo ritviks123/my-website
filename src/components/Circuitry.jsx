@@ -87,11 +87,10 @@ function measure(home) {
 
   const mcu = rect('mcu');
   const grid = rect('projects-grid');
-  const contactInfo = rect('contact-info');
   const contactForm = rect('contact-form');
   const toolCards = tools.map((_, i) => rect(`tk-${i}`));
   const projectCards = homeProjectIds.map((id) => rect(id));
-  if (!mcu || !grid || !contactInfo || !contactForm || toolCards.includes(null) || projectCards.includes(null)) {
+  if (!mcu || !grid || !contactForm || toolCards.includes(null) || projectCards.includes(null)) {
     return null;
   }
 
@@ -106,9 +105,10 @@ function measure(home) {
   const rightStart = MCU_RIGHT_TRACE.map(onMcu);
 
   const turnY = mcu.bottom + 32;
-  const leftEndY = contactInfo.top + contactInfo.height / 2;
-  const rightEndY = contactForm.top + contactForm.height / 2;
-  const leftEndX = contactInfo.left - 24;
+  // Both buses land on the contact box's sides, level with its LED row
+  const leftEndY = contactForm.top + 30;
+  const rightEndY = leftEndY;
+  const leftEndX = contactForm.left;
 
   // Buses: MCU pin → gutter → down the page → into Contact
   const buses = {
@@ -144,11 +144,10 @@ function measure(home) {
   });
 
   // Parts: centered in the gap between a bus and the content, fed by a thin trace
-  const contactTop = Math.min(contactInfo.top, contactForm.top);
   const areas = {
     row1: projectCards[0],
     row2: projectCards[2] || projectCards[0],
-    contact: { top: contactTop, height: Math.max(contactInfo.bottom, contactForm.bottom) - contactTop },
+    contact: contactForm,
   };
   const edges = {
     left: { busX: L, grid: grid.left, contact: leftEndX },
@@ -173,7 +172,13 @@ function measure(home) {
     [contactForm.right, rightEndY],
   ];
 
-  return { width: box.width, height: box.height, buses, branches, parts, vias };
+  // Last stretch of each bus, for the one-time power-on pulse into Contact
+  const arrive = [
+    route([[L, Math.max(turnY, leftEndY - 700)], [L, leftEndY], [leftEndX, leftEndY]]),
+    route([[R, Math.max(turnY, rightEndY - 700)], [R, rightEndY], [contactForm.right, rightEndY]]),
+  ];
+
+  return { width: box.width, height: box.height, buses, branches, parts, vias, arrive };
 }
 
 // Top-view footprints, each centered on (x, y)

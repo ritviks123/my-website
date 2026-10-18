@@ -155,6 +155,36 @@
   }
 }
 
+/* Power-on pulse: a single bright dash runs into Contact once it's on screen */
+.circuitry-arrive {
+  fill: none;
+  stroke: var(--accent-dark);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 8 200;
+  stroke-dashoffset: 8;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+
+.home:has(.contact.is-on) .circuitry-arrive {
+  animation: circuitry-arrive 1.1s ease-in-out forwards;
+}
+
+@keyframes circuitry-arrive {
+  0% {
+    stroke-dashoffset: 8;
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+}
+
 @keyframes circuitry-flow {
   to {
     stroke-dashoffset: -36;
@@ -164,6 +194,10 @@
 /* Reduced motion: lit wires turn gold, no flowing dashes */
 @media (prefers-reduced-motion: reduce) {
   .circuitry-pulse {
+    display: none;
+  }
+
+  .circuitry-arrive {
     display: none;
   }
 
