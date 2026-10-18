@@ -93,3 +93,36 @@
     animation: none;
   }
 }
+
+/* Section traces follow their bus: gold when it's lit */
+.board-trace,
+.board-antenna,
+.board-via {
+  transition: stroke 0.3s ease, opacity 0.3s ease;
+}
+
+.circuitry-part.is-lit .board-trace,
+.circuitry-part.is-lit .board-antenna,
+.home:has(.contact.is-on) .circuitry-part.is-io .board-trace {
+  stroke: var(--accent);
+  opacity: 1;
+}
+
+.circuitry-part.is-lit .board-via,
+.home:has(.contact.is-on) .circuitry-part.is-io .board-via {
+  stroke: var(--accent);
+}
+
+/* User I/O waits for the power-on pulse to arrive */
+.home:has(.contact.is-on) .circuitry-part.is-io .board-trace,
+.home:has(.contact.is-on) .circuitry-part.is-io .board-via {
+  transition-delay: 1s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .board-trace,
+  .board-antenna,
+  .board-via {
+    transition: none;
+  }
+}

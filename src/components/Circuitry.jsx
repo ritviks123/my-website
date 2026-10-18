@@ -154,10 +154,10 @@ function measure(home) {
     const max = cx - 140;
     const s = fit(SECTION.power.w, min, max, SECTION.power.max);
     if (s >= 0.7) {
-      const x = (min + max) / 2;
+      const x = min + (SECTION.power.w * s) / 2; // hug the bus side, away from the heading
       const [ax, ay] = SECTION.power.anchor;
-      sections.push({ key: 'power', kind: 'power', x, y: headingY - ay * s, s });
-      feeds.push(route([[L, headingY], [x + ax * s, headingY]]));
+      sections.push({ key: 'power', kind: 'power', side: 'left', x, y: headingY - ay * s, s });
+      feeds.push({ side: 'left', d: route([[L, headingY], [x + ax * s, headingY]]) });
     }
   }
 
@@ -167,10 +167,10 @@ function measure(home) {
     const max = R - 24;
     const s = fit(SECTION.wireless.w, min, max, SECTION.wireless.max);
     if (s >= 0.7) {
-      const x = (min + max) / 2;
+      const x = max - (SECTION.wireless.w * s) / 2; // hug the bus side, away from the heading
       const [ax, ay] = SECTION.wireless.anchor;
-      sections.push({ key: 'wireless', kind: 'wireless', x, y: headingY - ay * s, s });
-      feeds.push(route([[x + ax * s, headingY], [R, headingY]]));
+      sections.push({ key: 'wireless', kind: 'wireless', side: 'right', x, y: headingY - ay * s, s });
+      feeds.push({ side: 'right', d: route([[x + ax * s, headingY], [R, headingY]]) });
     }
   }
 
@@ -178,11 +178,11 @@ function measure(home) {
   {
     const s = fit(SECTION.gpio.w, L + 24, R - 24, SECTION.gpio.max);
     if (s >= 0.6) {
-      const y = (grid.bottom + contactForm.top) / 2;
+      const y = grid.bottom + (contactForm.top - grid.bottom) * 0.42; // nearer the cards than Contact
       const [ax, ay] = SECTION.gpio.anchor;
-      sections.push({ key: 'gpio', kind: 'gpio', x: cx, y: y - ay * s, s });
-      feeds.push(route([[L, y], [cx - ax * s, y]]));
-      feeds.push(route([[cx + ax * s, y], [R, y]]));
+      sections.push({ key: 'gpio', kind: 'gpio', side: 'both', x: cx, y: y - ay * s, s });
+      feeds.push({ side: 'left', d: route([[L, y], [cx - ax * s, y]]) });
+      feeds.push({ side: 'right', d: route([[cx + ax * s, y], [R, y]]) });
     }
   }
 
@@ -207,14 +207,22 @@ function measure(home) {
     route([[R, Math.max(turnY, rightEndY - 700)], [R, rightEndY], [contactForm.right, rightEndY]]),
   ];
 
-  return { width: box.width, height: box.height, buses, branches, sections, feeds, vias, arrive };
+  // Short stubs where the buses enter Contact (lit for good once Contact powers on)
+  const landing = [
+    route([[L, leftEndY], [leftEndX, leftEndY]]),
+    route([[R, rightEndY], [contactForm.right, rightEndY]]),
+  ];
+
+  return { width: box.width, height: box.height, buses, branches, sections, feeds, vias, arrive, landing };
 }
 
-// Draws one board section at its spot and scale
-function Section({ section }) {
-  const { kind, row, dir, x, y, s } = section;
+// Draws one board section at its spot and scale; lit when its bus is lit
+function Section({ section, litSides }) {
+  const { kind, row, dir, x, y, s, side } = section;
+  const lit = side === 'both' ? litSides.size > 0 : litSides.has(side);
+  const classes = ['circuitry-part', lit && 'is-lit', kind === 'io' && 'is-io'].filter(Boolean).join(' ');
   return (
-    <g className="circuitry-part" transform={`translate(${round(x)} ${round(y)}) scale(${round(s * 100) / 100})`}>
+    <g className={classes} transform={`translate(${round(x)} ${round(y)}) scale(${round(s * 100) / 100})`}>
       {kind === 'power' && <PowerSection />}
       {kind === 'wireless' && <WirelessSection />}
       {kind === 'gpio' && <GpioSection />}
@@ -265,6 +273,7 @@ function Circuitry({ activeTool }) {
     ? [
         ...Object.entries(geo.buses).map(([side, d]) => ({ key: `bus-${side}`, d, on: litSides.has(side), bus: true })),
         ...geo.branches.map((b) => ({ key: b.id, d: b.d, on: lit.has(b.id), bus: false })),
+        ...geo.feeds.map((f, i) => ({ key: `feed-${i}`, d: f.d, on: litSides.has(f.side), bus: false })),
       ]
     : [];
 
@@ -278,10 +287,6 @@ function Circuitry({ activeTool }) {
       aria-hidden="true"
       focusable="false"
     >
-      {/* Thin feed traces to the board sections, underneath everything */}
-      {(geo?.feeds || []).map((d) => (
-        <path key={`feed-${d}`} d={d} className="circuitry-decor" />
-      ))}
 
       {/* Copper wires, then gold pulses on top of the lit ones */}
       {wires.map((w) => (
@@ -293,6 +298,11 @@ function Circuitry({ activeTool }) {
           <path key={`pulse-${w.key}`} d={w.d} className={`circuitry-pulse${w.bus ? ' is-bus' : ''}`} />
         ))}
 
+      {/* Where the buses enter Contact: gold for good once it has power */}
+      {(geo?.landing || []).map((d) => (
+        <path key={`land-${d}`} d={d} className="circuitry-landing" />
+      ))}
+
       {/* One-time power-on pulse, started by Contact's .is-on class */}
       {(geo?.arrive || []).map((d) => (
         <path key={`arrive-${d}`} d={d} pathLength="100" className="circuitry-arrive" />
@@ -300,7 +310,7 @@ function Circuitry({ activeTool }) {
 
       {/* Board sections: power, wireless, GPIO, user I/O */}
       {(geo?.sections || []).map((section) => (
-        <Section key={section.key} section={section} />
+        <Section key={section.key} section={section} litSides={litSides} />
       ))}
 
       {/* Vias where wires land */}
