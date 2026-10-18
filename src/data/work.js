@@ -71,11 +71,11 @@ export const tools = [
     items: ['ESP32', 'Arduino', 'Raspberry Pi', 'Circuit design', 'SMD soldering', 'Oscilloscope', 'Multimeter'],
   },
   {
-    group: 'Design & CAD',
-    items: ['KiCad', 'SolidWorks', 'Fusion 360'],
-  },
-  {
     group: 'Tools & protocols',
     items: ['AWS', 'Git', 'Linux', 'MATLAB', 'MQTT', 'I2C', 'SPI', 'SQL'],
+  },
+  {
+    group: 'Design & CAD',
+    items: ['KiCad', 'SolidWorks', 'Fusion 360'],
   },
 ];

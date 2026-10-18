@@ -207,13 +207,7 @@ function measure(home) {
     route([[R, Math.max(turnY, rightEndY - 700)], [R, rightEndY], [contactForm.right, rightEndY]]),
   ];
 
-  // Short stubs where the buses enter Contact (lit for good once Contact powers on)
-  const landing = [
-    route([[L, leftEndY], [leftEndX, leftEndY]]),
-    route([[R, rightEndY], [contactForm.right, rightEndY]]),
-  ];
-
-  return { width: box.width, height: box.height, buses, branches, sections, feeds, vias, arrive, landing };
+  return { width: box.width, height: box.height, buses, branches, sections, feeds, vias, arrive };
 }
 
 // Draws one board section at its spot and scale; lit when its bus is lit
@@ -297,11 +291,6 @@ function Circuitry({ activeTool }) {
         .map((w) => (
           <path key={`pulse-${w.key}`} d={w.d} className={`circuitry-pulse${w.bus ? ' is-bus' : ''}`} />
         ))}
-
-      {/* Where the buses enter Contact: gold for good once it has power */}
-      {(geo?.landing || []).map((d) => (
-        <path key={`land-${d}`} d={d} className="circuitry-landing" />
-      ))}
 
       {/* One-time power-on pulse, started by Contact's .is-on class */}
       {(geo?.arrive || []).map((d) => (

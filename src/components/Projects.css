@@ -240,7 +240,7 @@
 @media (min-width: 900px) {
   .projects {
     zoom: var(--desktop-zoom);
-    padding: 4rem 0 9rem;
+    padding: 4rem 0 11rem;
   }
 }
 

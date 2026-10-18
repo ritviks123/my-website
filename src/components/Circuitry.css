@@ -210,18 +210,3 @@
     transition: none;
   }
 }
-
-/* Bus stubs into Contact: gold once it powers on */
-.circuitry-landing {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 4.5;
-  stroke-linecap: round;
-  opacity: 0;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 60%, transparent));
-  transition: opacity 0.3s ease 1s;
-}
-
-.home:has(.contact.is-on) .circuitry-landing {
-  opacity: 1;
-}
