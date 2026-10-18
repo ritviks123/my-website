@@ -64,7 +64,7 @@ function Contact() {
     <section id="contact" className="contact" aria-labelledby="contact-heading">
       <div className="contact-inner">
         {/* Left: big heading, one line, ways to reach me */}
-        <div className="contact-info">
+        <div className="contact-info" data-wire="contact-info">
           <p className="contact-label">{LABEL}</p>
           <h2 id="contact-heading" className="contact-title">{HEADING}</h2>
           <p className="contact-intro">{INTRO}</p>
@@ -95,7 +95,7 @@ function Contact() {
         </div>
 
         {/* Right: the form, in a chip-style box */}
-        <form className="contact-form" onSubmit={handleSubmit}>
+        <form className="contact-form" data-wire="contact-form" onSubmit={handleSubmit}>
           <div className="contact-field">
             <label htmlFor="contact-name">Name</label>
             <input id="contact-name" name="name" type="text" autoComplete="name" placeholder="Your name" required />

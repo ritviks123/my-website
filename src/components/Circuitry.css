@@ -1,0 +1,117 @@
+/* ===== background circuitry: buses in the side gutters, behind every section ===== */
+
+/* The homepage wrapper: a new layer stack so the wires can sit behind the content */
+.home {
+  position: relative;
+  isolation: isolate;
+}
+
+.circuitry {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  display: none;
+  overflow: visible;
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .circuitry {
+    display: block;
+  }
+}
+
+.circuitry-wire {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.4;
+  transition: stroke 0.3s ease, opacity 0.3s ease;
+}
+
+.circuitry-wire.is-lit {
+  stroke: var(--accent);
+  opacity: 1;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 60%, transparent));
+}
+
+/* Bright dashes flowing along lit wires, away from the MCU */
+.circuitry-pulse {
+  fill: none;
+  stroke: var(--accent-dark);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 6 30;
+  animation: circuitry-flow 0.9s linear infinite;
+}
+
+.circuitry-via {
+  fill: var(--bg);
+  stroke: var(--copper);
+  stroke-width: 2.5;
+  opacity: 0.7;
+  transition: stroke 0.3s ease, opacity 0.3s ease;
+}
+
+.circuitry-via.is-lit {
+  stroke: var(--accent);
+  opacity: 1;
+}
+
+/* Decoration: dimmer than the real wires so content stays the focus */
+.circuitry-decor {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.3;
+}
+
+.circuitry-part {
+  opacity: 0.55;
+}
+
+.circuitry-body {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--copper) 60%, transparent);
+  stroke-width: 1.5;
+}
+
+.circuitry-lead {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.circuitry-pad {
+  fill: var(--copper);
+}
+
+.circuitry-ring {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 2;
+}
+
+@keyframes circuitry-flow {
+  to {
+    stroke-dashoffset: -36;
+  }
+}
+
+/* Reduced motion: lit wires turn gold, no flowing dashes */
+@media (prefers-reduced-motion: reduce) {
+  .circuitry-pulse {
+    display: none;
+  }
+
+  .circuitry-wire,
+  .circuitry-via {
+    transition: none;
+  }
+}

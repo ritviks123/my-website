@@ -14,9 +14,7 @@ const TRACES = [
   'M742 322 H780 L820 362 V440 L860 480 H1020',
   'M544 108 V70 L514 40 H260',
   'M656 108 V60 L686 30 H980',
-  // These two exit the bottom edge (they continue down the page later)
-  'M560 392 V470 L530 500 V560',
-  'M640 392 V470 L670 500 V560',
+  // The two bottom pins' traces are drawn by Circuitry, so they only light with the toolkit
 ];
 
 // Vias where traces end

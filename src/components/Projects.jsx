@@ -11,7 +11,7 @@ const INTRO = 'Boards, firmware, and the cloud glue in between. Pick one to read
 
 function ProjectCard({ project, lit }) {
   return (
-    <Link to={`/projects/${project.id}`} className={`project-card${lit ? ' is-lit' : ''}`}>
+    <Link to={`/projects/${project.id}`} className={`project-card${lit ? ' is-lit' : ''}`} data-wire={project.id}>
       <div className="project-card-top">
         <h3 className="project-card-title">{project.title}</h3>
         <span className="project-year">{project.year}</span>

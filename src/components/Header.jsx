@@ -30,7 +30,7 @@ function Header() {
           <p className="header-meta">{META.join(' · ')}</p>
         </div>
 
-        <div className="header-media">
+        <div className="header-media" data-wire="mcu">
           <HeroVisual />
         </div>
       </div>

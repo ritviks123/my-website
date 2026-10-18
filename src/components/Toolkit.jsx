@@ -60,8 +60,8 @@ function Toolkit({ activeTool, onToolChange }) {
 
       {/* Full-width row of tool cards */}
       <div className="toolkit-grid" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-        {tools.map((group) => (
-          <div key={group.group} className="toolkit-card">
+        {tools.map((group, i) => (
+          <div key={group.group} className="toolkit-card" data-wire={`tk-${i}`}>
             <h3 className="toolkit-group">{group.group}</h3>
             <ul className="toolkit-list">
               {group.items.map((tool) => {
