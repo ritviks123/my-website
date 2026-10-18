@@ -238,6 +238,25 @@
     zoom: var(--desktop-zoom);
     padding: 4rem 1.25rem 6rem;
   }
+
+  /* Tighter spacing so the whole form (LEDs to Send) fits on one screen */
+  .contact-form {
+    gap: 0.8rem;
+    padding: 1.25rem 1.75rem 1.5rem;
+  }
+
+  .contact-title {
+    margin: 0.25rem 0;
+  }
+
+  .contact-field input,
+  .contact-field textarea {
+    padding: 0.6rem 0.9rem;
+  }
+
+  .contact-field textarea {
+    min-height: 5.5rem;
+  }
 }
 
 /* Reduced motion: no drawing, sweeping, or blinking */

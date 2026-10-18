@@ -210,3 +210,49 @@
     transition: none;
   }
 }
+
+/* ===== Thicker traces (swap these numbers to taste) ===== */
+.circuitry-wire,
+.circuitry-pulse {
+  stroke-width: 3;
+}
+
+.circuitry-wire.is-bus,
+.circuitry-pulse.is-bus,
+.circuitry-arrive {
+  stroke-width: 6.5;
+}
+
+.circuitry-via {
+  stroke-width: 2.5;
+}
+
+/* ===== Background doodles: faint copper, never lit ===== */
+.circuitry-doodle {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.25;
+}
+
+.circuitry-doodle-via {
+  fill: var(--bg);
+  stroke: var(--copper);
+  stroke-width: 2;
+  opacity: 0.4;
+}
+
+/* Doodle chips: dark body with faint copper pads */
+.circuitry-doodle-body {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--copper) 45%, transparent);
+  stroke-width: 1.5;
+  opacity: 0.7;
+}
+
+.circuitry-doodle-pad {
+  fill: var(--copper);
+  opacity: 0.35;
+}

@@ -240,7 +240,26 @@
 @media (min-width: 900px) {
   .projects {
     zoom: var(--desktop-zoom);
-    padding: 4rem 0 11rem;
+    padding: 3rem 0 11rem;
+    /* Card width follows the window HEIGHT, so all 4 cards fit on one screen (never wider than 62rem).
+       7rem = room left for the nav. */
+    --projects-max: min(62rem, calc(((100vh - 7rem) / var(--desktop-zoom) - 126px) / 0.75 + 64px));
+  }
+
+  /* Slimmer card padding = bigger animation inside the same card */
+  .project-card {
+    padding: 1.25rem;
+  }
+
+  .project-visual {
+    margin-top: 1.25rem;
+  }
+}
+
+/* Hover panel matches the slimmer card padding */
+@media (min-width: 900px) and (hover: hover) {
+  .project-reveal {
+    padding: 12px 1.25rem 1.25rem;
   }
 }
 

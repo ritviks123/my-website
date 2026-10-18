@@ -126,3 +126,18 @@
     transition: none;
   }
 }
+
+/* Lit sections: pads turn gold too, so the GPIO header visibly "turns on" */
+.board-pad {
+  transition: fill 0.3s ease;
+}
+
+.circuitry-part.is-lit .board-pad {
+  fill: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .board-pad {
+    transition: none;
+  }
+}
