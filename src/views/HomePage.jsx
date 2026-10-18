@@ -7,7 +7,7 @@ function HomePage() {
     <>
       <Header />
       <main>
-        <Projects showAllLink />
+        <Projects />
         <Contact />
       </main>
     </>

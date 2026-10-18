@@ -16,13 +16,24 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 1.25rem 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
 }
 
+/* "/projects" label: a mono path that links to the projects page */
 .projects-label {
-  margin: 0 0 0.75rem;
+  display: inline-block;
+  margin: 0 0 1rem;
+  font-family: var(--font-mono);
   font-size: 0.875rem;
   color: var(--muted);
+  transform-origin: left center;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.projects-label:hover,
+.projects-label:focus-visible {
+  color: var(--accent);
+  transform: scale(1.08);
 }
 
 .projects-heading {
@@ -32,20 +43,20 @@
 }
 
 .projects-intro {
-  max-width: 36rem;
-  margin: 0.9rem 0 0;
+  max-width: 40rem;
+  margin: 1.25rem 0 0;
   font-size: 1rem;
   line-height: 1.55;
-  color: var(--text);
+  color: var(--muted);
 }
 
 .projects-controls {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
-.projects-all {
+.projects-label {
   display: inline-block;
   margin-right: 0.75rem;
   font-size: 0.9rem;
@@ -54,8 +65,8 @@
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.projects-all:hover,
-.projects-all:focus-visible {
+.projects-label:hover,
+.projects-label:focus-visible {
   color: var(--accent);
   transform: scale(1.08);
 }
@@ -104,10 +115,10 @@
 .project-card {
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
-  border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  padding: 1.75rem;
+  border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
   border-radius: 12px;
-  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 30%, var(--bg));
   color: var(--text);
   scroll-snap-align: start;
   transition: border-color 0.15s ease, transform 0.15s ease;
@@ -124,36 +135,22 @@
   outline-offset: 3px;
 }
 
-.project-card-top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
 .project-card-title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.1875rem;
   font-weight: 560;
 }
 
-.project-year {
-  flex-shrink: 0;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-
 .project-card-sub {
-  margin: 0.5rem 0 0;
-  font-size: 0.95rem;
+  margin: 0.75rem 0 0;
+  font-size: 1rem;
   line-height: 1.5;
   color: var(--muted);
 }
 
 /* Visual area (animations go here next step) */
 .project-visual {
-  margin-top: 1.5rem;
+  margin-top: 2rem;
   aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: var(--radius);
@@ -210,14 +207,14 @@
 /* Reduced motion: color change only */
 @media (prefers-reduced-motion: reduce) {
   .project-card,
-  .projects-all {
+  .projects-label {
     transition: border-color 0.15s ease, color 0.2s ease;
   }
 
   .project-card:hover,
   .project-card:focus-visible,
-  .projects-all:hover,
-  .projects-all:focus-visible {
+  .projects-label:hover,
+  .projects-label:focus-visible {
     transform: none;
   }
 }

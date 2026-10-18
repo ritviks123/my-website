@@ -5,17 +5,14 @@ import { projects } from '../data/projects';
 import './Projects.css';
 
 /* ===== Swap these later ===== */
-const LABEL = 'Projects';
+const LABEL = '/projects';
 const INTRO = 'Boards, firmware, and the cloud glue in between. Pick one to read the build log.';
 /* ============================ */
 
 function ProjectCard({ project }) {
   return (
     <Link to={`/projects/${project.id}`} className="project-card">
-      <div className="project-card-top">
-        <h3 className="project-card-title">{project.title}</h3>
-        <span className="project-year">{project.year}</span>
-      </div>
+      <h3 className="project-card-title">{project.title}</h3>
       <p className="project-card-sub">{project.subtitle || project.blurb}</p>
 
       <div className="project-visual">
@@ -31,12 +28,7 @@ function ProjectCard({ project }) {
   );
 }
 
-function Projects({
-  heading = "Things I've built.",
-  headingTag = 'h2',
-  limit,
-  showAllLink = false,
-}) {
+function Projects({ heading = "Things I've built.", headingTag = 'h2', limit }) {
   const HeadingTag = headingTag;
   const trackRef = useRef(null);
   const featured = projects.filter((project) => project.featured);
@@ -58,17 +50,14 @@ function Projects({
       <div className="projects-inner">
         <div className="projects-top">
           <div className="projects-text">
-            <p className="projects-label">{LABEL}</p>
+            <Link to="/projects" className="projects-label" aria-label="All projects">
+              {LABEL}
+            </Link>
             <HeadingTag className="projects-heading">{heading}</HeadingTag>
             <p className="projects-intro">{INTRO}</p>
           </div>
 
           <div className="projects-controls">
-            {showAllLink && (
-              <Link to="/projects" className="projects-all">
-                All projects <span aria-hidden="true">→</span>
-              </Link>
-            )}
             <button type="button" className="projects-arrow" aria-label="Previous project" onClick={() => slide(-1)}>
               <FiArrowLeft aria-hidden="true" />
             </button>
