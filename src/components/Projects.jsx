@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router';
 import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { projects } from '../data/projects';
+import ProjectThumb from './ProjectThumb';
 import './Projects.css';
 
 /* ===== Swap these later ===== */
@@ -12,16 +13,24 @@ const INTRO = 'Boards, firmware, and the cloud glue in between. Pick one to read
 function ProjectCard({ project }) {
   return (
     <Link to={`/projects/${project.id}`} className="project-card">
-      <h3 className="project-card-title">{project.title}</h3>
-      <p className="project-card-sub">{project.subtitle || project.blurb}</p>
+      <div className="project-card-top">
+        <h3 className="project-card-title">{project.title}</h3>
+        <span className="project-year">{project.year}</span>
+      </div>
 
       <div className="project-visual">
-        {project.image ? (
-          <img src={project.image} alt={project.imageAlt || ''} loading="lazy" />
-        ) : (
-          <div className="project-visual-empty" aria-hidden="true">
-            <span>{project.category}</span>
-          </div>
+        <ProjectThumb project={project} />
+      </div>
+
+      {/* Slides up on hover (always visible on touch screens) */}
+      <div className="project-reveal">
+        <p className="project-card-sub">{project.summary || project.blurb}</p>
+        {project.tags?.length > 0 && (
+          <ul className="project-tags">
+            {project.tags.map((tag) => (
+              <li key={tag}>{tag}</li>
+            ))}
+          </ul>
         )}
       </div>
     </Link>
@@ -49,21 +58,21 @@ function Projects({ heading = "Things I've built.", headingTag = 'h2', limit }) 
     <section className="projects" id="projects">
       <div className="projects-inner">
         <div className="projects-top">
-          <div className="projects-text">
-            <Link to="/projects" className="projects-label" aria-label="All projects">
-              {LABEL}
-            </Link>
-            <HeadingTag className="projects-heading">{heading}</HeadingTag>
-            <p className="projects-intro">{INTRO}</p>
-          </div>
+          <Link to="/projects" className="projects-label" aria-label="All projects">
+            {LABEL}
+          </Link>
+          <HeadingTag className="projects-heading">{heading}</HeadingTag>
 
-          <div className="projects-controls">
-            <button type="button" className="projects-arrow" aria-label="Previous project" onClick={() => slide(-1)}>
-              <FiArrowLeft aria-hidden="true" />
-            </button>
-            <button type="button" className="projects-arrow" aria-label="Next project" onClick={() => slide(1)}>
-              <FiArrowRight aria-hidden="true" />
-            </button>
+          <div className="projects-row">
+            <p className="projects-intro">{INTRO}</p>
+            <div className="projects-controls">
+              <button type="button" className="projects-arrow" aria-label="Previous project" onClick={() => slide(-1)}>
+                <FiArrowLeft aria-hidden="true" />
+              </button>
+              <button type="button" className="projects-arrow" aria-label="Next project" onClick={() => slide(1)}>
+                <FiArrowRight aria-hidden="true" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

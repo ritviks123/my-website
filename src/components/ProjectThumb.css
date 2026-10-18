@@ -1,0 +1,402 @@
+/* ===== project thumbs: small animated circuits, one per card ===== */
+.thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ----- shared parts ----- */
+.thumb-chip {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--ink) 25%, transparent);
+  stroke-width: 1.5;
+}
+
+.thumb-die {
+  fill: color-mix(in srgb, var(--ink) 12%, var(--surface));
+}
+
+.thumb-pins,
+.thumb-antenna {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.thumb-panel {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--ink) 12%, transparent);
+  stroke-width: 1;
+}
+
+.thumb-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  fill: var(--muted);
+}
+
+.thumb-label-ink {
+  fill: var(--ink);
+  font-weight: 600;
+}
+
+.thumb-led {
+  fill: var(--accent);
+  animation: thumb-blink 1.6s ease-in-out infinite;
+}
+
+.thumb-link {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 2;
+  stroke-dasharray: 4 6;
+  opacity: 0.6;
+}
+
+/* A short gold dash that travels along a path (pathLength = 100) */
+.thumb-packet,
+.thumb-publish,
+.thumb-trace {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.thumb-packet {
+  stroke: var(--accent-dark);
+  stroke-width: 4;
+  stroke-dasharray: 8 92;
+  stroke-dashoffset: 100;
+  filter: drop-shadow(0 0 3px var(--accent));
+  animation: thumb-flow 2.8s linear infinite;
+}
+
+.thumb-packet-slow {
+  animation-duration: 4s;
+  animation-delay: -1.5s;
+}
+
+/* ----- F.R.N.D. ----- */
+.thumb-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: thumb-ring 3s ease-out infinite;
+}
+
+.thumb-phone {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--ink) 30%, transparent);
+  stroke-width: 1.5;
+}
+
+.thumb-screen {
+  fill: color-mix(in srgb, var(--accent) 22%, var(--surface));
+}
+
+.thumb-arm {
+  stroke: color-mix(in srgb, var(--ink) 35%, var(--surface));
+  stroke-width: 6;
+  stroke-linecap: round;
+}
+
+.thumb-rotor {
+  fill: color-mix(in srgb, var(--surface) 70%, transparent);
+  stroke: color-mix(in srgb, var(--ink) 25%, transparent);
+  stroke-width: 1.5;
+}
+
+.thumb-blade {
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: thumb-spin 0.4s linear infinite;
+}
+
+/* ----- Rover ----- */
+.thumb-route {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 2;
+  stroke-dasharray: 3 7;
+  opacity: 0.55;
+}
+
+.thumb-block {
+  fill: color-mix(in srgb, var(--ink) 10%, var(--bg));
+  stroke: color-mix(in srgb, var(--ink) 25%, transparent);
+  stroke-width: 1.5;
+}
+
+.thumb-rover {
+  animation: thumb-drive 7s linear infinite, thumb-fade 7s linear infinite;
+}
+
+.thumb-rover-body {
+  stroke: var(--copper);
+}
+
+.thumb-wheel {
+  fill: color-mix(in srgb, var(--ink) 55%, var(--surface));
+}
+
+.thumb-beam {
+  fill: var(--accent);
+  opacity: 0.12;
+  animation: thumb-beam 0.9s ease-in-out infinite;
+}
+
+.thumb-zero {
+  stroke: color-mix(in srgb, var(--ink) 18%, transparent);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+.thumb-trace {
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: thumb-draw 7s linear infinite;
+}
+
+/* ----- Weather station (4s cycle: wake, publish, sleep) ----- */
+.thumb-publish {
+  stroke: var(--accent-dark);
+  stroke-width: 4;
+  stroke-dasharray: 10 90;
+  stroke-dashoffset: 100;
+  filter: drop-shadow(0 0 3px var(--accent));
+  animation: thumb-publish 4s linear infinite;
+}
+
+.thumb-cloud path {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--ink) 25%, transparent);
+  stroke-width: 1.5;
+  animation: thumb-receive 4s linear infinite;
+}
+
+.thumb-sensor {
+  fill: color-mix(in srgb, var(--ink) 18%, var(--surface));
+  stroke: color-mix(in srgb, var(--ink) 25%, transparent);
+  stroke-width: 1.5;
+}
+
+.thumb-board {
+  stroke: var(--copper);
+}
+
+.thumb-led-wake {
+  animation: thumb-wake 4s linear infinite;
+}
+
+.thumb-z {
+  font-size: 16px;
+  fill: var(--text);
+  opacity: 0;
+  animation: thumb-z 4s ease-out infinite;
+}
+
+.thumb-z2 {
+  animation-delay: 0.25s;
+}
+
+.thumb-z3 {
+  animation-delay: 0.5s;
+}
+
+.thumb-battery {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 35%, transparent);
+  stroke-width: 1.5;
+}
+
+.thumb-battery-cap {
+  fill: color-mix(in srgb, var(--ink) 35%, transparent);
+}
+
+.thumb-battery-fill {
+  fill: var(--accent);
+}
+
+.thumb-bar {
+  fill: var(--accent);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: thumb-bar 2.4s ease-in-out infinite;
+}
+
+/* ----- keyframes ----- */
+@keyframes thumb-flow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes thumb-blink {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes thumb-ring {
+  0% {
+    transform: scale(0.15);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes thumb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Constant speed along the route; each stop turns the rover to face its next leg */
+@keyframes thumb-drive {
+  0% { transform: translate(-30px, 170px) rotate(0deg); }
+  18% { transform: translate(70px, 170px) rotate(-26deg); }
+  29.8% { transform: translate(110px, 118px) rotate(-33deg); }
+  37.3% { transform: translate(150px, 108px) rotate(0deg); }
+  44.7% { transform: translate(190px, 118px) rotate(33deg); }
+  56.5% { transform: translate(230px, 170px) rotate(51deg); }
+  67.8% { transform: translate(270px, 218px) rotate(31deg); }
+  75.1% { transform: translate(310px, 226px) rotate(-3deg); }
+  82.6% { transform: translate(350px, 214px) rotate(-33deg); }
+  90.8% { transform: translate(380px, 180px) rotate(-30deg); }
+  100% { transform: translate(430px, 170px) rotate(-11deg); }
+}
+
+@keyframes thumb-fade {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  6%,
+  94% {
+    opacity: 1;
+  }
+}
+
+@keyframes thumb-beam {
+  0%,
+  100% {
+    opacity: 0.08;
+  }
+  50% {
+    opacity: 0.22;
+  }
+}
+
+@keyframes thumb-draw {
+  0% {
+    stroke-dashoffset: 100;
+  }
+  80%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes thumb-publish {
+  0%,
+  5% {
+    stroke-dashoffset: 100;
+    opacity: 1;
+  }
+  35% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  36%,
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes thumb-receive {
+  0%,
+  33%,
+  50%,
+  100% {
+    stroke: color-mix(in srgb, var(--ink) 25%, transparent);
+  }
+  38% {
+    stroke: var(--accent);
+  }
+}
+
+@keyframes thumb-wake {
+  0%,
+  35% {
+    opacity: 1;
+  }
+  40%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+@keyframes thumb-z {
+  0%,
+  45% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes thumb-bar {
+  0%,
+  100% {
+    transform: scaleY(0.6);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+/* ===== reduced motion: a still frame of each scene ===== */
+@media (prefers-reduced-motion: reduce) {
+  .thumb *,
+  .thumb {
+    animation: none !important;
+  }
+
+  .thumb-ring,
+  .thumb-packet,
+  .thumb-publish {
+    display: none;
+  }
+
+  .thumb-rover {
+    transform: translate(150px, 108px);
+  }
+
+  .thumb-trace {
+    stroke-dashoffset: 0;
+  }
+}
