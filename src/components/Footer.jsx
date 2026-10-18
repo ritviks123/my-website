@@ -1,12 +1,13 @@
 import { Link } from 'react-router';
 import { FaGithub, FaLinkedin, FaEnvelope, FaFileLines } from 'react-icons/fa6';
+import ChipMark from './ChipMark';
 import './Footer.css';
 
 // Swap later
 const NAME = 'Ritvik Singh';
 const TAGLINE = 'Computer engineering student';
 const LOCATION = 'UC Irvine';
-const BOTTOM_LINE = 'Designed and coded by hand.';
+const BOARD_TAG = 'RS-01 · REV B'; // same label as the hero chip
 const GITHUB_URL = 'https://github.com/ritviks123';
 const LINKEDIN_URL = 'https://www.linkedin.com/in/singhritvik';
 const EMAIL = 'ritvikchandersingh@gmail.com';
@@ -19,7 +20,10 @@ function Footer() {
       <div className="footer-inner">
         <div className="footer-top">
           <div className="footer-brand">
-            <Link to="/" className="footer-logo">ritvik.singh</Link>
+            <Link to="/" className="footer-logo">
+              <ChipMark size={24} />
+              ritvik.singh
+            </Link>
             <p className="footer-tagline">{TAGLINE}, {LOCATION}</p>
           </div>
 
@@ -62,7 +66,7 @@ function Footer() {
 
         <div className="footer-bottom">
           <p>© {YEAR} {NAME}</p>
-          <p>{BOTTOM_LINE}</p>
+          <p className="footer-tag">{BOARD_TAG}</p>
         </div>
       </div>
     </footer>
