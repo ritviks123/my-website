@@ -10,7 +10,7 @@ const SKEW = 0.42; // tan(22.5°): keeps parallel traces evenly spaced through a
 const round = (n) => Math.round(n * 10) / 10;
 
 // Corner points → SVG path (chamfer > 0 cuts each corner at 45°)
-function route(points, chamfer = 0) {
+export function route(points, chamfer = 0) {
   let d = `M${round(points[0][0])} ${round(points[0][1])}`;
   for (let i = 1; i < points.length; i += 1) {
     const [x, y] = points[i];
@@ -45,7 +45,7 @@ const between = (rand, a, b) => a + rand() * (b - a);
 const whole = (rand, a, b) => a + Math.floor(rand() * (b - a + 1)); // whole number from a to b
 
 // A local drawing area: u runs along the area's long side, v across it, with random mirroring
-function frame([x0, y0, x1, y1], rand, out, full = false) {
+function frame([x0, y0, x1, y1], rand, out, full = false, dense = false) {
   const w = x1 - x0;
   const h = y1 - y0;
   const horizontal = w >= h;
@@ -67,6 +67,7 @@ function frame([x0, y0, x1, y1], rand, out, full = false) {
     A,
     B,
     full, // true = stretch to fill the whole area
+    dense, // true = more traces per shape (for wide open gutters)
     trace: (pts, chamfer = 0) => out.paths.push(route(pts.map(at), chamfer)),
     via: (pt) => out.vias.push(at(pt)),
     pad: (pt, du, dv) => rect(out.pads, pt, du, dv),
@@ -98,7 +99,7 @@ function bundle(f, n, base, u0, u1, jogs) {
 // A bus between two via fields that steps sideways once (or twice, back again)
 function jog(f, rand) {
   const { A, B } = f;
-  const n = Math.min(Math.floor((B - 2 * EDGE - 16) / P) + 1, whole(rand, 2, 4));
+  const n = Math.min(Math.floor((B - 2 * EDGE - 16) / P) + 1, f.dense ? whole(rand, 4, 7) : whole(rand, 2, 4));
   if (n < 2 || A < 150) return false;
   const band = (n - 1) * P;
   const amp = Math.min(40, B - 2 * EDGE - band) * between(rand, 0.6, 1);
@@ -119,7 +120,7 @@ function jog(f, rand) {
 // A bus that crosses the area on one long 45° run
 function diagonal(f, rand) {
   const { A, B } = f;
-  const n = whole(rand, 2, 4);
+  const n = f.dense ? whole(rand, 4, 6) : whole(rand, 2, 4);
   const band = (n - 1) * P;
   const D = Math.min(B - 2 * EDGE - band, A * 0.5);
   if (D < 50 || A < 170) return false;
@@ -167,7 +168,7 @@ function serpentine(f, rand) {
 // A bus that turns a corner together (nested 45° corners)
 function elbow(f, rand) {
   const { A, B } = f;
-  const n = Math.min(whole(rand, 3, 4), Math.floor((Math.min(A, B) - 80) / P) + 1);
+  const n = Math.min(f.dense ? whole(rand, 4, 7) : whole(rand, 3, 4), Math.floor((Math.min(A, B) - 80) / P) + 1);
   if (n < 2) return false;
   const band = (n - 1) * P;
   const wide = f.full ? A - 2 * EDGE : Math.min(A - 2 * EDGE, between(rand, 130, 240));
@@ -266,12 +267,80 @@ function passives(f, rand) {
   return true;
 }
 
-const SHAPES = { jog, diagonal, serpentine, elbow, stitch, chip, passives };
-const LIMIT = { serpentine: 2 }; // most of these per page, so nothing feels copy-pasted
+// A big square chip with pins on all four sides, each pin fanning out into its own trace
+function qfp(f, rand) {
+  const { A, B } = f;
+  const q = 7; // px between pins on the chip
+  let m = whole(rand, 6, 10); // pins per side
+  const size = (pins) => {
+    const half = ((pins - 1) / 2) * q + 7; // half the body width
+    const spread = ((pins - 1) / 2) * (P - q); // how far the outer pins fan out
+    const d0 = Math.max(10, ((pins - 1) / 2) * P - half + 8); // straight stub before the fan (keeps corners clear)
+    return { half, spread, d0, reach: half + d0 + spread + 30 };
+  };
+  while (m > 4 && (2 * size(m).reach > A - 2 * EDGE || 2 * size(m).reach > B - 2 * EDGE)) m -= 1;
+  const { half, spread, d0, reach } = size(m);
+  if (2 * reach > A - 2 * EDGE || 2 * reach > B - 2 * EDGE) return false;
+
+  const cu = A / 2 + between(rand, -0.3, 0.3) * (A - 2 * reach - 2 * EDGE) / 2;
+  const cv = B / 2 + between(rand, -0.3, 0.3) * (B - 2 * reach - 2 * EDGE) / 2;
+  f.body([cu, cv], half * 2, half * 2);
+
+  // Each side: n = which way is "out", t = along the side
+  [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([nu, nv]) => {
+    const [tu, tv] = [-nv, nu];
+    const at = (out, side) => [cu + nu * out + tu * side, cv + nv * out + tv * side];
+    const room = nu > 0 ? A - EDGE - cu : nu < 0 ? cu - EDGE : nv > 0 ? B - EDGE - cv : cv - EDGE;
+    const maxLen = room - half - d0 - spread - 14;
+    if (maxLen < 8) return;
+    const len = between(rand, f.dense ? 0.8 : 0.35, 1) * maxLen;
+    for (let i = 0; i < m; i += 1) {
+      const o = i - (m - 1) / 2;
+      f.pad(at(half + 3, o * q), nu ? 6 : 3.5, nu ? 3.5 : 6);
+      const fan = half + d0 + Math.abs(o) * (P - q);
+      const end = half + d0 + spread + len - (i % 2) * 12;
+      f.trace([at(half + 6, o * q), at(half + d0, o * q), at(fan, o * P), at(end, o * P)]);
+      f.via(at(end, o * P));
+    }
+  });
+  return true;
+}
+
+// A through-hole chip: two rows of round pads, each row leaving as a bus that steps over at 45°
+function dip(f, rand) {
+  const { A, B } = f;
+  const k = whole(rand, 4, 8); // pins per row
+  const pitch = 18;
+  const gap = 46; // px between the two rows
+  const length = (k - 1) * pitch;
+  if (A < length + 60 || B < gap + 140) return false;
+  const cu = A / 2 + between(rand, -0.25, 0.25) * (A - length - 60);
+  const cv = B / 2;
+  const s = whole(rand, 2, 4) * 8 * (rand() < 0.5 ? -1 : 1); // sideways step of the buses
+  f.body([cu, cv], length + 20, gap - 18);
+  [-1, 1].forEach((dir) => {
+    const row = cv + (dir * gap) / 2;
+    const room = dir < 0 ? row - EDGE : B - EDGE - row;
+    const len = between(rand, f.dense ? 0.8 : 0.4, 1) * (room - 20 - Math.abs(s) - 12);
+    if (len < 10) return;
+    for (let i = 0; i < k; i += 1) {
+      const u = cu - length / 2 + i * pitch;
+      const end = row + dir * (20 + Math.abs(s) + len - (i % 2) * 10);
+      f.via([u, row]);
+      f.trace([[u, row + dir * 5], [u, row + dir * 20], [u + s, row + dir * (20 + Math.abs(s))], [u + s, end]]);
+      f.via([u + s, end]);
+    }
+  });
+  return true;
+}
+
+const SHAPES = { jog, diagonal, serpentine, elbow, stitch, chip, passives, qfp, dip };
+const LIMIT = { serpentine: 2, qfp: 3 }; // most of these per page, so nothing feels copy-pasted
 
 // Splits big areas into smaller pieces, then puts one shape in each piece.
 // areas: [{ box: [x0, y0, x1, y1], kinds: ['chip', ...], full }]
-//   kinds = which shapes suit that spot, full = one shape stretched across the whole area
+//   kinds = which shapes suit that spot, full = one shape stretched across the whole area,
+//   dense = busier shapes with more traces (for wide open gutters)
 export function fillDoodles(areas, seed, density = 0.85) {
   const rand = seeded(seed);
   const out = { paths: [], vias: [], pads: [], bodies: [] };
@@ -291,31 +360,32 @@ export function fillDoodles(areas, seed, density = 0.85) {
 
   const used = {};
   let last = '';
-  const fill = (box, kinds, depth, full) => {
+  const fill = (box, kinds, depth, full, dense) => {
     const [x0, y0, x1, y1] = box;
     const w = x1 - x0;
     const h = y1 - y0;
     if (Math.min(w, h) < 40 || Math.max(w, h) < 120) return;
     // Big areas get split in two (with a gap), so they hold more than one shape
-    if (!full && depth < 2 && Math.max(w, h) > 340 && Math.min(w, h) > 60 && rand() < 0.8 * density) {
+    const splitOdds = dense ? 0.95 : 0.8 * density;
+    if (!full && depth < (dense ? 3 : 2) && Math.max(w, h) > (dense ? 260 : 340) && Math.min(w, h) > 60 && rand() < splitOdds) {
       const t = between(rand, 0.4, 0.6);
       const gap = 20;
       if (w >= h) {
         const xm = x0 + w * t;
-        fill([x0, y0, xm - gap, y1], kinds, depth + 1, full);
-        fill([xm + gap, y0, x1, y1], kinds, depth + 1, full);
+        fill([x0, y0, xm - gap, y1], kinds, depth + 1, full, dense);
+        fill([xm + gap, y0, x1, y1], kinds, depth + 1, full, dense);
       } else {
         const ym = y0 + h * t;
-        fill([x0, y0, x1, ym - gap], kinds, depth + 1, full);
-        fill([x0, ym + gap, x1, y1], kinds, depth + 1, full);
+        fill([x0, y0, x1, ym - gap], kinds, depth + 1, full, dense);
+        fill([x0, ym + gap, x1, y1], kinds, depth + 1, full, dense);
       }
       return;
     }
-    if (!full && rand() > density + 0.1) return; // leave a few spots empty on purpose
+    if (!full && !dense && rand() > density + 0.1) return; // leave a few spots empty on purpose
     for (let tries = 0; tries < 16; tries += 1) {
       const name = draw();
       const ok = kinds.includes(name) && (used[name] || 0) < (LIMIT[name] ?? Infinity) && (name !== last || kinds.length === 1);
-      if (ok && SHAPES[name](frame(box, rand, out, full), rand)) {
+      if (ok && SHAPES[name](frame(box, rand, out, full, dense), rand)) {
         used[name] = (used[name] || 0) + 1;
         last = name;
         return;
@@ -323,6 +393,6 @@ export function fillDoodles(areas, seed, density = 0.85) {
     }
   };
 
-  areas.forEach(({ box, kinds, full }) => fill(box, kinds, 0, full));
+  areas.forEach(({ box, kinds, full, dense }) => fill(box, kinds, 0, full, dense));
   return out;
 }
