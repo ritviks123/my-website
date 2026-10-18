@@ -13,15 +13,7 @@ const MCU_LEFT_TRACE = [[560, 392], [560, 470], [530, 500], [530, 560]];
 const MCU_RIGHT_TRACE = [[640, 392], [640, 470], [670, 500], [670, 560]];
 
 // Parts hanging off each bus: [how far down the bus (0 to 1), part, px out into the gutter]
-const DECOR = [
-  [0.1, 'res', 48],
-  [0.22, 'tp', 30],
-  [0.34, 'chip', 60],
-  [0.47, 'cap', 40],
-  [0.6, 'res', 64],
-  [0.73, 'tp', 42],
-  [0.86, 'chip', 52],
-];
+const DECOR = []; // gutter parts get redone next step
 /* ============================ */
 
 const round = (n) => Math.round(n * 10) / 10;
@@ -110,21 +102,15 @@ function measure(home) {
     branches.push({ id: homeProjectIds[i], side: left ? 'left' : 'right', d: route(points), end: points[1] });
   });
 
-  // Toolkit cards: outer cards from the side, middle cards drop in from above
+  // Toolkit cards: a thin trace from under each card back to its side's bus
   toolCards.forEach((r, i) => {
     const side = i < toolCards.length / 2 ? 'left' : 'right';
     const busX = side === 'left' ? L : R;
     const outer = i === 0 || i === toolCards.length - 1;
-    let points;
-    if (outer) {
-      const y = r.top + 36;
-      points = [[busX, y], [side === 'left' ? r.left : r.right, y]];
-    } else {
-      const y = r.top - 28;
-      const cx = r.left + r.width / 2;
-      points = [[busX, y], [cx, y], [cx, r.top]];
-    }
-    branches.push({ id: `tk-${i}`, side, d: route(points), end: points[points.length - 1] });
+    const y = r.bottom + (outer ? 20 : 36); // outer cards run closer, so traces never cross
+    const cx = r.left + r.width / 2;
+    const points = [[busX, y], [cx, y], [cx, r.bottom]];
+    branches.push({ id: `tk-${i}`, side, d: route(points), end: points[2] });
   });
 
   // Decorative parts on short 45° stubs, out in the gutters (right side shifted for variety)
@@ -229,8 +215,8 @@ function Circuitry({ activeTool }) {
 
   const wires = geo
     ? [
-        ...Object.entries(geo.buses).map(([side, d]) => ({ key: `bus-${side}`, d, on: litSides.has(side) })),
-        ...geo.branches.map((b) => ({ key: b.id, d: b.d, on: lit.has(b.id) })),
+        ...Object.entries(geo.buses).map(([side, d]) => ({ key: `bus-${side}`, d, on: litSides.has(side), bus: true })),
+        ...geo.branches.map((b) => ({ key: b.id, d: b.d, on: lit.has(b.id), bus: false })),
       ]
     : [];
 
@@ -251,12 +237,12 @@ function Circuitry({ activeTool }) {
 
       {/* Copper wires, then gold pulses on top of the lit ones */}
       {wires.map((w) => (
-        <path key={w.key} d={w.d} className={`circuitry-wire${w.on ? ' is-lit' : ''}`} />
+        <path key={w.key} d={w.d} className={`circuitry-wire${w.on ? ' is-lit' : ''}${w.bus ? ' is-bus' : ''}`} />
       ))}
       {wires
         .filter((w) => w.on)
         .map((w) => (
-          <path key={`pulse-${w.key}`} d={w.d} className="circuitry-pulse" />
+          <path key={`pulse-${w.key}`} d={w.d} className={`circuitry-pulse${w.bus ? ' is-bus' : ''}`} />
         ))}
 
       {/* Parts at the end of each stub */}

@@ -10,10 +10,16 @@
   padding: 0 1rem;
 }
 
-.toolkit-label {
-  margin: 0 0 1rem;
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
+/* Heading, intro, and status line centered over the row */
+.toolkit-inner {
+  text-align: center;
+}
+
+.toolkit-intro {
+  max-width: 36rem;
+  margin: 1rem auto 0;
+  font-size: 1rem;
+  line-height: 1.55;
   color: var(--muted);
 }
 

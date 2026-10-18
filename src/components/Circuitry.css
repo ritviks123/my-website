@@ -22,10 +22,15 @@
   }
 }
 
+/* Branches are thin; the two main buses are thick */
+.circuitry-wire.is-bus {
+  stroke-width: 4.5;
+}
+
 .circuitry-wire {
   fill: none;
   stroke: var(--copper);
-  stroke-width: 3;
+  stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0.4;
@@ -42,10 +47,14 @@
 .circuitry-pulse {
   fill: none;
   stroke: var(--accent-dark);
-  stroke-width: 3;
+  stroke-width: 2;
   stroke-linecap: round;
   stroke-dasharray: 6 30;
   animation: circuitry-flow 0.9s linear infinite;
+}
+
+.circuitry-pulse.is-bus {
+  stroke-width: 4.5;
 }
 
 .circuitry-via {

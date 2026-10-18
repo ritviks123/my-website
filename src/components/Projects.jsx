@@ -5,8 +5,7 @@ import { projectUsesTool } from '../data/toolLinks';
 import './Projects.css';
 
 /* ===== Swap these later ===== */
-const LABEL = '/projects';
-const INTRO = 'Boards, firmware, and the cloud glue in between. Pick one to read the build log.';
+const INTRO = 'Boards, firmware, and the cloud glue in between.';
 /* ============================ */
 
 function ProjectCard({ project, lit }) {
@@ -36,8 +35,7 @@ function ProjectCard({ project, lit }) {
   );
 }
 
-function Projects({ heading = "Things I've built.", headingTag = 'h2', activeTool }) {
-  const HeadingTag = headingTag;
+function Projects({ heading = 'Projects.', headingTag = 'h2', activeTool }) {  const HeadingTag = headingTag;
   // Home grid: these projects, in this order
   const shown = homeProjectIds.map((id) => projects.find((project) => project.id === id)).filter(Boolean);
 
@@ -45,9 +43,6 @@ function Projects({ heading = "Things I've built.", headingTag = 'h2', activeToo
     <section className="projects" id="projects">
       <div className="projects-inner">
         <div className="projects-top">
-          <Link to="/projects" className="projects-label" aria-label="All projects">
-            {LABEL}
-          </Link>
           <HeadingTag className="projects-heading">{heading}</HeadingTag>
           <p className="projects-intro">{INTRO}</p>
         </div>

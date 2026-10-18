@@ -4,8 +4,8 @@ import { projectsUsingTool } from '../data/toolLinks';
 import './Toolkit.css';
 
 /* ===== Swap these later ===== */
-const LABEL = '/toolkit';
-const HEADING = 'Tools I reach for.';
+const HEADING = 'Toolkit.';
+const INTRO = 'The languages, boards, and tools behind every build.';
 const CYCLE_MS = 3000;
 /* ============================ */
 
@@ -42,8 +42,8 @@ function Toolkit({ activeTool, onToolChange }) {
     return (
     <section className="toolkit" id="toolkit">
       <div className="toolkit-inner">
-        <p className="toolkit-label">{LABEL}</p>
         <h2 className="toolkit-heading">{HEADING}</h2>
+        <p className="toolkit-intro">{INTRO}</p>
         <p className="toolkit-status">
           {activeTool ? (
             <>

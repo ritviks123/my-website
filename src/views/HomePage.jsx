@@ -14,8 +14,8 @@ function HomePage() {
       <Circuitry activeTool={activeTool} />
       <Header />
       <main>
-        <Projects activeTool={activeTool} />
         <Toolkit activeTool={activeTool} onToolChange={setActiveTool} />
+        <Projects activeTool={activeTool} />
         <Contact />
       </main>
     </div>
