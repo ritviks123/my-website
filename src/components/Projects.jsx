@@ -61,10 +61,9 @@ function Projects({ heading = "Things I've built.", headingTag = 'h2', limit }) 
           <Link to="/projects" className="projects-label" aria-label="All projects">
             {LABEL}
           </Link>
-          <HeadingTag className="projects-heading">{heading}</HeadingTag>
 
           <div className="projects-row">
-            <p className="projects-intro">{INTRO}</p>
+            <HeadingTag className="projects-heading">{heading}</HeadingTag>
             <div className="projects-controls">
               <button type="button" className="projects-arrow" aria-label="Previous project" onClick={() => slide(-1)}>
                 <FiArrowLeft aria-hidden="true" />
@@ -74,6 +73,7 @@ function Projects({ heading = "Things I've built.", headingTag = 'h2', limit }) 
               </button>
             </div>
           </div>
+          <p className="projects-intro">{INTRO}</p>
         </div>
       </div>
 

@@ -14,16 +14,6 @@
   margin-bottom: 3rem;
 }
 
-/* Intro on the left, arrows on the right, centered on the same line */
-.projects-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-  margin-top: 1.25rem;
-}
-
 /* "/projects" label: a mono path that links to the projects page */
 .projects-label {
   display: inline-block;
@@ -41,6 +31,14 @@
   transform: scale(1.08);
 }
 
+/* Title on the left, arrows on the right, centered on the title */
+.projects-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+
 .projects-heading {
   margin: 0;
   font-size: clamp(1.75rem, 3vw + 0.5rem, 2.25rem);
@@ -49,7 +47,7 @@
 
 .projects-intro {
   max-width: 40rem;
-  margin: 0;
+  margin: 1.25rem 0 0;
   font-size: 1rem;
   line-height: 1.55;
   color: var(--muted);
@@ -57,6 +55,7 @@
 
 .projects-controls {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 0.75rem;
 }
@@ -121,9 +120,10 @@
   display: flex;
   flex-direction: column;
   padding: 1.75rem;
-  border: 1px solid color-mix(in srgb, var(--copper) 35%, transparent);
   border-radius: 12px;
   background: var(--surface);
+  /* Copper edge drawn inside the card (no real border, so the hover panel lines up exactly) */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
   color: var(--text);
   scroll-snap-align: start;
   transition: border-color 0.15s ease, transform 0.15s ease;
@@ -131,7 +131,7 @@
 
 .project-card:hover,
 .project-card:focus-visible {
-  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
   transform: translateY(-3px);
 }
 
@@ -189,40 +189,55 @@
   font-family: var(--font-mono);
   font-size: 0.72rem;
 }
-
-/* Mouse devices: the panel hides, then slides up over the visual on hover */
+/* Mouse devices: on hover the card grows a panel underneath (animation stays visible) */
 @media (hover: hover) {
-  .project-card {
-    position: relative;
+  /* Room under the cards for the panel, so nothing below the row jumps */
+  .projects-track {
+    padding-bottom: 9rem;
   }
 
+    .project-card {
+    position: relative;
+    /* On hover-off the gold outline fades while the panel rolls back up */
+    transition: box-shadow 0.15s ease 0.3s, transform 0.15s ease, filter 0.3s ease;
+  }
+
+  /* Starts 12px up inside the card: covers its rounded bottom corners while open,
+     then hands them back gradually as it rolls up (no seam, no corner pop) */
   .project-reveal {
     position: absolute;
-    right: 1.75rem;
-    bottom: 1.75rem;
-    left: 1.75rem;
+    top: calc(100% - 12px);
+    right: 0;
+    left: 0;
     margin: 0;
-    padding: 1.1rem 1.25rem 1.25rem;
-    border-top: 1px solid color-mix(in srgb, var(--copper) 35%, transparent);
-    border-radius: 0 0 var(--radius) var(--radius);
-    background: color-mix(in srgb, var(--surface) 90%, transparent);
-    backdrop-filter: blur(6px);
-    opacity: 0;
-    transform: translateY(0.75rem);
-    transition: opacity 0.25s ease, transform 0.25s ease;
+    padding: 12px 1.75rem 1.5rem;
+    border-radius: 0 0 12px 12px;
+    background: var(--surface);
+    clip-path: inset(0 0 100% 0 round 0 0 12px 12px);
+    transition: clip-path 0.3s ease;
+  }
+
+  /* Card + panel share one gold outline */
+  .project-card:hover,
+  .project-card:focus-visible {
+    box-shadow: none;
+    filter:
+      drop-shadow(1px 0 0 var(--accent))
+      drop-shadow(-1px 0 0 var(--accent))
+      drop-shadow(0 1px 0 var(--accent))
+      drop-shadow(0 -1px 0 var(--accent));
+    transition: box-shadow 0.15s ease, transform 0.15s ease, filter 0.15s ease;
   }
 
   .project-card:hover .project-reveal,
   .project-card:focus-visible .project-reveal {
-    opacity: 1;
-    transform: translateY(0);
+    clip-path: inset(0 round 0 0 12px 12px);
   }
 }
 
 @media (hover: hover) and (prefers-reduced-motion: reduce) {
   .project-reveal {
-    transform: none;
-    transition: opacity 0.2s ease;
+    transition: none;
   }
 }
 
@@ -286,7 +301,7 @@
   .projects {
     --projects-max: calc(85rem / var(--desktop-zoom));
     zoom: var(--desktop-zoom);
-    padding: 4rem 0 5rem;
+    padding: 4rem 0 1.5rem;
   }
 }
 
