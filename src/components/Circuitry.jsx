@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { tools } from '../data/work';
 import { homeProjectIds } from '../data/projects';
 import { projectsUsingTool } from '../data/toolLinks';
+import { PowerSection, WirelessSection, GpioSection, IoRow } from './Boardsections.jsx';
 import './Circuitry.css';
 
 /* ===== Swap these later ===== */
@@ -9,37 +10,35 @@ const BUS_GAP = 40; // px between each bus and the toolkit row's outer edge
 const CHAMFER = 12; // size of the 45° corner cuts
 
 // The MCU's two bottom traces, in its 1200 x 560 drawing (pin tip → bottom edge)
-const MCU_LEFT_TRACE = [[560, 392], [560, 470], [530, 500], [530, 560]];
-const MCU_RIGHT_TRACE = [[640, 392], [640, 470], [670, 500], [670, 560]];
-
-// Accent parts around the page: [zone, part, how far down the zone (0 to 1), size]
-const ACCENTS = [
-  ['headingLeft', 'heatsink', 0.5, 1.3],
-  ['headingRight', 'northbridge', 0.5, 1.2],
-  ['bridge', 'dramPair', 0.5, 1],
-  ['contactLeft', 'led', 0.18, 1.2],
-  ['contactLeft', 'button', 0.72, 1.3],
-  ['contactRight', 'buzzer', 0.24, 1.4],
-  ['contactRight', 'ecap', 0.74, 1.3],
-  ['contactRight', 'crystal', 0.9, 1],
+const MCU_LEFT_TRACE = [
+  [560, 392],
+  [560, 470],
+  [530, 500],
+  [530, 560],
+];
+const MCU_RIGHT_TRACE = [
+  [640, 392],
+  [640, 470],
+  [670, 500],
+  [670, 560],
 ];
 
-// Width of each part, so it only appears where its gap has room
-const PART_W = {
-  heatsink: 84,
-  northbridge: 72,
-  usb: 52,
-  button: 34,
-  ecap: 32,
-  buzzer: 40,
-  crystal: 52,
-  dram: 124,
-  dramPair: 264,
-  led: 22,
-  res: 32,
+// Board sections: width in their own units, where the bus feed attaches, and the biggest scale allowed
+const SECTION = {
+  power: { w: 300, anchor: [-150, 30], max: 1.5 },
+  wireless: { w: 300, anchor: [150, 0], max: 1.5 },
+  gpio: { w: 540, anchor: [270, -15], max: 1.3 },
+  io: { w: 170, max: 1.5 },
 };
-const FIN_X = [-32, -24, -16, -8, 0, 8, 16, 24, 32];
-const NB_PINS = [-24, -16, -8, 0, 8, 16, 24];
+
+// User I/O rows beside the Contact box: [side, row, how far down the box (0 to 1)]
+const IO_ROWS = [
+  ['left', 'reset', 0.22],
+  ['left', 'boot', 0.78],
+  ['right', 'led', 0.16],
+  ['right', 'buzzer', 0.84],
+];
+/* ============================ */
 
 const round = (n) => Math.round(n * 10) / 10;
 
@@ -66,7 +65,7 @@ function route(points) {
   return d;
 }
 
-// Reads where everything sits on the page and plans every wire and part
+// Reads where everything sits on the page and plans every wire and section
 function measure(home) {
   const box = home.getBoundingClientRect();
   const rect = (key) => {
@@ -103,7 +102,7 @@ function measure(home) {
   const rightStart = MCU_RIGHT_TRACE.map(onMcu);
 
   const turnY = mcu.bottom + 32;
-  // Both buses land on the contact box's sides, level with its LED row
+  // Both buses land on the contact box's sides, level with its middle
   const leftEndY = contactForm.top + contactForm.height / 2;
   const rightEndY = leftEndY;
   const leftEndX = contactForm.left;
@@ -141,37 +140,60 @@ function measure(home) {
     branches.push({ id: `tk-${i}`, side, d: route(points), end: points[2] });
   });
 
-    // Accent parts: placed in open zones, each fed by a thin trace from a bus
+  // Board sections: each scaled to fit its open space, fed by a thin trace from a bus
+  const sections = [];
+  const feeds = [];
+  const fit = (w, min, max, cap) => Math.min(cap, (max - min) / w);
   const cx = box.width / 2;
   const toolBottom = Math.max(...toolCards.map((r) => r.bottom)) + 36;
   const headingY = (toolBottom + grid.top) / 2;
-  const zones = {
-    headingLeft: () => ({ x: cx - (cx - L) * 0.62, y: headingY, from: [L], min: L + 16, max: cx - 110 }),
-    headingRight: () => ({ x: cx + (R - cx) * 0.62, y: headingY, from: [R], min: cx + 110, max: R - 16 }),
-    bridge: () => ({ x: cx, y: (grid.bottom + contactForm.top) / 2, from: [L, R], min: L + 16, max: R - 16 }),
-    contactLeft: (at) => ({
-      x: (L + contactForm.left) / 2,
-      y: contactForm.top + contactForm.height * at,
-      from: [L],
-      min: L + 16,
-      max: contactForm.left - 12,
-    }),
-    contactRight: (at) => ({
-      x: (contactForm.right + R) / 2,
-      y: contactForm.top + contactForm.height * at,
-      from: [R],
-      min: contactForm.right + 12,
-      max: R - 16,
-    }),
-  };
 
-  const parts = [];
-  ACCENTS.forEach(([zone, part, at, scale]) => {
-    const { x, y, from, min, max } = zones[zone](at);
-    const half = (PART_W[part] * scale) / 2;
-    if (x - half < min || x + half > max) return; // doesn't fit on this screen
-    const feeds = from.map((busX) => route([[busX, y], [busX < x ? x - half : x + half, y]]));
-    parts.push({ key: `${zone}-${part}-${at}`, part, x, y, scale, feeds });
+  // POWER: left of the Projects heading; its 3V3 rail feeds the left bus
+  {
+    const min = L + 24;
+    const max = cx - 140;
+    const s = fit(SECTION.power.w, min, max, SECTION.power.max);
+    if (s >= 0.7) {
+      const x = (min + max) / 2;
+      const [ax, ay] = SECTION.power.anchor;
+      sections.push({ key: 'power', kind: 'power', x, y: headingY - ay * s, s });
+      feeds.push(route([[L, headingY], [x + ax * s, headingY]]));
+    }
+  }
+
+  // WIRELESS: right of the Projects heading; feeds the right bus
+  {
+    const min = cx + 140;
+    const max = R - 24;
+    const s = fit(SECTION.wireless.w, min, max, SECTION.wireless.max);
+    if (s >= 0.7) {
+      const x = (min + max) / 2;
+      const [ax, ay] = SECTION.wireless.anchor;
+      sections.push({ key: 'wireless', kind: 'wireless', x, y: headingY - ay * s, s });
+      feeds.push(route([[x + ax * s, headingY], [R, headingY]]));
+    }
+  }
+
+  // GPIO: centered between Projects and Contact, fed from both buses
+  {
+    const s = fit(SECTION.gpio.w, L + 24, R - 24, SECTION.gpio.max);
+    if (s >= 0.6) {
+      const y = (grid.bottom + contactForm.top) / 2;
+      const [ax, ay] = SECTION.gpio.anchor;
+      sections.push({ key: 'gpio', kind: 'gpio', x: cx, y: y - ay * s, s });
+      feeds.push(route([[L, y], [cx - ax * s, y]]));
+      feeds.push(route([[cx + ax * s, y], [R, y]]));
+    }
+  }
+
+  // USER I/O: rows of parts wired straight into the Contact box's sides
+  IO_ROWS.forEach(([side, kind, at]) => {
+    const edge = side === 'left' ? contactForm.left : contactForm.right;
+    const room = side === 'left' ? edge - L - 24 : R - 24 - edge;
+    const s = fit(SECTION.io.w, 0, room, SECTION.io.max);
+    if (s < 0.6) return;
+    const y = contactForm.top + contactForm.height * at;
+    sections.push({ key: `io-${kind}`, kind: 'io', row: kind, dir: side === 'left' ? 1 : -1, x: edge, y, s });
   });
 
   const vias = [
@@ -185,108 +207,18 @@ function measure(home) {
     route([[R, Math.max(turnY, rightEndY - 700)], [R, rightEndY], [contactForm.right, rightEndY]]),
   ];
 
-  return { width: box.width, height: box.height, buses, branches, parts, vias, arrive };
+  return { width: box.width, height: box.height, buses, branches, sections, feeds, vias, arrive };
 }
 
-// Top-view footprints, each centered on (x, y)
-function Part({ part, x, y, scale = 1 }) {
+// Draws one board section at its spot and scale
+function Section({ section }) {
+  const { kind, row, dir, x, y, s } = section;
   return (
-    <g className={`circuitry-part is-${part}`} transform={`translate(${round(x)} ${round(y)}) scale(${scale})`}>
-      {part === 'dramPair' &&
-        [-16, 16].map((dy) => (
-          <g key={dy} transform={`translate(0 ${dy})`}>
-            <rect x="-132" y="-11" width="8" height="22" rx="1.5" className="circuitry-metal" />
-            <rect x="124" y="-11" width="8" height="22" rx="1.5" className="circuitry-metal" />
-            <rect x="-124" y="-8" width="248" height="16" rx="2" className="circuitry-body" />
-            <rect x="-116" y="-2" width="232" height="4" rx="1" className="circuitry-die" />
-            <rect x="-30" y="-8" width="3" height="16" className="circuitry-hole" />
-          </g>
-        ))}
-      {part === 'heatsink' && (
-        <>
-          <rect x="-42" y="-32" width="84" height="64" rx="4" className="circuitry-body" />
-          {FIN_X.map((fx) => (
-            <line key={fx} x1={fx} y1="-25" x2={fx} y2="25" className="circuitry-fin" />
-          ))}
-          <circle cx="-36" cy="-26" r="2.5" className="circuitry-pad" />
-          <circle cx="36" cy="26" r="2.5" className="circuitry-pad" />
-        </>
-      )}
-      {part === 'northbridge' && (
-        <>
-          {NB_PINS.map((p) => (
-            <g key={p}>
-              <rect x={p - 1.5} y="-36" width="3" height="5" className="circuitry-pad" />
-              <rect x={p - 1.5} y="31" width="3" height="5" className="circuitry-pad" />
-              <rect x="-36" y={p - 1.5} width="5" height="3" className="circuitry-pad" />
-              <rect x="31" y={p - 1.5} width="5" height="3" className="circuitry-pad" />
-            </g>
-          ))}
-          <rect x="-30" y="-30" width="60" height="60" rx="4" className="circuitry-body" />
-          <rect x="-17" y="-17" width="34" height="34" rx="2" className="circuitry-die" />
-          <circle cx="-24" cy="-24" r="2" className="circuitry-pad" />
-        </>
-      )}
-      {part === 'usb' && (
-        <>
-          <rect x="-26" y="-12" width="5" height="6" rx="1" className="circuitry-pad" />
-          <rect x="21" y="-12" width="5" height="6" rx="1" className="circuitry-pad" />
-          <rect x="-22" y="-9" width="44" height="18" rx="9" className="circuitry-metal" />
-          <rect x="-13" y="-3.5" width="26" height="7" rx="3.5" className="circuitry-dark" />
-        </>
-      )}
-      {part === 'button' && (
-        <>
-          <rect x="-17" y="-11" width="5" height="6" className="circuitry-pad" />
-          <rect x="12" y="-11" width="5" height="6" className="circuitry-pad" />
-          <rect x="-17" y="5" width="5" height="6" className="circuitry-pad" />
-          <rect x="12" y="5" width="5" height="6" className="circuitry-pad" />
-          <rect x="-13" y="-13" width="26" height="26" rx="3" className="circuitry-metal" />
-          <circle r="8" className="circuitry-dark circuitry-edge" />
-        </>
-      )}
-      {part === 'ecap' && (
-        <>
-          <circle r="16" className="circuitry-metal" />
-          <path d="M0 -16A16 16 0 0 0 0 16A9 16 0 0 1 0 -16Z" className="circuitry-dark" />
-          <path d="M-6 0H6M0 -6V6" className="circuitry-vent" />
-        </>
-      )}
-      {part === 'buzzer' && (
-        <>
-          <circle r="20" className="circuitry-body" />
-          <circle r="12" className="circuitry-groove" />
-          <circle r="3" className="circuitry-hole" />
-        </>
-      )}
-      {part === 'crystal' && (
-        <>
-          <rect x="-26" y="-2" width="4" height="4" className="circuitry-pad" />
-          <rect x="22" y="-2" width="4" height="4" className="circuitry-pad" />
-          <rect x="-22" y="-8" width="44" height="16" rx="8" className="circuitry-metal" />
-        </>
-      )}
-      {part === 'dram' && (
-        <>
-          <rect x="-62" y="-13" width="7" height="26" rx="1.5" className="circuitry-metal" />
-          <rect x="55" y="-13" width="7" height="26" rx="1.5" className="circuitry-metal" />
-          <rect x="-55" y="-9" width="110" height="18" rx="2" className="circuitry-body" />
-          <rect x="-48" y="-2.5" width="96" height="5" rx="1" className="circuitry-die" />
-          <rect x="-6" y="-9" width="3" height="18" className="circuitry-hole" />
-        </>
-      )}
-      {part === 'led' && (
-        <>
-          <rect x="-11" y="-6" width="22" height="12" rx="2" className="circuitry-body" />
-          <rect x="-6" y="-3.5" width="12" height="7" rx="1.5" className="circuitry-lens" />
-        </>
-      )}
-      {part === 'res' && (
-        <>
-          <path d="M-16 0h4M12 0h4" className="circuitry-lead" />
-          <rect x="-12" y="-5" width="24" height="10" rx="2" className="circuitry-body" />
-        </>
-      )}
+    <g className="circuitry-part" transform={`translate(${round(x)} ${round(y)}) scale(${round(s * 100) / 100})`}>
+      {kind === 'power' && <PowerSection />}
+      {kind === 'wireless' && <WirelessSection />}
+      {kind === 'gpio' && <GpioSection />}
+      {kind === 'io' && <IoRow kind={row} dir={dir} />}
     </g>
   );
 }
@@ -346,10 +278,10 @@ function Circuitry({ activeTool }) {
       aria-hidden="true"
       focusable="false"
     >
-      {/* Thin feed traces to the parts, underneath everything */}
-      {(geo?.parts || []).flatMap((p) =>
-        p.feeds.map((d, i) => <path key={`feed-${p.key}-${i}`} d={d} className="circuitry-decor" />)
-      )}
+      {/* Thin feed traces to the board sections, underneath everything */}
+      {(geo?.feeds || []).map((d) => (
+        <path key={`feed-${d}`} d={d} className="circuitry-decor" />
+      ))}
 
       {/* Copper wires, then gold pulses on top of the lit ones */}
       {wires.map((w) => (
@@ -361,8 +293,14 @@ function Circuitry({ activeTool }) {
           <path key={`pulse-${w.key}`} d={w.d} className={`circuitry-pulse${w.bus ? ' is-bus' : ''}`} />
         ))}
 
-      {(geo?.parts || []).map((p) => (
-        <Part key={p.key} part={p.part} x={p.x} y={p.y} scale={p.scale} />
+      {/* One-time power-on pulse, started by Contact's .is-on class */}
+      {(geo?.arrive || []).map((d) => (
+        <path key={`arrive-${d}`} d={d} pathLength="100" className="circuitry-arrive" />
+      ))}
+
+      {/* Board sections: power, wireless, GPIO, user I/O */}
+      {(geo?.sections || []).map((section) => (
+        <Section key={section.key} section={section} />
       ))}
 
       {/* Vias where wires land */}
