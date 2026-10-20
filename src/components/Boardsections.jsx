@@ -328,7 +328,7 @@ export function GpioSection() {
 
 /* ----- USER I/O rows: one chain of parts running from the Contact box outward ----- */
 // Drawn with the box edge at x = 0, growing toward -x (dir = 1) or +x (dir = -1 mirrors it).
-export function IoRow({ kind, dir }) {
+export function IoRow({ kind, dir, labels = [] }) {
   const X = (x) => -x * dir; // positive x = distance out from the box
   if (kind === 'reset' || kind === 'boot') {
     const sw = kind === 'reset' ? 'SW1' : 'SW2';
@@ -413,7 +413,7 @@ export function IoRow({ kind, dir }) {
         <Via x={X(154)} y={6} />
         <Chip0805 x={X(48)} y={0} />
         <Label x={X(48)} y={16}>
-          R3
+          {labels[0] || 'R3'}
         </Label>
 
         {/* D1: 0603 LED with a glowing lens */}
@@ -422,7 +422,7 @@ export function IoRow({ kind, dir }) {
         <rect x={X(107) - 12} y="-16" width="24" height="16" rx="2" className="board-body" />
         <rect x={X(107) - 7} y="-12.5" width="14" height="9" rx="1.5" className="board-lens" />
         <Label x={X(107)} y={14}>
-          D1
+          {labels[1] || 'D1'}
         </Label>
       </g>
     );

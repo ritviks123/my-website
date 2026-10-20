@@ -1,0 +1,199 @@
+/* ===== Chips: every card on the board looks like a component =====
+   A  = edge pins down both sides (like a DIP chip)
+   A↕ = the same, turned: pins on top and bottom
+   B  = quad package: fine pins on all four sides + gold mounting holes in the corners
+   C  = module: no pins (the pads come from the wires that land on it)
+   Pins are drawn with ::before / ::after outside each card's edge, so no extra HTML is needed.
+   Every pin row is centered, so a wire landing at the middle of a side always hits a pin. */
+
+:root {
+  --pin: color-mix(in srgb, var(--copper) 75%, transparent); /* pin color */
+  --pin-long: 7px; /* how far pins stick out */
+  --silk: color-mix(in srgb, var(--ink) 45%, transparent); /* pin-1 dot */
+}
+
+/* ===== Which card gets which package (move a selector to change it) ===== */
+/* A:  .project-card, .project-sidebar, .work-job, .work-split div.work-card, .about-bio, .about-now
+   A↕: [data-wire^="tk-"], .project-nearby, .project-stat
+   B:  .featured, .carousel, .resume-board, .work-tool-group, .about-side, .work-certs
+   C:  .project-spec, .project-figure, .contact-form (keeps its corner holes; its right side has the field LEDs) */
+
+/* Every chip anchors its pins (pages that need sticky cards override this later) */
+.project-card,
+.project-sidebar,
+.work-job,
+.work-split div.work-card,
+.about-bio,
+.about-now,
+[data-wire^="tk-"],
+.project-nearby,
+.project-stat,
+.work-certs,
+.featured,
+.carousel,
+.resume-board,
+.contact-form,
+.work-tool-group,
+.about-side {
+  position: relative;
+}
+
+/* ===== A: edge pins down both sides ===== */
+.project-card::before,
+.project-sidebar::before,
+.work-job::before,
+.work-split div.work-card::before,
+.about-bio::before,
+.about-now::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: calc(-1 * var(--pin-long));
+  right: calc(-1 * var(--pin-long));
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, transparent 9.5px, var(--pin) 9.5px 16.5px, transparent 16.5px) left center / var(--pin-long) 26px repeat-y,
+    linear-gradient(to bottom, transparent 9.5px, var(--pin) 9.5px 16.5px, transparent 16.5px) right center / var(--pin-long) 26px repeat-y;
+}
+
+/* ===== A↕: the same pins on top and bottom ===== */
+[data-wire^="tk-"]::before,
+.project-nearby::before,
+.project-stat::before {
+  content: "";
+  position: absolute;
+  top: calc(-1 * var(--pin-long));
+  bottom: calc(-1 * var(--pin-long));
+  left: 14px;
+  right: 14px;
+  pointer-events: none;
+  background:
+    linear-gradient(to right, transparent 9.5px, var(--pin) 9.5px 16.5px, transparent 16.5px) center top / 26px var(--pin-long) repeat-x,
+    linear-gradient(to right, transparent 9.5px, var(--pin) 9.5px 16.5px, transparent 16.5px) center bottom / 26px var(--pin-long) repeat-x;
+}
+
+/* Pin-1 dot in the top-left corner of every A chip */
+.project-card::after,
+.project-sidebar::after,
+.work-job::after,
+.work-split div.work-card::after,
+.about-bio::after,
+.about-now::after,
+[data-wire^="tk-"]::after,
+.project-nearby::after,
+.project-stat::after {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--silk);
+  pointer-events: none;
+}
+
+/* ===== B: quad package, fine pins on all four sides ===== */
+.featured::before,
+.carousel::before,
+.resume-board::before,
+.work-tool-group::before,
+.about-side::before,
+.work-certs::before {
+  content: "";
+  position: absolute;
+  top: 22px;
+  bottom: 22px;
+  left: calc(-1 * var(--pin-long));
+  right: calc(-1 * var(--pin-long));
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, transparent 6px, var(--pin) 6px 10px, transparent 10px) left center / var(--pin-long) 16px repeat-y,
+    linear-gradient(to bottom, transparent 6px, var(--pin) 6px 10px, transparent 10px) right center / var(--pin-long) 16px repeat-y;
+}
+
+.featured::after,
+.carousel::after,
+.resume-board::after,
+.work-tool-group::after,
+.about-side::after,
+.work-certs::after {
+  content: "";
+  position: absolute;
+  top: calc(-1 * var(--pin-long));
+  bottom: calc(-1 * var(--pin-long));
+  left: 22px;
+  right: 22px;
+  pointer-events: none;
+  background:
+    linear-gradient(to right, transparent 6px, var(--pin) 6px 10px, transparent 10px) center top / 16px var(--pin-long) repeat-x,
+    linear-gradient(to right, transparent 6px, var(--pin) 6px 10px, transparent 10px) center bottom / 16px var(--pin-long) repeat-x;
+}
+
+/* Gold mounting holes in the corners of B chips (doubled class names so they win over each card's own background) */
+.featured.featured,
+.work-tool-group.work-tool-group,
+.about-side.about-side,
+.work-certs.work-certs,
+.contact-form.contact-form {
+  background-image:
+    radial-gradient(circle at 11px 11px, var(--surface) 2.5px, var(--accent) 3px 4.5px, transparent 5px),
+    radial-gradient(circle at calc(100% - 11px) 11px, var(--surface) 2.5px, var(--accent) 3px 4.5px, transparent 5px),
+    radial-gradient(circle at 11px calc(100% - 11px), var(--surface) 2.5px, var(--accent) 3px 4.5px, transparent 5px),
+    radial-gradient(circle at calc(100% - 11px) calc(100% - 11px), var(--surface) 2.5px, var(--accent) 3px 4.5px, transparent 5px);
+}
+
+/* ===== Clean board: hide the old random doodles
+   (homepage buses, branches and the POWER / WIRELESS / GPIO / I/O parts stay) ===== */
+.circuitry-doodle,
+.circuitry-doodle-via,
+.circuitry-doodle-pad,
+.circuitry-doodle-body,
+.circuitry-doodle-part,
+.circuitry-joint {
+  display: none;
+}
+
+/* ===== More room between chips now that pins stick out ===== */
+/* Homepage toolkit cards */
+div:has(> [data-wire="tk-0"]) {
+  column-gap: 2rem;
+}
+
+/* Homepage toolkit: slimmer chips that hug their text, centered as a group */
+@media (min-width: 900px) {
+  div:has(> [data-wire="tk-0"]) {
+    grid-template-columns: repeat(4, minmax(0, 14rem));
+    justify-content: center;
+    column-gap: 3rem;
+  }
+}
+
+/* ===== LEDs ===== */
+/* Board LEDs hold steady (no breathing) with a soft glow */
+.circuitry .board-lens {
+  animation: none;
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--accent) 70%, transparent));
+}
+
+/* Contact field LEDs (D2, D3, D4): off until that field has text */
+.circuitry-part.is-field .board-lens {
+  fill: color-mix(in srgb, var(--ink) 12%, var(--surface));
+  filter: none;
+  transition: fill 0.2s ease;
+}
+
+.circuitry-part.is-field.is-filled .board-lens {
+  fill: var(--accent);
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 80%, transparent));
+}
+
+.circuitry-part.is-field.is-filled .board-trace {
+  stroke: var(--accent);
+  opacity: 1;
+}
+
+.circuitry-part.is-field.is-filled .board-via {
+  stroke: var(--accent);
+}

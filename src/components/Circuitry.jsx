@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { tools } from '../data/work';
 import { homeProjectIds } from '../data/projects';
 import { projectsUsingTool } from '../data/toolLinks';
-import { PowerSection, WirelessSection, GpioSection, IoRow } from './Boardsections.jsx';
+import { PowerSection, WirelessSection, GpioSection, IoRow } from './BoardSections.jsx';
 import { fillDoodles } from './doodles';
 import './Circuitry.css';
 
@@ -26,8 +26,8 @@ const MCU_RIGHT_TRACE = [
 
 // Board sections: width in their own units, where the bus feed attaches, and the biggest scale allowed
 const SECTION = {
-  power: { w: 300, anchor: [-150, 30], max: 1.5 },
-  wireless: { w: 300, anchor: [150, 0], max: 1.5 },
+  power: { w: 300, anchor: [-150, 30], max: 1.1 },
+  wireless: { w: 300, anchor: [150, 0], max: 1.1 },
   gpio: { w: 540, anchor: [270, -15], max: 1.3 },
   io: { w: 170, max: 1.5 },
 };
@@ -36,8 +36,7 @@ const SECTION = {
 const IO_ROWS = [
   ['left', 'reset', 0.11],
   ['left', 'boot', 0.31],
-  ['right', 'led', 0.11],
-  ['right', 'buzzer', 0.86],
+  ['left', 'led', 0.8], // power LED, under where the left bus lands
 ];
 
 // Background doodles: random traces and parts that fill empty space and lead nowhere
@@ -109,9 +108,9 @@ function measure(home) {
   const rightStart = MCU_RIGHT_TRACE.map(onMcu);
 
   const turnY = mcu.bottom + 32;
-  // Both buses land on the contact box's sides, level with its middle
+  // Left bus lands on the contact box's middle; the right one lower, clear of the field LEDs
   const leftEndY = contactForm.top + contactForm.height / 2;
-  const rightEndY = leftEndY;
+  const rightEndY = contactForm.top + contactForm.height * 0.86; // right bus lands below the field LEDs
   const leftEndX = contactForm.left;
 
   // Buses: MCU pin → gutter → down the page → into Contact
@@ -218,6 +217,24 @@ function measure(home) {
     sections.push({ key: `io-${kind}`, kind: 'io', row: kind, dir: side === 'left' ? 1 : -1, x: edge, y, s });
     ioRows[kind] = [y - 30 * s, y + 42 * s];
     ioWidth[side] = Math.max(ioWidth[side], SECTION.io.w * s);
+  });
+
+  // Contact fields: each field's pin continues out of the box into a resistor + LED (lit once it has text)
+  [...home.querySelectorAll('.contact-pin')].forEach((pin, i) => {
+    const r = toLocal(pin.getBoundingClientRect());
+    const s = fit(SECTION.io.w, 0, R - 24 - contactForm.right, SECTION.io.max);
+    if (s < 0.6) return;
+    sections.push({
+      key: `io-field-${i}`,
+      kind: 'io',
+      row: 'led',
+      dir: -1,
+      field: i,
+      labels: [`R${4 + i}`, `D${2 + i}`],
+      x: contactForm.right,
+      y: r.top + r.height / 2,
+      s,
+    });
   });
 
   // ===== Background doodles: fill every empty area below the hero =====
@@ -334,16 +351,24 @@ function measure(home) {
 }
 
 // Draws one board section at its spot and scale; lit when its bus is lit
-function Section({ section, litSides }) {
-  const { kind, row, dir, x, y, s, side } = section;
+function Section({ section, litSides, filled }) {
+  const { kind, row, dir, x, y, s, side, field, labels } = section;
   const lit = side === 'both' ? litSides.has('left') && litSides.has('right') : litSides.has(side);
-  const classes = ['circuitry-part', lit && 'is-lit', kind === 'io' && 'is-io'].filter(Boolean).join(' ');
+  const isField = field !== undefined; // a contact field's resistor + LED
+  const classes = [
+    'circuitry-part',
+    lit && 'is-lit',
+    kind === 'io' && (isField ? 'is-field' : 'is-io'),
+    isField && filled[field] && 'is-filled',
+  ]
+    .filter(Boolean)
+    .join(' ');
   return (
     <g className={classes} transform={`translate(${round(x)} ${round(y)}) scale(${round(s * 100) / 100})`}>
       {kind === 'power' && <PowerSection />}
       {kind === 'wireless' && <WirelessSection />}
       {kind === 'gpio' && <GpioSection />}
-      {kind === 'io' && <IoRow kind={row} dir={dir} />}
+      {kind === 'io' && <IoRow kind={row} dir={dir} labels={labels} />}
     </g>
   );
 }
@@ -351,6 +376,25 @@ function Section({ section, litSides }) {
 function Circuitry({ activeTool }) {
   const svgRef = useRef(null);
   const [geo, setGeo] = useState(null);
+  const [filled, setFilled] = useState([]); // which contact fields have text (their LEDs stay on)
+
+  // Watch the contact form: an LED turns on while its field has text
+  useEffect(() => {
+    const form = svgRef.current?.parentElement?.querySelector('[data-wire="contact-form"]');
+    if (!form) return undefined;
+    const check = () =>
+      setFilled([...form.querySelectorAll('.contact-field')].map((f) => Boolean(f.querySelector('input, textarea')?.value.trim())));
+    const later = () => setTimeout(check, 50); // after a reset or a successful send clears the form
+    check();
+    form.addEventListener('input', check);
+    form.addEventListener('reset', later);
+    form.addEventListener('submit', later);
+    return () => {
+      form.removeEventListener('input', check);
+      form.removeEventListener('reset', later);
+      form.removeEventListener('submit', later);
+    };
+  }, []);
 
   // Measure now, then again whenever the page resizes or fonts finish loading
   useEffect(() => {
@@ -440,7 +484,7 @@ function Circuitry({ activeTool }) {
 
       {/* Board sections: power, wireless, GPIO, user I/O */}
       {(geo?.sections || []).map((section) => (
-        <Section key={section.key} section={section} litSides={litSides} />
+        <Section key={section.key} section={section} litSides={litSides} filled={filled} />
       ))}
 
       {/* Vias where wires land */}

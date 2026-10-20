@@ -1,83 +1,88 @@
-/* ===== resume page ===== */
+/* ===== resume page: centered header, then the PDF on a board ===== */
 .resume {
-  max-width: 64rem;
+  max-width: 56rem;
   margin: 0 auto;
-  padding: 2rem 1rem 4rem;
+  padding: 2.5rem 1rem 4rem;
 }
 
-/* ===== header: title + actions ===== */
-.resume-header {
-  display: grid;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+.resume-top {
+  margin-bottom: 2.5rem;
+  text-align: center;
 }
 
-/* Page title styled as a small // label (still the page's one h1) */
-.resume-intro h1 {
-  margin: 0 0 0.5rem;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--muted);
+.resume-title {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  font-weight: 560;
+  letter-spacing: -0.04em;
 }
 
 .resume-updated {
-  margin: 0 0 1rem;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  margin: 0.75rem 0 0;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--muted);
 }
 
 .resume-summary {
   max-width: 36rem;
-  margin: 0;
-  line-height: 1.7;
-  color: var(--text);
+  margin: 1rem auto 0;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--muted);
 }
 
-/* ===== highlights (phones only) ===== */
+/* ===== highlights (phones only), LED bullets ===== */
 .resume-highlights {
   display: grid;
-  gap: 0.5rem;
-  margin: 1.25rem 0 0;
+  gap: 0.6rem;
+  width: fit-content;
+  margin: 1.5rem auto 0;
   padding: 0;
   list-style: none;
+  text-align: left;
 }
 
 .resume-highlights li {
   position: relative;
   padding-left: 1.25rem;
-  font-size: 0.9rem;
-  color: var(--muted);
+  font-size: 0.92rem;
+  color: var(--text);
 }
 
 .resume-highlights li::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 0.8em;
-  width: 0.6rem;
-  height: 1px;
+  top: 0.45em;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
   background: var(--accent);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
-/* ===== actions ===== */
+/* ===== actions: gold pill + quiet link, like the homepage hero ===== */
 .resume-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 1.25rem;
+  margin-top: 1.75rem;
 }
 
 .resume-button {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.7rem 1.2rem;
-  border-radius: var(--radius);
+  height: 3rem;
+  padding: 0 1.5rem;
+  border-radius: 999px;
   background: var(--accent);
-  color: var(--bg);
+  color: var(--surface);
   font-weight: 600;
+  text-decoration: none;
   transition: background 0.15s ease, transform 0.15s ease;
 }
 
@@ -89,7 +94,10 @@
 
 .resume-link {
   display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
   color: var(--muted);
+  text-decoration: none;
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
@@ -100,8 +108,8 @@
 }
 
 .resume-note {
-  margin: 0;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  margin: 1.25rem 0 0;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--muted);
 }
@@ -111,15 +119,23 @@
   display: none;
 }
 
+/* Card with a mini PCB inside: gold mounting holes + faint dot grid around the page */
+.resume-board {
+  padding: 0.75rem;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
+}
+
 /* Letter-size shape, so the whole page shows with no inner scrollbar */
 .resume-frame {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 8.5 / 11;
-  border: 1px solid var(--border);
+  border: 0;
   border-radius: var(--radius);
-  background: var(--surface);
+  background: var(--bg);
 }
 
 /* ===== tablet+ ===== */
@@ -129,27 +145,59 @@
   }
 }
 
-/* ===== laptop: title left, buttons right, full-width preview ===== */
+/* Date in the board's bottom-right corner, under the PDF */
+.resume-updated-board {
+  margin: 0.6rem 1.25rem 0 0; /* clear of the bottom-right mounting hole */
+  text-align: right;
+}
+
+/* ===== laptop: show the preview ===== */
 @media (min-width: 900px) {
-  .resume-header {
-    grid-template-columns: 1fr auto;
-    align-items: end;
-    gap: 2rem;
+  /* Zoom only the header: Chrome's PDF viewer mis-sizes the page inside a zoomed area,
+     so the preview stays unzoomed and is simply drawn 1.3x as wide to match */
+  .resume {
+    max-width: calc(56rem * var(--desktop-zoom));
+    padding: calc(3.5rem * var(--desktop-zoom)) calc(1.25rem * var(--desktop-zoom)) calc(6rem * var(--desktop-zoom));
+  }
+
+  .resume-top {
+    zoom: var(--desktop-zoom);
   }
 
   .resume-highlights,
-  .resume-note {
+  .resume-note,
+  .resume-updated-top {
     display: none;
   }
 
   .resume-preview {
     display: block;
   }
+
+  /* Holes and dot grid show in the frame around the PDF */
+  .resume-board {
+    padding: 2.25rem 2.25rem 1.25rem;
+    background:
+      radial-gradient(circle at 14px 14px, var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+      radial-gradient(circle at calc(100% - 14px) 14px, var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+      radial-gradient(circle at 14px calc(100% - 14px), var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+      radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+      radial-gradient(color-mix(in srgb, var(--ink) 9%, transparent) 1px, transparent 1.5px) 0 0 / 16px 16px,
+      var(--surface);
+  }
 }
 
 /* ===== reduced motion: color only ===== */
 @media (prefers-reduced-motion: reduce) {
+  .resume-button,
   .resume-link {
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, background 0.15s ease;
+  }
+
+  .resume-button:hover,
+  .resume-button:focus-visible,
+  .resume-link:hover,
+  .resume-link:focus-visible {
+    transform: none;
   }
 }

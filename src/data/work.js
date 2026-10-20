@@ -54,7 +54,7 @@ export const education = {
 // year and url are optional: leave '' to hide them
 export const certifications = [
   {
-    name: 'Solutions Architect, Associate',
+    name: 'Solutions Architect, Associate Level',
     issuer: 'AWS',
     year: '',
     url: '',

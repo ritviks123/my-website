@@ -162,12 +162,12 @@
   outline: none;
 }
 
-/* A pin from each field out past the box edge; lights while you type in it */
+/* Each field's pin runs to the box edge; the resistor + LED outside are drawn by the board circuitry */
 .contact-pin {
   position: absolute;
   top: 50%;
-  right: calc(-1.75rem - 6px);
-  width: calc(1.75rem + 6px);
+  right: -1.75rem;
+  width: 1.75rem;
   height: 2px;
   background: color-mix(in srgb, var(--copper) 45%, transparent);
   transform: translateY(-50%);
@@ -175,28 +175,9 @@
   transition: background 0.2s ease;
 }
 
-.contact-pin::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 0;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  background: var(--copper);
-  transform: translateY(-50%);
-  transition: background 0.2s ease, box-shadow 0.2s ease;
-}
-
 .contact-field:focus-within .contact-pin,
 .contact-field:has(input:not(:placeholder-shown), textarea:not(:placeholder-shown)) .contact-pin {
   background: var(--accent);
-}
-
-.contact-field:focus-within .contact-pin::after,
-.contact-field:has(input:not(:placeholder-shown), textarea:not(:placeholder-shown)) .contact-pin::after {
-  background: var(--accent);
-  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent);
 }
 
 .contact-honeypot {

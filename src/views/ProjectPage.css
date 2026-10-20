@@ -682,13 +682,11 @@
 
   .project-layout {
     grid-template-columns: minmax(0, 1fr) 17rem;
-    gap: 3rem;
+    gap: 4.5rem;
   }
 
-  /* Sidebar stays in view while you read */
+  /* No sticky sidebar: the wiring is drawn once, so the card has to stay put */
   .project-sidebar {
-    position: sticky;
-    top: 6rem;
     align-self: start;
   }
 

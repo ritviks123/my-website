@@ -64,10 +64,20 @@
 @media (min-width: 900px) {
   .projects-page {
     zoom: var(--desktop-zoom);
+    max-width: 72rem; /* wider page so the zig-zag has room */
     padding: 3.5rem 1.25rem 6rem;
   }
 
   .projects-page-list {
-    gap: 3rem;
+    gap: 5rem;
+  }
+
+  /* Cards zig-zag: odd ones lean left, even ones lean right, overlapping about half their width */
+  .projects-page-list > .featured {
+    width: 66%;
+  }
+
+  .projects-page-list > .featured:nth-child(even) {
+    margin-left: auto;
   }
 }
