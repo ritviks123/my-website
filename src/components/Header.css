@@ -129,97 +129,21 @@
   }
 }
 
-/* ===== Hero intro: "RS" unfolds into the full name, then the intro fades in ===== */
-
-/* Name for screen readers (the animated letters are hidden from them) */
-.header-sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+/* ===== Hero is just the chip now: no title above it, so no gap above it ===== */
+.header-media {
+  margin-top: 0;
 }
 
-.header-name {
-  white-space: nowrap;
+.header-hero {
+  padding-top: 1.5rem;
 }
 
-/* Each hidden group of letters sits in a grid column that grows from 0 to full width */
-.header-unfold {
-  display: inline-grid;
-  grid-template-columns: 1fr;
-}
-
-.header-unfold > span {
-  min-width: 0;
-  overflow-x: clip; /* hides the letters sideways without cutting off the "g" */
-  white-space: pre;
-}
-
-.header.is-intro .header-initial {
-  animation: header-light 0.6s ease 0.1s both;
-}
-
-.header.is-intro .header-unfold {
-  animation: header-unfold 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.9s both;
-}
-
-.header.is-intro .header-unfold > span {
-  animation: header-fade 0.6s ease 1.15s both;
-}
-
-.header.is-intro .header-intro {
-  animation: header-rise 0.7s ease 1.9s both;
-}
-
-/* Initials switch on gold like an LED, then settle to the normal text color */
-@keyframes header-light {
-  0% {
-    opacity: 0;
-    color: var(--accent);
+@media (min-width: 640px) {
+  .header-media {
+    margin-top: 0;
   }
-  60% {
-    opacity: 1;
-    color: var(--accent);
-  }
-}
 
-@keyframes header-unfold {
-  from {
-    grid-template-columns: 0fr;
-  }
-  to {
-    grid-template-columns: 1fr;
-  }
-}
-
-@keyframes header-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes header-rise {
-  from {
-    opacity: 0;
-    transform: translateY(0.5rem);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* Reduced motion: skip straight to the finished hero */
-@media (prefers-reduced-motion: reduce) {
-  .header.is-intro .header-initial,
-  .header.is-intro .header-unfold,
-  .header.is-intro .header-unfold > span,
-  .header.is-intro .header-intro {
-    animation: none;
+  .header-hero {
+    padding-top: 2.5rem;
   }
 }
