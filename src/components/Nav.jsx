@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import { FiMenu, FiX } from 'react-icons/fi';
+import ChipMark from './ChipMark';
 import './Nav.css';
 
 // Swap later: add Work and About here once those pages exist
@@ -49,20 +50,20 @@ function Nav() {
     <nav className={navClass} aria-label="Main">
       <div className="nav-inner">
         <Link to="/" className="nav-logo" onClick={closeMenu}>
+          <ChipMark />
           ritvik.singh
         </Link>
 
-        <ul className="nav-links">
-          {PAGE_LINKS.map((link) => (
-            <li key={link.to}>
-              <Link to={link.to} className="nav-link">
-                {link.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-
         <div className="nav-actions">
+          <ul className="nav-links">
+            {PAGE_LINKS.map((link) => (
+              <li key={link.to}>
+                <Link to={link.to} className="nav-link">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>          
           <Link to="/resume" className="nav-link nav-resume">
             Resume
           </Link>

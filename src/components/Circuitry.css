@@ -1,0 +1,278 @@
+/* ===== background circuitry: buses in the side gutters, behind every section ===== */
+
+/* The homepage wrapper: a new layer stack so the wires can sit behind the content */
+.home {
+  position: relative;
+  isolation: isolate;
+}
+
+.circuitry {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  display: none;
+  overflow: visible;
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .circuitry {
+    display: block;
+  }
+}
+
+/* Branches are thin; the two main buses are thick */
+.circuitry-wire.is-bus {
+  stroke-width: 4.5;
+}
+
+.circuitry-wire {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.4;
+  transition: stroke 0.3s ease, opacity 0.3s ease;
+}
+
+.circuitry-wire.is-lit {
+  stroke: var(--accent);
+  opacity: 1;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent) 60%, transparent));
+}
+
+/* Bright dashes flowing along lit wires, away from the MCU */
+.circuitry-pulse {
+  fill: none;
+  stroke: var(--accent-dark);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 6 30;
+  animation: circuitry-flow 0.9s linear infinite;
+}
+
+.circuitry-pulse.is-bus {
+  stroke-width: 4.5;
+}
+
+.circuitry-via {
+  fill: var(--bg);
+  stroke: var(--copper);
+  stroke-width: 2.5;
+  opacity: 0.7;
+  transition: stroke 0.3s ease, opacity 0.3s ease;
+}
+
+.circuitry-via.is-lit {
+  stroke: var(--accent);
+  opacity: 1;
+}
+/* Parts: visible detail, but quieter than the real wires */
+.circuitry-decor {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  opacity: 0.35;
+}
+
+.circuitry-part {
+  opacity: 0.8;
+}
+
+.circuitry-body {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--copper) 60%, transparent);
+  stroke-width: 1.5;
+}
+
+.circuitry-metal {
+  fill: color-mix(in srgb, var(--ink) 25%, var(--surface));
+  stroke: color-mix(in srgb, var(--ink) 45%, var(--surface));
+  stroke-width: 1.2;
+}
+
+.circuitry-die {
+  fill: color-mix(in srgb, var(--ink) 12%, var(--surface));
+}
+
+.circuitry-dark {
+  fill: color-mix(in srgb, var(--ink) 8%, var(--surface));
+}
+
+.circuitry-edge {
+  stroke: color-mix(in srgb, var(--ink) 45%, var(--surface));
+  stroke-width: 1.2;
+}
+
+.circuitry-fin,
+.circuitry-groove {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 20%, var(--surface));
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.circuitry-groove {
+  stroke-width: 2;
+}
+
+.circuitry-vent {
+  stroke: color-mix(in srgb, var(--ink) 45%, var(--surface));
+  stroke-width: 1.5;
+}
+
+.circuitry-hole {
+  fill: var(--bg);
+}
+
+.circuitry-lead {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.circuitry-pad {
+  fill: var(--copper);
+}
+
+/* The LED slowly breathes */
+.circuitry-lens {
+  fill: var(--accent);
+  animation: circuitry-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes circuitry-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Power-on pulse: a single bright dash runs into Contact once it's on screen */
+.circuitry-arrive {
+  fill: none;
+  stroke: var(--accent-dark);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 8 200;
+  stroke-dashoffset: 8;
+  opacity: 0;
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+
+.home:has(.contact.is-on) .circuitry-arrive {
+  animation: circuitry-arrive 1.1s ease-in-out forwards;
+}
+
+@keyframes circuitry-arrive {
+  0% {
+    stroke-dashoffset: 8;
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -100;
+    opacity: 0;
+  }
+}
+
+@keyframes circuitry-flow {
+  to {
+    stroke-dashoffset: -36;
+  }
+}
+
+/* Reduced motion: lit wires turn gold, no flowing dashes */
+@media (prefers-reduced-motion: reduce) {
+  .circuitry-pulse {
+    display: none;
+  }
+
+  .circuitry-arrive {
+    display: none;
+  }
+
+  .circuitry-lens {
+    animation: none;
+  }
+
+  .circuitry-wire,
+  .circuitry-via {
+    transition: none;
+  }
+}
+
+/* ===== Thicker traces (swap these numbers to taste) ===== */
+.circuitry-wire,
+.circuitry-pulse {
+  stroke-width: 3;
+}
+
+.circuitry-wire.is-bus,
+.circuitry-pulse.is-bus,
+.circuitry-arrive {
+  stroke-width: 6.5;
+}
+
+.circuitry-via {
+  stroke-width: 2.5;
+}
+
+/* ===== Background doodles: faint copper, never lit ===== */
+.circuitry-doodle {
+  fill: none;
+  stroke: var(--copper);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.25;
+}
+
+.circuitry-doodle-via {
+  fill: var(--bg);
+  stroke: var(--copper);
+  stroke-width: 2;
+  opacity: 0.4;
+}
+
+/* Doodle chips: dark body with faint copper pads */
+.circuitry-doodle-body {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--copper) 45%, transparent);
+  stroke-width: 1.5;
+  opacity: 0.7;
+}
+
+.circuitry-doodle-pad {
+  fill: var(--copper);
+  opacity: 0.35;
+}
+
+/* ===== Article side boards ===== */
+/* Bottom-layer traces: dashed and dimmer, so top traces read as crossing over them */
+.circuitry-doodle.is-back {
+  stroke-dasharray: 7 6;
+  opacity: 0.2;
+}
+
+/* Small resistors sitting on a trace */
+.circuitry-doodle-part {
+  fill: var(--surface);
+  stroke: color-mix(in srgb, var(--copper) 55%, transparent);
+  stroke-width: 1.5;
+}
+
+/* Dots where traces join the main rail */
+.circuitry-joint {
+  fill: var(--copper);
+  opacity: 0.55;
+}

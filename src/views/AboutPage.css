@@ -1,80 +1,91 @@
-/* ===== about page ===== */
+/* ===== about page: centered header, photo card + bio ===== */
 .about {
-  max-width: 64rem;
+  max-width: 56rem;
   margin: 0 auto;
-  padding: 2rem 1rem 4rem;
+  padding: 2.5rem 1rem 4rem;
 }
 
-.about-eyebrow {
-  margin: 0 0 1rem;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-/* Phone order: headline, photo + facts, bio */
-.about-layout {
-  display: grid;
-  grid-template-areas:
-    "title"
-    "side"
-    "body";
-  gap: 2rem;
+.about-top {
+  margin-bottom: 2.5rem;
+  text-align: center;
 }
 
 .about-title {
-  grid-area: title;
-  max-width: 22ch;
   margin: 0;
-  font-size: clamp(1.75rem, 5.5vw, 2.75rem);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  font-weight: 560;
+  letter-spacing: -0.04em;
 }
 
+.about-intro {
+  max-width: 34rem;
+  margin: 1rem auto 0;
+  font-size: 1.15rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* Shared card look: dark surface with a copper edge drawn inside */
+.about-side,
+.about-bio,
+.about-now {
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
+}
+
+/* Phones: photo card, then bio */
+.about-layout {
+  display: grid;
+  gap: 2rem;
+}
+
+/* ===== photo + facts card ===== */
 .about-side {
-  grid-area: side;
+  padding: 1.1rem;
+  max-width: 22rem;
 }
 
-.about-body {
-  grid-area: body;
-}
-
-/* ===== photo ===== */
 .about-photo {
   display: block;
   width: 100%;
-  max-width: 20rem;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  border: 1px solid var(--border);
   border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--copper) 25%, transparent);
   background: var(--bg);
 }
 
-/* Placeholder: perfboard dot pattern */
+/* Placeholder: a mini PCB (gold mounting holes + faint dot grid) */
 .about-photo-empty {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
-  background-size: 16px 16px;
+  background:
+    radial-gradient(circle at 14px 14px, var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at calc(100% - 14px) 14px, var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at 14px calc(100% - 14px), var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(color-mix(in srgb, var(--ink) 9%, transparent) 1px, transparent 1.5px) 0 0 / 16px 16px,
+    var(--bg);
 }
 
 .about-photo-empty span {
   padding: 0.25rem 0.6rem;
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--copper) 35%, transparent);
   border-radius: var(--radius);
   background: var(--bg);
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
-/* ===== quick facts ===== */
+/* Quick facts: label left, value right, like a datasheet */
 .about-facts {
-  margin: 1.5rem 0 0;
+  margin: 0.5rem 0 0;
+  padding: 0 0.5rem;
 }
 
 .about-fact {
@@ -82,17 +93,16 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.6rem 0;
-  border-bottom: 1px solid var(--border);
 }
 
-.about-fact:first-child {
-  border-top: 1px solid var(--border);
+.about-fact + .about-fact {
+  border-top: 1px solid color-mix(in srgb, var(--copper) 20%, transparent);
 }
 
 .about-fact dt {
   flex-shrink: 0;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
@@ -100,15 +110,19 @@
 
 .about-fact dd {
   margin: 0;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   text-align: right;
   color: var(--ink);
 }
 
-/* ===== bio ===== */
+/* ===== bio: a card, like the article text boxes ===== */
+.about-bio {
+  padding: 1.4rem 1.5rem;
+}
+
 .about-bio p {
-  margin: 0 0 1.1rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.05rem;
   line-height: 1.75;
   color: var(--text);
 }
@@ -117,17 +131,16 @@
   margin-bottom: 0;
 }
 
-/* ===== now ===== */
+/* ===== now: a card with LED bullets ===== */
 .about-now {
-  margin-top: 2.5rem;
-  padding-top: 2rem;
-  border-top: 1px solid var(--border);
+  margin-top: 3rem;
+  padding: 1.25rem 1.35rem;
 }
 
 .about-heading {
   margin: 0 0 1rem;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
   font-weight: 500;
   letter-spacing: 0.02em;
   color: var(--muted);
@@ -135,20 +148,36 @@
 
 .about-now-list {
   display: grid;
-  gap: 0.9rem;
+  gap: 1rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .about-now-list li {
+  position: relative;
   display: grid;
   gap: 0.15rem;
+  padding-left: 1.25rem;
   line-height: 1.6;
+  color: var(--text);
+}
+
+/* Little gold LED in front of each item */
+.about-now-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
 .about-now-label {
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -162,26 +191,21 @@
   }
 }
 
-/* ===== laptop: photo + facts left, text right ===== */
+/* ===== laptop: photo card left (stays in view), text right, same zoom as the homepage ===== */
 @media (min-width: 900px) {
+  .about {
+    zoom: var(--desktop-zoom);
+    padding: 3.5rem 1.25rem 6rem;
+  }
+
   .about-layout {
     grid-template-columns: 17rem 1fr;
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-      "side title"
-      "side body";
-    column-gap: 4rem;
-    row-gap: 2rem;
+    column-gap: 5rem;
   }
 
-  .about-photo {
-    max-width: none;
-  }
-
-  /* Photo column stays in view while you read */
+  /* No sticky photo: the wiring is drawn once, so the card has to stay put */
   .about-side {
-    position: sticky;
-    top: 5.5rem;
     align-self: start;
+    max-width: none;
   }
 }

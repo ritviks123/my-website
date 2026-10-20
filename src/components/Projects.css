@@ -1,65 +1,79 @@
+/* ===== home projects: 2-column grid of cards (narrower than the toolkit) ===== */
 .projects {
-  max-width: 64rem;
+  --projects-max: 62rem;
+  padding: 3rem 0 4rem;
+}
+
+.projects-inner {
+  max-width: var(--projects-max);
   margin: 0 auto;
-  padding: 2.5rem 1rem 3rem;
-  border-top: 1px solid var(--border);
+  padding: 0 1rem;
 }
 
 .projects-top {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  margin: 0 0 1.75rem;
+  margin-bottom: 2.5rem;
+  text-align: center;
 }
 
-.projects-heading {
-  margin: 0;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 1rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  color: var(--muted);
-}
-
-.projects-all {
+/* "/projects" label: a mono path that links to the projects page */
+.projects-label {
   display: inline-block;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.85rem;
+  margin: 0 0 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
   color: var(--muted);
-  transform-origin: right center;
+  transform-origin: left center;
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.projects-all:hover,
-.projects-all:focus-visible {
+.projects-label:hover,
+.projects-label:focus-visible {
   color: var(--accent);
   transform: scale(1.08);
 }
 
+.projects-heading {
+  margin: 0;
+  font-size: clamp(1.75rem, 3vw + 0.5rem, 2.25rem);
+  font-weight: 560;
+}
+
+.projects-intro {
+  max-width: 40rem;
+  margin: 1rem auto 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
-  gap: 1.25rem;
+  gap: 2.5rem 3rem;
+}
+
+@media (min-width: 700px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* Card (every card is a link) */
 .project-card {
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
+  padding: 1.75rem;
+  border-radius: 12px;
   background: var(--surface);
+  /* Copper edge drawn inside the card (no real border, so the hover panel lines up exactly) */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
   color: var(--text);
-  cursor: pointer;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.project-card:hover {
-  border-color: var(--accent);
+.project-card:hover,
+.project-card:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--accent);
   transform: translateY(-3px);
-  text-decoration: none;
 }
 
 .project-card:focus-visible {
@@ -67,92 +81,199 @@
   outline-offset: 3px;
 }
 
-/* Image (any photo is cropped to the same 16:9 shape) */
-.project-image {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
+/* Lit by the toolkit: this project uses the active tool */
+.project-card.is-lit {
+  box-shadow:
+    inset 0 0 0 1px var(--accent),
+    0 0 28px -8px color-mix(in srgb, var(--accent) 70%, transparent);
 }
 
-/* Placeholder: perfboard dot pattern */
-.project-image-empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg);
-  background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
-  background-size: 16px 16px;
-}
-
-.project-image-empty span {
-  padding: 0.25rem 0.6rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* Text */
-.project-body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 0.6rem;
-  padding: 1rem 1.1rem 1.2rem;
-}
-
-.project-meta {
+/* Title left, year right */
+.project-card-top {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 0.75rem;
 }
 
-.project-body h3 {
+.project-card-title {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 1.1875rem;
+  font-weight: 560;
 }
 
 .project-year {
   flex-shrink: 0;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--muted);
 }
 
-.project-body p {
+/* Visual area (animation, photo, or placeholder) */
+.project-visual {
+  margin-top: 1.5rem;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--copper) 25%, transparent);
+  /* PCB look: 4 gold mounting holes + a faint dot grid */
+  background:
+    radial-gradient(circle at 14px 14px, var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at calc(100% - 14px) 14px, var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at 14px calc(100% - 14px), var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(color-mix(in srgb, var(--ink) 9%, transparent) 1px, transparent 1.5px) 0 0 / 16px 16px,
+    var(--bg);
+}
+
+.project-visual img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project-visual-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.project-visual-empty span {
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Summary + tags: below the visual on touch screens */
+.project-reveal {
+  margin-top: 1rem;
+}
+
+.project-card-sub {
   margin: 0;
   font-size: 0.95rem;
-  line-height: 1.6;
+  line-height: 1.5;
+  color: var(--text);
 }
 
 .project-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin: 0.2rem 0 0;
+  margin: 0.75rem 0 0;
   padding: 0;
   list-style: none;
 }
 
 .project-tags li {
-  padding: 0.15rem 0.55rem;
-  border-radius: calc(var(--radius) - 2px);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
   background: var(--accent-tint);
   color: var(--accent);
-  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
 }
 
-/* Tablets and desktops */
+/* Mouse devices: on hover the card unrolls a panel underneath (animation stays visible) */
+@media (hover: hover) {
+  .project-card {
+    position: relative;
+    /* On hover-off: outline fades and the card drops back a layer once the panel is up */
+    transition: box-shadow 0.15s ease 0.3s, transform 0.15s ease, filter 0.3s ease, z-index 0s linear 0.3s;
+  }
+
+  /* Starts 12px up inside the card: covers its rounded bottom corners while open,
+     then hands them back gradually as it rolls up (no seam, no corner pop) */
+  .project-reveal {
+    position: absolute;
+    top: calc(100% - 12px);
+    right: 0;
+    left: 0;
+    margin: 0;
+    padding: 12px 1.75rem 1.5rem;
+    border-radius: 0 0 12px 12px;
+    background: var(--surface);
+    clip-path: inset(0 0 100% 0 round 0 0 12px 12px);
+    transition: clip-path 0.3s ease;
+  }
+
+  /* Card + panel share one gold outline, and sit above the card in the row below */
+  .project-card:hover,
+  .project-card:focus-visible {
+    z-index: 2;
+    box-shadow: none;
+    filter:
+      drop-shadow(1px 0 0 var(--accent))
+      drop-shadow(-1px 0 0 var(--accent))
+      drop-shadow(0 1px 0 var(--accent))
+      drop-shadow(0 -1px 0 var(--accent));
+    transition: box-shadow 0.15s ease, transform 0.15s ease, filter 0.15s ease, z-index 0s;
+  }
+
+  .project-card:hover .project-reveal,
+  .project-card:focus-visible .project-reveal {
+    clip-path: inset(0 round 0 0 12px 12px);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: reduce) {
+  .project-reveal {
+    transition: none;
+  }
+}
+
 @media (min-width: 640px) {
+  .projects-inner {
+    padding: 0 1.25rem;
+  }
+}
+
+/* Desktop: same size knob as the rest of the homepage; extra bottom room for the last row's panels */
+@media (min-width: 900px) {
   .projects {
-    padding: 3rem 1.25rem 4rem;
+    zoom: var(--desktop-zoom);
+    padding: 3rem 0 11rem;
+    /* Card width follows the window HEIGHT, so all 4 cards fit on one screen (never wider than 62rem).
+       7rem = room left for the nav. */
+    --projects-max: min(62rem, calc(((100vh - 7rem) / var(--desktop-zoom) - 126px) / 0.75 + 64px));
+  }
+
+  /* Slimmer card padding = bigger animation inside the same card */
+  .project-card {
+    padding: 1.25rem;
+  }
+
+  .project-visual {
+    margin-top: 1.25rem;
+  }
+}
+
+/* Hover panel matches the slimmer card padding */
+@media (min-width: 900px) and (hover: hover) {
+  .project-reveal {
+    padding: 12px 1.25rem 1.25rem;
+  }
+}
+
+/* Reduced motion: color change only */
+@media (prefers-reduced-motion: reduce) {
+  .project-card,
+  .projects-label {
+    transition: box-shadow 0.15s ease, color 0.2s ease;
+  }
+
+  .project-card:hover,
+  .project-card:focus-visible,
+  .projects-label:hover,
+  .projects-label:focus-visible {
+    transform: none;
   }
 }

@@ -1,14 +1,31 @@
 /* ===== ProjectPage: article page for /projects/:projectId ===== */
 
+/* Holds the page (and later its background circuitry), like .home */
+.project-board {
+  position: relative;
+  isolation: isolate;
+}
+
 .project-page {
-  --project-mono: ui-monospace, "Cascadia Code", Consolas, monospace;
+  --project-mono: var(--font-mono);
   padding: 2rem 0 4rem;
 }
 
 .project-container {
-  max-width: 64rem;
+  max-width: 56rem;
   margin: 0 auto;
   padding: 0 1rem;
+}
+
+/* Shared card look: dark surface with a copper edge drawn inside */
+.project-spec,
+.project-stat,
+.project-figure,
+.project-sidebar,
+.project-nearby {
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
 }
 
 /* ----- Back link ----- */
@@ -49,30 +66,21 @@
   border-top: 1px solid var(--border);
 }
 
-.project-topline-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  color: var(--accent);
-}
-
-.project-topline-dot {
-  font-size: 0.6rem;
-}
-
 /* ----- Title, subtitle, lede ----- */
 .project-title {
   margin: 0;
   font-size: clamp(2.5rem, 9vw, 4rem);
+  font-weight: 600;
   line-height: 1.05;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em;
   color: var(--ink);
   overflow-wrap: anywhere;
 }
 
 .project-subtitle {
   margin: 0.6rem 0 0;
-  font-size: 1rem;
+  font-family: var(--project-mono);
+  font-size: 0.85rem;
   color: var(--muted);
 }
 
@@ -90,12 +98,12 @@
   color: var(--text);
 }
 
-/* ----- Link row ----- */
+/* ----- Links (inside the spec strip) ----- */
 .project-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
-  margin: 1.25rem 0 0;
+  gap: 0.35rem 1.1rem;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -104,7 +112,8 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.9rem;
+  font-family: var(--project-mono);
+  font-size: 0.85rem;
   color: var(--accent);
   text-decoration: none;
   transform-origin: left center;
@@ -117,7 +126,7 @@
   transform: scale(1.08);
 }
 
-/* ----- Chips: badges (dark) then tags (purple) ----- */
+/* ----- Chips: badges (dark) then tags (gold) ----- */
 .project-chips {
   display: flex;
   flex-wrap: wrap;
@@ -128,64 +137,112 @@
 }
 
 .project-chip {
-  padding: 0.25rem 0.6rem;
+  padding: 0.25rem 0.7rem;
   font-family: var(--project-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--ink);
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--copper) 35%, transparent);
+  border-radius: 999px;
 }
 
 .project-chip-tag {
-  color: var(--accent-dark);
+  color: var(--accent);
   background: var(--accent-tint);
   border-color: transparent;
 }
 
-/* ----- Hero frame (window with 3 dots) ----- */
-.project-hero {
-  margin: 2.5rem 0 3rem;
+/* ----- Spec strip: one compact card, cells sized to their content ----- */
+.project-spec {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 1.75rem 0 0;
   overflow: hidden;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: calc(var(--radius) * 1.5);
 }
 
-.project-hero-bar {
-  display: flex;
-  gap: 0.4rem;
-  padding: 0.65rem 0.9rem;
-  border-bottom: 1px solid var(--border);
+.project-spec-cell {
+  padding: 0.9rem 1.1rem;
+  border-top: 1px solid color-mix(in srgb, var(--copper) 20%, transparent);
 }
 
-.project-hero-bar span {
-  width: 0.55rem;
-  height: 0.55rem;
-  background: var(--border);
-  border-radius: 50%;
+.project-spec-cell dt {
+  margin: 0 0 0.35rem;
+  font-family: var(--project-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-/* Perfboard dots behind the diagram, and for empty images */
-.project-hero-body,
-.project-hero-empty {
-  background-image: radial-gradient(var(--border) 1px, transparent 1.5px);
-  background-size: 18px 18px;
+.project-spec-cell dd {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--ink);
 }
 
-.project-hero-body {
+.project-spec-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Links side by side (they wrap if the strip runs out of room) */
+.project-spec .project-links {
+  gap: 0.3rem 1rem;
+}
+
+/* Gold status LED */
+.project-led {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+/* ----- Media carousel ----- */
+.project-media {
+  margin: 1.75rem 0 0;
+}
+
+/* ----- Key numbers ----- */
+.project-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-stat {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1rem 1.1rem;
+}
+
+.project-stat-value {
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+}
+
+.project-stat-label {
+  font-family: var(--project-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* ----- Big diagram (top, between paragraphs, or at the end of the article) ----- */
+.project-figure {
+  margin: 0 0 2rem;
   padding: 1.5rem 1rem;
-}
-
-.project-hero-empty {
-  aspect-ratio: 16 / 9;
-}
-
-.project-hero-image {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  background-image: radial-gradient(color-mix(in srgb, var(--ink) 7%, transparent) 1px, transparent 1.5px);
+  background-size: 16px 16px;
+  background-color: var(--surface);
 }
 
 /* ----- Diagrams: flow + compare ----- */
@@ -197,8 +254,16 @@
   margin: 2rem 0;
   padding: 1.5rem 1rem;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
+}
+
+/* The big diagram already has its card, so no second frame when it sits between paragraphs */
+.project-figure .project-diagram {
+  margin: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
 }
 
 .project-flow {
@@ -219,7 +284,7 @@
   font-size: 0.9rem;
   color: var(--ink);
   background: var(--bg);
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--copper) 40%, transparent);
   border-radius: var(--radius);
 }
 
@@ -267,7 +332,7 @@
 .project-compare-col {
   padding: 1rem;
   background: var(--bg);
-  border: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--copper) 40%, transparent);
   border-radius: var(--radius);
 }
 
@@ -300,10 +365,12 @@
 .project-layout {
   display: grid;
   gap: 3rem;
+  margin-top: 3rem;
 }
 
 .project-article p {
   margin: 0 0 1.25rem;
+  font-size: 1.05rem;
   line-height: 1.75;
   color: var(--text);
 }
@@ -418,8 +485,12 @@
   color: var(--muted);
 }
 
+.project-sidebar {
+  padding: 1.4rem 1.3rem;
+}
+
 .project-sidebar section + section {
-  margin-top: 2.5rem;
+  margin-top: 2rem;
 }
 
 .project-highlights {
@@ -438,13 +509,17 @@
   color: var(--text);
 }
 
+/* Little gold LED in front of each highlight */
 .project-highlights li::before {
   content: "";
   position: absolute;
   left: 0;
-  top: 0.8em;
-  width: 0.65rem;
-  border-top: 1px solid var(--accent);
+  top: 0.55em;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--accent) 60%, transparent);
 }
 
 .project-built {
@@ -457,45 +532,76 @@
 }
 
 .project-built li {
-  padding: 0.25rem 0.55rem;
+  padding: 0.2rem 0.6rem;
   font-family: var(--project-mono);
-  font-size: 0.75rem;
-  color: var(--text);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  font-size: 0.72rem;
+  color: var(--accent);
+  background: var(--accent-tint);
+  border-radius: 999px;
 }
 
-/* ----- Next project ----- */
-.project-next {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+/* ----- Previous / next project cards ----- */
+.project-nearby-row {
+  display: grid;
   gap: 1rem;
   margin-top: 4rem;
   padding-top: 2rem;
   border-top: 1px solid var(--border);
 }
 
-.project-next .project-label {
+.project-nearby {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem;
+  color: var(--ink);
+  text-decoration: none;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.project-nearby.is-next {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.project-nearby:hover,
+.project-nearby:focus-visible {
+  box-shadow:
+    inset 0 0 0 1px var(--accent),
+    0 0 28px -8px color-mix(in srgb, var(--accent) 70%, transparent);
+  transform: translateY(-3px);
+}
+
+.project-nearby-thumb {
+  flex-shrink: 0;
+  width: 7.5rem;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 6px;
+  background:
+    radial-gradient(color-mix(in srgb, var(--ink) 9%, transparent) 1px, transparent 1.5px) 0 0 / 12px 12px,
+    var(--bg);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 25%, transparent);
+}
+
+.project-nearby-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project-nearby-text {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.project-nearby-text .project-label {
   margin: 0;
 }
 
-.project-next-link {
-  display: inline-block;
+.project-nearby-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--ink);
-  text-decoration: none;
-  transform-origin: right center;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.project-next-link:hover,
-.project-next-link:focus-visible {
-  color: var(--accent);
-  transform: scale(1.03);
 }
 
 /* ===== 640px+ ===== */
@@ -508,16 +614,41 @@
     font-size: 1.125rem;
   }
 
-  .project-hero-body {
-    padding: 2.5rem 2rem;
+  .project-figure {
+    padding: 2rem 1.75rem;
   }
 
   .project-compare {
     grid-template-columns: 1fr 1fr;
   }
 
-  .project-next-link {
-    font-size: 1.5rem;
+  /* One row: each cell only as wide as it needs, thin lines between */
+  .project-spec {
+    display: flex;
+  }
+
+  .project-spec-cell {
+    flex: 1 1 10rem;
+    border-top: 0;
+    border-left: 1px solid color-mix(in srgb, var(--copper) 20%, transparent);
+  }
+
+  .project-spec-cell:first-child {
+    border-left: 0;
+  }
+
+  /* Short facts (role, team, timeline) stay on one line; status and links share the rest */
+  .project-spec-cell.is-short {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .project-stats {
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  }
+
+  .project-nearby-row {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -525,20 +656,25 @@
 @media (min-width: 900px) {
   .project-flow {
     flex-direction: row;
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
+  /* min-width: 0 lets 5+ steps share the row instead of spilling past the card */
   .project-flow-step {
     flex: 1 1 0;
+    min-width: 0;
     flex-direction: column;
     align-items: flex-start;
+    padding: 0.65rem 0.7rem;
+    font-size: 0.85rem;
+    overflow-wrap: break-word;
   }
 
   .project-flow-step:not(:last-child)::after {
     content: "→";
     content: "→" / "";
     left: auto;
-    right: -1.45rem;
+    right: -1.2rem;
     top: 50%;
     bottom: auto;
     transform: translateY(-50%);
@@ -546,13 +682,18 @@
 
   .project-layout {
     grid-template-columns: minmax(0, 1fr) 17rem;
-    gap: 3.5rem;
+    gap: 4.5rem;
   }
 
+  /* No sticky sidebar: the wiring is drawn once, so the card has to stay put */
   .project-sidebar {
     align-self: start;
-    padding-left: 2rem;
-    border-left: 1px solid var(--border);
+  }
+
+  /* Same size knob as the homepage */
+  .project-page {
+    zoom: var(--desktop-zoom);
+    padding: 2.5rem 0 6rem;
   }
 }
 
@@ -561,8 +702,13 @@
   .project-back,
   .project-link,
   .project-inline-link,
-  .project-next-link {
-    transition: color 0.2s ease;
+  .project-nearby {
+    transition: color 0.2s ease, box-shadow 0.15s ease;
+  }
+
+  .project-nearby:hover,
+  .project-nearby:focus-visible {
+    transform: none;
   }
 
   .project-back:hover,
@@ -570,9 +716,7 @@
   .project-link:hover,
   .project-link:focus-visible,
   .project-inline-link:hover,
-  .project-inline-link:focus-visible,
-  .project-next-link:hover,
-  .project-next-link:focus-visible {
+  .project-inline-link:focus-visible {
     transform: none;
   }
 }

@@ -1,25 +1,25 @@
 import { Link } from 'react-router';
+import ProjectThumb from './ProjectThumb';
 import './FeaturedProject.css';
 
-function FeaturedProject({ project, index }) {
+function FeaturedProject({ project, index, onActive }) {
   const number = String(index + 1).padStart(2, '0');
   const articleUrl = `/projects/${project.id}`;
+  // Tell the page which card is hovered or focused, so its wire lights up
+  const light = () => onActive?.(project.id);
+  const unlight = () => onActive?.(null);
 
   return (
-    <article className="featured">
-      <Link
-        to={articleUrl}
-        className="featured-media"
-        aria-hidden="true"
-        tabIndex={-1}
-      >
-        {project.image ? (
-          <img src={project.image} alt="" loading="lazy" />
-        ) : (
-          <div className="featured-placeholder">
-            <span>{project.category}</span>
-          </div>
-        )}
+    <article
+      className="featured"
+      data-wire={project.id}
+      onMouseEnter={light}
+      onMouseLeave={unlight}
+      onFocus={light}
+      onBlur={unlight}
+    >
+      <Link to={articleUrl} className="featured-visual" aria-hidden="true" tabIndex={-1}>
+        <ProjectThumb project={project} />
       </Link>
 
       <div className="featured-text">
@@ -28,20 +28,16 @@ function FeaturedProject({ project, index }) {
           <span aria-hidden="true">/</span>
           <span>{project.year}</span>
           <span aria-hidden="true">·</span>
-          <span className="featured-category">{project.category}</span>
+          <span>{project.category}</span>
         </p>
 
         <h2 className="featured-title">
           <Link to={articleUrl}>{project.title}</Link>
         </h2>
 
-        {project.subtitle && (
-          <p className="featured-subtitle">{project.subtitle}</p>
-        )}
+        {project.subtitle && <p className="featured-subtitle">{project.subtitle}</p>}
 
-        <p className="featured-description">
-          {project.description || project.blurb}
-        </p>
+        <p className="featured-description">{project.description || project.blurb}</p>
 
         {project.tags?.length > 0 && (
           <ul className="featured-tags">
@@ -56,23 +52,13 @@ function FeaturedProject({ project, index }) {
             Read the article <span aria-hidden="true">→</span>
           </Link>
           {project.repo && (
-            <a
-              href={project.repo}
-              className="featured-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href={project.repo} className="featured-link" target="_blank" rel="noopener noreferrer">
               GitHub <span aria-hidden="true">↗</span>
             </a>
           )}
           {project.live && (
-            <a
-              href={project.live}
-              className="featured-link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Live demo <span aria-hidden="true">↗</span>
+            <a href={project.live} className="featured-link" target="_blank" rel="noopener noreferrer">
+              Live <span aria-hidden="true">↗</span>
             </a>
           )}
         </div>

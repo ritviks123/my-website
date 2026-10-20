@@ -34,10 +34,35 @@ export const projects = [
     featured: true,
     title: "F.R.N.D.",
     subtitle: "Field Relay Neighboring Data Points",
+    summary: "A drone-carried Wi-Fi relay that lets any phone reach a first responder with no internet, with an on-device LLM answering when no one is free.",
     category: "Embedded AI",
     year: "2026",
     tagline: "Nobody left in silence",
     status: "Hackathon build, IrvineHacks 2026",
+    role: "WebSocket + LLM link",
+    team: "4 people",
+    timeline: "3 days",
+    stats: [
+      { value: "8", label: "phones chatting at once" },
+      { value: "~4 s", label: "first AI reply" },
+      { value: "5 tok/s", label: "on the Uno Q" },
+      { value: "3 days", label: "from idea to demo" },
+    ],
+    media: [
+      // { src: "/projects/frnd-pi-v1.webp", alt: "Raspberry Pi relay", caption: "The relay before it flew." },
+    ],
+    role: "WebSocket + LLM link",
+    team: "4 people",
+    timeline: "3 days",
+    stats: [
+      { value: "8", label: "phones chatting at once" },
+      { value: "~4 s", label: "first AI reply" },
+      { value: "5 tok/s", label: "on the Uno Q" },
+      { value: "3 days", label: "from idea to demo" },
+    ],
+    media: [
+      // { src: "/projects/frnd-pi-v1.webp", alt: "Raspberry Pi relay", caption: "The relay before it flew." },
+    ],
     blurb:
       "An emergency chat network with no internet, no app and no account. A drone-carried hotspot connects phones to first responders, with an on-device LLM as backup.",
     description:
@@ -51,6 +76,7 @@ export const projects = [
       { label: "Devpost", url: "" }, // add link later
     ],
     badges: ["IrvineHacks 2026", "Qualcomm track"],
+    heroAt: 3,
     hero: {
       type: "flow",
       steps: ["Phone joins drone Wi-Fi", "Page opens, room ID assigned", "Pi relay picks a responder", "Human first responder"],
@@ -87,6 +113,7 @@ export const projects = [
     featured: true,
     title: "Autonomous RC Rover",
     subtitle: "Custom PCB, sensor fusion, PD control",
+    summary: "A self-steering rover on a 2-layer PCB I designed, fusing IR and ultrasonic sensors into a PD controller that avoided 90% of obstacles.",
     category: "Embedded · PCB",
     year: "2026",
     tagline: "A controller tuned by watching its own mistakes",
@@ -104,6 +131,7 @@ export const projects = [
       { label: "KiCad files", url: "" }, // add link later
     ],
     badges: ["90% avoidance", "2-layer PCB", "ESP32"],
+    heroAt: 4,
     hero: {
       type: "flow",
       steps: ["Read IR + ultrasonic", "Fuse into one error", "PD controller", "PWM duty per motor", "L293D drives motors"],
@@ -139,6 +167,7 @@ export const projects = [
     featured: true,
     title: "IoT Weather Station",
     subtitle: "ESP32, MQTT, Amazon MQ, 9x battery life",
+    summary: "An ESP32 sensor node that publishes readings over MQTT to Amazon MQ and deep-sleeps between them for 9x battery life.",
     category: "IoT",
     year: "2026",
     tagline: "The fix for battery life wasn't a bigger battery",
@@ -206,6 +235,7 @@ export const projects = [
     featured: false, // set to true to show it in the big rows instead
     title: "ritviksingh.net",
     subtitle: "This site: spec-driven, AI-written, human-verified",
+    summary: "This portfolio, built by directing AI against a written spec and scoring 100 in all four Lighthouse categories.",
     category: "Web",
     year: "2026",
     tagline: "The spec the AI wasn't allowed to break",
@@ -222,6 +252,7 @@ export const projects = [
       { label: "Source", url: "https://github.com/ritviks123/my-website" },
     ],
     badges: ["Lighthouse 100 · 100 · 100 · 100", "about $10/year"],
+    heroAt: 2,
     hero: {
       type: "flow",
       steps: ["Write the spec", "AI writes the code", "I check it", "Build + preview", "Merge by PR"],
@@ -266,3 +297,7 @@ export const projects = [
     footnote: "",
   },
 ];
+
+
+/* ===== Home page grid: which projects, in what order (2 per row) ===== */
+export const homeProjectIds = ['frnd', 'autonomous-rc-rover', 'iot-weather-station', 'ritviksingh-net'];

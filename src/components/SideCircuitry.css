@@ -1,0 +1,5 @@
+/* Wrapper for any page that has SideCircuitry: the circuitry sits behind the page (like .home) */
+.page-board {
+  position: relative;
+  isolation: isolate;
+}

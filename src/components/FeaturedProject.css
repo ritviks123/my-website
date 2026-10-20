@@ -1,81 +1,72 @@
+/* ===== one project card on the projects page ===== */
 .featured {
   display: grid;
   gap: 1.5rem;
-  padding: 2.5rem 0;
-  border-top: 1px solid var(--border);
+  padding: 1.25rem;
+  border-radius: 14px;
+  background: var(--surface);
+  /* Copper edge drawn inside the card */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
 
-.featured:first-child {
-  padding-top: 0;
-  border-top: 0;
-}
-
-/* Image */
-.featured-media {
-  display: block;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-  transition: border-color 0.15s ease, transform 0.15s ease;
-}
-
-.featured-media:hover {
-  border-color: var(--accent);
+/* Hover or keyboard focus: gold edge + glow, lifts slightly (its wire lights too) */
+.featured:hover,
+.featured:focus-within {
+  box-shadow:
+    inset 0 0 0 1px var(--accent),
+    0 0 28px -8px color-mix(in srgb, var(--accent) 70%, transparent);
   transform: translateY(-3px);
 }
 
-.featured-media img,
-.featured-placeholder {
+/* Animated visual on a little PCB: 4 gold mounting holes + a faint dot grid */
+.featured-visual {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid color-mix(in srgb, var(--copper) 25%, transparent);
+  background:
+    radial-gradient(circle at 14px 14px, var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at calc(100% - 14px) 14px, var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at 14px calc(100% - 14px), var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(circle at calc(100% - 14px) calc(100% - 14px), var(--surface) 3px, var(--accent) 3.5px 5px, transparent 5.5px),
+    radial-gradient(color-mix(in srgb, var(--ink) 9%, transparent) 1px, transparent 1.5px) 0 0 / 16px 16px,
+    var(--bg);
+}
+
+.featured-visual img {
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  height: 100%;
   object-fit: cover;
 }
 
-.featured-placeholder {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg);
-  background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
-  background-size: 16px 16px;
-}
-
-.featured-placeholder span {
-  padding: 0.25rem 0.6rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-/* Text */
+/* ===== text ===== */
 .featured-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin: 0 0 0.75rem;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--muted);
 }
 
 .featured-number {
-  color: var(--ink);
+  color: var(--accent);
 }
 
-.featured-category {
-  color: var(--accent);
+.featured-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.75rem;
+  font-weight: 600;
 }
 
 .featured-title a {
   display: inline-block;
   color: var(--ink);
+  text-decoration: none;
   transform-origin: left center;
   transition: color 0.2s ease, transform 0.2s ease;
 }
@@ -86,21 +77,16 @@
   transform: scale(1.03);
 }
 
-.featured-title a:hover {
-  color: var(--accent);
-  text-decoration: none;
-}
-
 .featured-subtitle {
   margin: 0 0 1rem;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
   color: var(--muted);
 }
 
 .featured-description {
-  margin: 0 0 1.25rem;
-  line-height: 1.7;
+  margin: 0 0 1.1rem;
+  line-height: 1.6;
   color: var(--text);
 }
 
@@ -108,32 +94,34 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
-  margin: 0 0 1.5rem;
+  margin: 0 0 1.25rem;
   padding: 0;
   list-style: none;
 }
 
 .featured-tags li {
-  padding: 0.15rem 0.55rem;
-  border-radius: calc(var(--radius) - 2px);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
   background: var(--accent-tint);
   color: var(--accent);
-  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
 }
 
-/* Links */
+/* ===== links ===== */
 .featured-links {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 1.25rem;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
 }
 
 .featured-link-main,
 .featured-link {
   display: inline-block;
+  text-decoration: none;
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
@@ -157,16 +145,34 @@
   transform: scale(1.08);
 }
 
-/* Wide screens: side by side, image alternates sides */
+/* ===== wide screens: side by side, the visual alternates sides ===== */
 @media (min-width: 800px) {
   .featured {
     grid-template-columns: 1fr 1fr;
     align-items: center;
-    gap: 3rem;
-    padding: 3.5rem 0;
+    gap: 2.5rem;
+    padding: 1.75rem;
   }
 
-  .featured:nth-child(even) .featured-media {
+  .featured:nth-child(even) .featured-visual {
     order: 2;
+  }
+}
+
+/* Reduced motion: color change only */
+@media (prefers-reduced-motion: reduce) {
+  .featured,
+  .featured-title a,
+  .featured-link-main,
+  .featured-link {
+    transition: color 0.2s ease, box-shadow 0.15s ease;
+  }
+
+  .featured:hover,
+  .featured:focus-within,
+  .featured-title a:hover,
+  .featured-link-main:hover,
+  .featured-link:hover {
+    transform: none;
   }
 }

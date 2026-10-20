@@ -1,0 +1,29 @@
+/* ===== chip mark: flat top-view IC with "RS" ===== */
+.chip-mark {
+  flex-shrink: 0;
+  color: var(--copper); /* pins + outline */
+}
+
+.chip-pins line {
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+
+.chip-body {
+  fill: var(--surface);
+  stroke: currentColor;
+  stroke-width: 1.75;
+}
+
+.chip-dot {
+  fill: currentColor;
+}
+
+/* White "laser marking" like a real chip */
+.chip-label {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+}

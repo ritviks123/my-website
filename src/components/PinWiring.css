@@ -1,0 +1,49 @@
+/* Chip-to-chip wiring: quiet gray traces and vias behind the page (wide screens only) */
+.pin-wiring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  display: none;
+  pointer-events: none;
+}
+
+@media (min-width: 900px) {
+  .pin-wiring {
+    display: block;
+  }
+}
+
+.pin-wire {
+  fill: none;
+  stroke: color-mix(in srgb, var(--ink) 20%, transparent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  /* Hidden until its chips have loaded in, then it draws itself from end to end */
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.8s ease;
+}
+
+.pin-wire.is-on {
+  stroke-dashoffset: 0;
+}
+
+.pin-via {
+  fill: var(--bg);
+  stroke: color-mix(in srgb, var(--ink) 32%, transparent);
+  stroke-width: 1.6;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.6s; /* pops in as its wire arrives */
+}
+
+.pin-via.is-on {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pin-wire,
+  .pin-via {
+    transition: none;
+  }
+}

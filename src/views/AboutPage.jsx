@@ -1,10 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import SideCircuitry from '../components/SideCircuitry';
 import './AboutPage.css';
 
 // Swap later: rewrite all text in your own voice
 const ABOUT_IMAGE = '/projects/headshot.webp'; // e.g. '/about/portrait-v1.webp'
 const ABOUT_ALT = 'Portrait of Ritvik Singh';
 
+const HEADING = 'About.';
 const HEADLINE = 'I design the board, then write the code that runs on it.';
 
 const BIO = [
@@ -28,6 +30,8 @@ const NOW = [
 ];
 
 function AboutPage() {
+  const [photoBroken, setPhotoBroken] = useState(false); // missing photo → show the placeholder
+
   useEffect(() => {
     const previousTitle = document.title;
     document.title = 'About | Ritvik Singh';
@@ -37,56 +41,60 @@ function AboutPage() {
   }, []);
 
   return (
-    <main className="about">
-      <p className="about-eyebrow">
-        <span aria-hidden="true">// </span>about
-      </p>
+    <div className="page-board">
+      <SideCircuitry content=".about" seed={12} />
 
-      <div className="about-layout">
-        <h1 className="about-title">{HEADLINE}</h1>
+      <main className="about">
+        <header className="about-top">
+          <h1 className="about-title">{HEADING}</h1>
+          <p className="about-intro">{HEADLINE}</p>
+        </header>
 
-        <aside className="about-side">
-          {ABOUT_IMAGE ? (
-            <img className="about-photo" src={ABOUT_IMAGE} alt={ABOUT_ALT} />
-          ) : (
-            <div className="about-photo about-photo-empty" aria-hidden="true">
-              <span>Photo</span>
-            </div>
-          )}
-
-          <dl className="about-facts">
-            {FACTS.map((fact) => (
-              <div className="about-fact" key={fact.label}>
-                <dt>{fact.label}</dt>
-                <dd>{fact.value}</dd>
+        <div className="about-layout">
+          {/* Photo + quick facts: one card, stays in view on wide screens */}
+          <aside className="about-side">
+            {ABOUT_IMAGE && !photoBroken ? (
+              <img className="about-photo" src={ABOUT_IMAGE} alt={ABOUT_ALT} onError={() => setPhotoBroken(true)} />
+            ) : (
+              <div className="about-photo about-photo-empty" aria-hidden="true">
+                <span>Photo</span>
               </div>
-            ))}
-          </dl>
-        </aside>
+            )}
 
-        <div className="about-body">
-          <div className="about-bio">
-            {BIO.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
-            ))}
-          </div>
-
-          <section className="about-now" aria-labelledby="about-now-heading">
-            <h2 id="about-now-heading" className="about-heading">
-              <span aria-hidden="true">// </span>now
-            </h2>
-            <ul className="about-now-list">
-              {NOW.map((item) => (
-                <li key={item.label}>
-                  <span className="about-now-label">{item.label}</span>
-                  {item.text}
-                </li>
+            <dl className="about-facts">
+              {FACTS.map((fact) => (
+                <div className="about-fact" key={fact.label}>
+                  <dt>{fact.label}</dt>
+                  <dd>{fact.value}</dd>
+                </div>
               ))}
-            </ul>
-          </section>
+            </dl>
+          </aside>
+
+          <div className="about-body">
+            <div className="about-bio">
+              {BIO.map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
+              ))}
+            </div>
+
+            <section className="about-now" aria-labelledby="about-now-heading">
+              <h2 id="about-now-heading" className="about-heading">
+                <span aria-hidden="true">// </span>now
+              </h2>
+              <ul className="about-now-list">
+                {NOW.map((item) => (
+                  <li key={item.label}>
+                    <span className="about-now-label">{item.label}</span>
+                    {item.text}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </div>
   );
 }
 

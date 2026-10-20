@@ -1,43 +1,53 @@
-/* ===== projects list page ===== */
+/* ===== projects page: centered header, then one card per project ===== */
+
+/* Holds the background circuitry behind the page (like .home) */
+.projects-board {
+  position: relative;
+  isolation: isolate;
+}
+
 .projects-page {
-  max-width: 64rem;
+  max-width: 56rem;
   margin: 0 auto;
-  padding: 2rem 1rem 4rem;
+  padding: 2.5rem 1rem 4rem;
 }
 
-.projects-intro {
-  max-width: 42rem;
+.projects-page-top {
   margin-bottom: 3rem;
+  text-align: center;
 }
 
-.projects-eyebrow {
-  margin: 0 0 1rem;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 0.85rem;
+.projects-page-heading {
+  margin: 0;
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  font-weight: 560;
+  letter-spacing: -0.04em;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* A card is hovered: its bus lights all the way up to the title, so the title glows gold */
+.projects-page-heading.is-lit {
+  color: var(--accent);
+  text-shadow: 0 0 24px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.projects-page-intro {
+  max-width: 36rem;
+  margin: 1rem auto 0;
+  font-size: 1.05rem;
+  line-height: 1.55;
   color: var(--muted);
 }
 
-.projects-intro h1 {
-  margin: 0 0 1rem;
-  font-size: clamp(2rem, 6.5vw, 3.5rem);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+.projects-page-list {
+  display: grid;
+  gap: 1.5rem;
 }
 
-.projects-lede {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.7;
-  color: var(--text);
-}
-
-.projects-featured {
-  margin-bottom: 1rem;
-}
-
-/* No divider line at the top of this page (nothing above it) */
-.projects-page .projects {
-  border-top: 0;
+@media (prefers-reduced-motion: reduce) {
+  .projects-page-heading {
+    transition: none;
+  }
 }
 
 @media (min-width: 640px) {
@@ -45,11 +55,29 @@
     padding: 3rem 1.25rem 5rem;
   }
 
-  .projects-intro {
-    margin-bottom: 4rem;
+  .projects-page-list {
+    gap: 2.5rem;
+  }
+}
+
+/* Desktop: same size knob as the homepage */
+@media (min-width: 900px) {
+  .projects-page {
+    zoom: var(--desktop-zoom);
+    max-width: 72rem; /* wider page so the zig-zag has room */
+    padding: 3.5rem 1.25rem 6rem;
   }
 
-  .projects-lede {
-    font-size: 1.1rem;
+  .projects-page-list {
+    gap: 5rem;
+  }
+
+  /* Cards zig-zag: odd ones lean left, even ones lean right, overlapping about half their width */
+  .projects-page-list > .featured {
+    width: 66%;
+  }
+
+  .projects-page-list > .featured:nth-child(even) {
+    margin-left: auto;
   }
 }

@@ -1,0 +1,165 @@
+/* ===== home toolkit: tool lists with indicator lights ===== */
+.toolkit {
+  --toolkit-max: 85rem;
+  padding: 2rem 0 4rem;
+}
+
+.toolkit-inner {
+  max-width: var(--toolkit-max);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Heading, intro, and status line centered over the row */
+.toolkit-inner {
+  text-align: center;
+}
+
+.toolkit-intro {
+  max-width: 36rem;
+  margin: 1rem auto 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.toolkit-heading {
+  margin: 0;
+  font-size: clamp(1.75rem, 3vw + 0.5rem, 2.25rem);
+  font-weight: 560;
+}
+
+.toolkit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  align-items: start;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+  padding: 0 1rem;
+}
+
+.toolkit-card {
+  padding: 1.25rem 0.75rem 0.75rem;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
+}
+
+.toolkit-group {
+  margin: 0 0 0.75rem;
+  padding: 0 0.6rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
+/* The list sits centered under its title; rows stay left-aligned inside it */
+.toolkit-list {
+  display: grid;
+  gap: 0.25rem;
+  width: fit-content;
+  min-width: 70%;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+/* Each tool is a row button (overrides the global gold button) */
+.toolkit-tool {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem 0.6rem;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 400;
+  text-align: left;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.toolkit-tool:hover,
+.toolkit-tool:focus-visible {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+  color: var(--ink);
+  transform: none;
+}
+
+.toolkit-tool.is-active {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--ink);
+}
+
+/* Tools no featured project lists yet: still shown, just quieter */
+.toolkit-tool.is-unlinked {
+  color: var(--muted);
+}
+
+/* Indicator light: dark when off, gold when lit, ringed when pinned */
+.toolkit-led {
+  flex-shrink: 0;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--ink) 8%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 45%, transparent);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.toolkit-tool.is-active .toolkit-led {
+  background: var(--accent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.toolkit-led.is-pinned {
+  outline: 2px solid var(--accent-dark);
+  outline-offset: 2px;
+}
+
+.toolkit-status {
+  min-height: 1.5em;
+  margin: 1.25rem 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.toolkit-status-tool {
+  color: var(--accent);
+}
+
+@media (min-width: 640px) {
+  .toolkit-inner,
+  .toolkit-grid {
+    padding: 0 1.25rem;
+  }
+}
+
+/* Desktop: same size knob as the rest of the homepage */
+@media (min-width: 900px) {
+  .toolkit {
+    --toolkit-max: calc(85rem / var(--desktop-zoom));
+    zoom: var(--desktop-zoom);
+    padding: 2rem 0 5rem;
+  }
+
+  /* All four groups on one row, edge to edge */
+  /* All four groups on one row, with side gutters for future wires */
+  .toolkit-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 0 7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolkit-tool,
+  .toolkit-led {
+    transition: none;
+  }
+}

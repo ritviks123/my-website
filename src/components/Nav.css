@@ -26,12 +26,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  max-width: 64rem;
+  max-width: 85rem;
   margin: 0 auto;
-  padding: 0.9rem 1rem;
+  padding: 0.6875rem 1rem;
 }
 
-/* ===== nav logo + text links: grow and turn purple ===== */
+/* ===== nav logo + text links: grow and turn gold ===== */
 .nav-logo,
 .nav-link {
   display: inline-block;
@@ -39,17 +39,20 @@
 }
 
 .nav-logo {
-  justify-self: start;
-  font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-  font-size: 1rem;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.1875rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
   color: var(--ink);
   transform-origin: left center;
 }
 
 .nav-link {
-  color: var(--muted);
-  font-size: 0.95rem;
+  color: var(--text);
+  font-size: 0.875rem;
+  font-weight: 460;
 }
 
 .nav-logo:hover,
@@ -82,17 +85,18 @@
 
 .nav-cta {
   display: none;
-  padding: 0.45rem 0.9rem;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--ink);
-  font-size: 0.9rem;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--bg);
+  font-size: 0.875rem;
+  font-weight: 540;
+  line-height: 1;
 }
 
 .nav-cta:hover,
 .nav-cta:focus-visible {
-  border-color: var(--accent);
+  background: var(--accent-dark);
   transform: translateY(-2px);
 }
 
@@ -182,20 +186,15 @@
   }
 }
 
-/* ===== 768px+: left / center / right, no menu button ===== */
+/* ===== 768px+: logo left, everything else right ===== */
 @media (min-width: 768px) {
-  .nav-inner {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-  }
-
   .nav-links {
     display: flex;
     gap: 1.75rem;
   }
 
   .nav-actions {
-    justify-self: end;
+    gap: 1.75rem;
   }
 
   .nav-resume,
@@ -215,5 +214,13 @@
   .nav-link,
   .nav-menu-link {
     transition: color 0.2s ease;
+  }
+}
+
+@media (min-width: 900px) {
+  .nav-inner {
+    zoom: var(--desktop-zoom);
+    /* Undo the zoom's extra width so the nav stays 85rem wide like Nimble */
+    max-width: calc(85rem / var(--desktop-zoom));
   }
 }

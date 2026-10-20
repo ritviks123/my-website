@@ -1,17 +1,11 @@
-import { useState } from 'react';
-import { FaGithub, FaLinkedin, FaEnvelope, FaLocationDot } from 'react-icons/fa6';
+import { useEffect, useRef, useState } from 'react';
 import './Contact.css';
 
-// Swap later
-const HEADING = "Let's talk hardware.";
-const INTRO =
-  'Open to internships, jobs, research, and project collabs. The fastest way to reach me is right here.';
+/* ===== Swap these later ===== */
+const HEADING = 'Contact me.';
+const MESSAGE_HINT = 'Internships, full-time roles, research, or just to talk hardware.';
 const EMAIL = 'ritvikchandersingh@gmail.com';
-const GITHUB_URL = 'https://github.com/ritviks123';
-const GITHUB_LABEL = 'github.com/ritviks123';
-const LINKEDIN_URL = 'https://www.linkedin.com/in/singhritvik';
-const LINKEDIN_LABEL = 'Ritvik Singh';
-const LOCATION = 'Irvine, CA';
+/* ============================ */
 
 // Public by design: this key can only send messages to your inbox
 const ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
@@ -26,6 +20,25 @@ const STATUS_TEXT = {
 
 function Contact() {
   const [status, setStatus] = useState('idle');
+  const [powered, setPowered] = useState(false);
+  const sectionRef = useRef(null);
+
+  // Power on once, the first time the section scrolls into view
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setPowered(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -62,102 +75,66 @@ function Contact() {
   }
 
   return (
-    <section id="contact" className="contact" aria-labelledby="contact-heading">
-      <p className="contact-eyebrow">
-        <span aria-hidden="true">// </span>get in touch
-      </p>
-      <h2 id="contact-heading" className="contact-title">{HEADING}</h2>
-
-      <div className="contact-grid">
-        {/* Left: intro + ways to reach me */}
-        <div className="contact-info">
-          <p className="contact-intro">{INTRO}</p>
-
-          <a href={`mailto:${EMAIL}`} className="contact-email">
-            <FaEnvelope className="contact-email-icon" aria-hidden="true" />
-            {EMAIL}
-          </a>
-
-          <ul className="contact-links">
-            <li>
-              <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="contact-link">
-                <FaGithub className="contact-icon" aria-hidden="true" />
-                {GITHUB_LABEL}
-              </a>
-            </li>
-            <li>
-              <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="contact-link">
-                <FaLinkedin className="contact-icon" aria-hidden="true" />
-                {LINKEDIN_LABEL}
-              </a>
-            </li>
-            <li className="contact-location">
-              <FaLocationDot className="contact-icon" aria-hidden="true" />
-              {LOCATION}
-            </li>
-          </ul>
+    <section
+      id="contact"
+      ref={sectionRef}
+      className={`contact${powered ? ' is-on' : ''}`}
+      aria-labelledby="contact-heading"
+    >
+      {/* One centered box, wired like a chip: both buses plug into its sides */}
+      <form className="contact-form" data-wire="contact-form" onSubmit={handleSubmit}>
+        {/* Status LEDs (decorative; the status line below says the same in words) */}
+        <div className="contact-leds" aria-hidden="true">
+          <span className="contact-led contact-led-pwr">PWR</span>
+          <span className={`contact-led${status === 'sending' ? ' is-blink' : ''}`}>TX</span>
+          <span className={`contact-led${status === 'success' ? ' is-on' : ''}`}>RX</span>
+          <span className={`contact-led${status === 'error' ? ' is-err' : ''}`}>ERR</span>
         </div>
 
-        {/* Right: the form */}
-        <form className="contact-form" onSubmit={handleSubmit}>
-          <div className="contact-row">
-            <div className="contact-field">
-              <label htmlFor="contact-name">Name</label>
-              <input
-                id="contact-name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                placeholder="Your name"
-                required
-              />
-            </div>
+        <h2 id="contact-heading" className="contact-title">{HEADING}</h2>
 
-            <div className="contact-field">
-              <label htmlFor="contact-email">Email</label>
-              <input
-                id="contact-email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                placeholder="you@company.com"
-                required
-              />
-            </div>
+        <div className="contact-field">
+          <label htmlFor="contact-name">Name</label>
+          <div className="contact-input-wrap">
+            <input id="contact-name" name="name" type="text" autoComplete="name" placeholder="Your name" required />
+            <span className="contact-pin" aria-hidden="true" />
           </div>
+        </div>
 
-          <div className="contact-field">
-            <label htmlFor="contact-message">Message</label>
-            <textarea
-              id="contact-message"
-              name="message"
-              rows="5"
-              placeholder="Hi Ritvik, I saw your rover project and..."
+        <div className="contact-field">
+          <label htmlFor="contact-email">Email</label>
+          <div className="contact-input-wrap">
+            <input
+              id="contact-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="you@company.com"
               required
             />
+            <span className="contact-pin" aria-hidden="true" />
           </div>
+        </div>
 
-          {/* Spam trap: humans never see or fill this */}
-          <input
-            type="checkbox"
-            name="botcheck"
-            className="contact-honeypot"
-            tabIndex={-1}
-            autoComplete="off"
-          />
-
-          <div className="contact-actions">
-            <button type="submit" className="contact-submit" disabled={status === 'sending'}>
-              {status === 'sending' ? 'Sending…' : 'Send message'}
-              <span aria-hidden="true">→</span>
-            </button>
+        <div className="contact-field">
+          <label htmlFor="contact-message">Message</label>
+          <div className="contact-input-wrap">
+            <textarea id="contact-message" name="message" rows="5" placeholder={MESSAGE_HINT} required />
+            <span className="contact-pin" aria-hidden="true" />
           </div>
+        </div>
 
-          <p className={`contact-status is-${status}`} role="status">
-            {STATUS_TEXT[status]}
-          </p>
-        </form>
-      </div>
+        {/* Spam trap: humans never see or fill this */}
+        <input type="checkbox" name="botcheck" className="contact-honeypot" tabIndex={-1} autoComplete="off" />
+
+        <button type="submit" className="contact-submit" disabled={status === 'sending'}>
+          {status === 'sending' ? 'Sending…' : 'Send message'}
+        </button>
+
+        <p className={`contact-status is-${status}`} role="status">
+          {STATUS_TEXT[status]}
+        </p>
+      </form>
     </section>
   );
 }
