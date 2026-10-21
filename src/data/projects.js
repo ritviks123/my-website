@@ -28,83 +28,111 @@
 export const projects = [
   /* ===== Featured (big rows on /projects, cards on home) ===== */
 
-  /* ---------- F.R.N.D. ---------- */
+    /* ---------- F.R.N.D. ---------- */
   {
-    id: "frnd",
+    id: "frnd", // URL slug: never change
     featured: true,
     title: "F.R.N.D.",
     subtitle: "Field Relay Neighboring Data Points",
-    summary: "A drone-carried Wi-Fi relay that lets any phone reach a first responder with no internet, with an on-device LLM answering when no one is free.",
-    category: "Embedded AI",
+    category: "Edge AI · Networking",
     year: "2026",
-    tagline: "Nobody left in silence",
-    status: "Hackathon build, IrvineHacks 2026",
-    role: "WebSocket + LLM link",
-    team: "4 people",
-    timeline: "3 days",
-    stats: [
-      { value: "8", label: "phones chatting at once" },
-      { value: "~4 s", label: "first AI reply" },
-      { value: "5 tok/s", label: "on the Uno Q" },
-      { value: "3 days", label: "from idea to demo" },
-    ],
-    media: [
-      // { src: "/projects/frnd-pi-v1.webp", alt: "Raspberry Pi relay", caption: "The relay before it flew." },
-    ],
-    role: "WebSocket + LLM link",
-    team: "4 people",
-    timeline: "3 days",
-    stats: [
-      { value: "8", label: "phones chatting at once" },
-      { value: "~4 s", label: "first AI reply" },
-      { value: "5 tok/s", label: "on the Uno Q" },
-      { value: "3 days", label: "from idea to demo" },
-    ],
-    media: [
-      // { src: "/projects/frnd-pi-v1.webp", alt: "Raspberry Pi relay", caption: "The relay before it flew." },
-    ],
-    blurb:
-      "An emergency chat network with no internet, no app and no account. A drone-carried hotspot connects phones to first responders, with an on-device LLM as backup.",
     description:
-      "Field Relay Neighboring Data Points: an emergency chat network that needs no internet, no app and no account. A drone-carried Raspberry Pi turns any phone into a line to a first responder, and when no human is free, an LLM running on an Arduino Uno Q answers instead. Built in 3 days by a 4-person team for the Qualcomm sponsor track.",
-    tags: ["Raspberry Pi", "Arduino Uno Q", "WebSockets", "Llama"],
+      "An emergency chat network that works with no internet. A drone-carried hotspot connects any phone to a first responder, and an on-device LLM answers when no one is free.",
+    // Same text as description, kept in case the home card still reads "blurb"
+    blurb:
+      "An emergency chat network that works with no internet. A drone-carried hotspot connects any phone to a first responder, and an on-device LLM answers when no one is free.",
+    tags: ["Arduino Uno Q", "Raspberry Pi", "Python", "WebSockets", "llama.cpp"],
+
+    role: "Edge AI + WebSocket link",
+    team: "4 people",
+    timeline: "48 hours",
+    status: "Hackathon build",
+    links: [
+      { label: "Demo video", url: "https://www.youtube.com/watch?v=904H0sNUbPI" },
+      { label: "Source", url: "https://github.com/vrushang1234/FRND" },
+      { label: "Devpost", url: "https://devpost.com/software/frnd-field-neighbouring-relay-data-points" },
+      { label: "Slides", url: "https://docs.google.com/presentation/d/1QBHZ0s09G_UWO0ZNscJArog1P4YoSNdYSzVraIYA6kE/edit?usp=sharing" },
+    ],
+
     image: "/projects/drone-v1.webp",
     imageAlt: "Quadcopter with a GPS module and colored propellers on a cutting mat, next to a pencil and a quarter for scale",
-    links: [
-      { label: "Demo video", url: "" }, // add link later
-      { label: "Source", url: "" }, // add link later
-      { label: "Devpost", url: "" }, // add link later
+    imageCaption: "A lightweight 4-motor quadcopter carries each relay node.",
+    media: [
+      { src: "/projects/EECS_drone.webp", alt: "The quadcopter from the UCI drone course", caption: "The drone that carries the relay node." },
+      { src: "/projects/networkspace.webp", alt: "Diagram from our pitch: phones connect over WebSockets to a mesh of drone relays, which route to a first responder or the Uno Q LLM", caption: "The network as we pitched it at IrvineHacks 2026." },
     ],
-    badges: ["IrvineHacks 2026", "Qualcomm track"],
-    heroAt: 3,
+
+    stats: [
+      { value: "48 h", label: "idea to demo" },
+      { value: "135M", label: "parameter model on the board" },
+      { value: "4-bit", label: "quantized weights" },
+      { value: "0", label: "apps or accounts needed" },
+    ],
+
+    heroAt: 2,
     hero: {
       type: "flow",
-      steps: ["Phone joins drone Wi-Fi", "Page opens, room ID assigned", "Pi relay picks a responder", "Human first responder"],
-      note: "No human free: the Uno Q LLM answers instead",
-      caption: "How a message finds its responder.",
+      steps: ["Phone joins drone Wi-Fi", "Gets a private room ID", "Pi relay routes the message", "First responder answers"],
+      note: "No responder free: the Uno Q LLM answers, and the history waits for the human",
+      caption: "How a message finds help.",
     },
     article: [
       {
         body: [
-          "When a wildfire or flood takes out the cell network, people lose the ability to reach help at the exact moment they need it. **Every emergency app assumes a connection that is already gone.**",
-          "F.R.N.D. brings the network to the people. A Raspberry Pi on a drone creates an open Wi-Fi hotspot with NetworkManager (`nmcli`). A phone joins it, opens the page and types: **no app download, no account, no setup.** Each person gets a unique room ID automatically, so messages stay private between them and their responder, and 8 phones chatted at once in testing without crossing lines.",
-          "The Pi tells its clients apart by URL path alone: phones connect to `/`, and the AI connects to `/arduino`. Relay logic forwards each message to whichever responder is available, and **a human first responder is always the first choice.**",
-          "When no human is free, the Arduino Uno Q answers automatically, so **no one is left waiting in silence.** It runs our custom Llama model locally through yzma, calling it in-process with no external server. The Uno Q had gone on sale less than 5 months before the event ([release coverage](https://gigazine.net/gsc_news/en/20251008-qualcomm-acquire-arduino)), and its first reply arrived in about 4 seconds at 5 tokens per second.",
-          "My part was the link between the network and the brain. I set up the WebSocket connection between the relay and the API, then learned Llama and Hugging Face to download our custom model onto the Uno Q. No quantization was needed: the 4 GB Uno Q holds the full model in LPDDR4 RAM, with 32 GB of eMMC storage for the weights.",
-          "The drone is the delivery truck, not the product. Flying the hotspot covers a wide area with no ground setup, but the same Pi would work on a vehicle or a pole. **The engineering that matters is what happens after a phone connects.**",
+          "When a wildfire, flood or earthquake takes out the cell network, people lose the ability to reach help at the exact moment they need it. **Every emergency app assumes a connection that is already gone.**",
+          "F.R.N.D. brings the network with it. Drones carry Raspberry Pis that each run an open Wi-Fi access point with NetworkManager (`nmcli`), and the Pis link into a mesh. A phone joins, opens a page and types: **no app, no account, no setup.** Each person gets a room ID automatically, so their conversation stays private.",
+          "The drone is the delivery truck, not the product. Ours was a lightweight 4-motor quadcopter Vrushang built for a UCI drone course, but the same Pi would work on a truck or a pole. **What matters is what happens after a phone connects.**",
+        ],
+      },
+      {
+        heading: "The relay",
+        body: [
+          "Each Pi runs a Python WebSocket server built on `websockets` and `asyncio`, so several people and responders can talk at once. It tells its clients apart by URL path alone, and **a human first responder always gets the message first.** Responders see the chat only, with no camera feed from the drone.",
+        ],
+        table: {
+          columns: ["Client", "Connects to", "Role"],
+          rows: [
+            ["Phone", "`/`", "Person in need, gets a private room"],
+            ["Arduino Uno Q", "`/arduino`", "AI backup when no responder is free"],
+          ],
+        },
+      },
+      {
+        heading: "The AI on the board",
+        body: [
+          "When no responder is free, the Arduino Uno Q answers so **no one is left in silence.** It runs SmolLM2-135M-Instruct from Hugging Face, quantized to 4-bit weights, through [yzma](https://github.com/hybridgroup/yzma), a Go wrapper for llama.cpp that calls the model in-process. No cloud and no model server: inference runs on the board's own Arm CPU.",
+          "The prompt makes it act like a dispatcher. It keeps the person calm, asks where they are and what's happening, flags urgent cases, and gathers details like injuries and how many people are with them. **The chat doubles as a handoff:** when a first responder takes over, the whole history is already there.",
+        ],
+      },
+      {
+        heading: "My part",
+        body: [
+          "I owned the AI node. I researched the Uno Q (the 4 GB version), got yzma and the model running on it, and wrote the prompts that turn a general chat model into a calm first contact. Then I wired the board into the Pi relay over WebSockets so it could take over any conversation. I also helped write our Devpost and README.",
+        ],
+      },
+      {
+        heading: "The hard part",
+        body: [
+          "Getting yzma onto the Uno Q. The board was new and it was our first time using it, so I learned by studying how other builders had run models on it, then read up on how WebSockets work until the board could join the relay like any other client. **Under the drone and the AI, the whole project is one idea done carefully: a WebSocket connection.**",
+        ],
+      },
+      {
+        heading: "What we tested",
+        body: [
+          "We had one drone, so the demo ran a single relay node with a phone, the responder screen and the Uno Q all connected. Every feature worked: auto-replies, urgency flags and information gathering. **The mesh scales by adding Pis**, but we never measured how many phones one node can hold. That's the first test I'd run next.",
         ],
       },
     ],
+
     highlights: [
-      "Human first, AI second: the LLM only answers when no responder is free, so the model is a safety net, not the dispatcher",
-      "One relay serves two kinds of clients, told apart by nothing more than a URL path (`/` for phones, `/arduino` for the AI)",
-      "Room IDs are assigned on connect, so private conversations need no login",
-      "No quantization needed: the 4 GB Uno Q holds the full custom Llama in RAM, and yzma runs it in-process with no model server to crash in the field",
-      "Built for natural disasters, wildfire evacuations, search and rescue, and military operations",
+      "Human first, AI second: model is a safety net to ensure every connection is attended to",
+      "One relay, two kinds of clients, told apart by URL path alone (`/` for phones, `/arduino` for the AI)",
+      "A 135M-parameter, 4-bit model answers on a 4 GB board with no internet",
+      "The chat history doubles as a handoff, so the responder reads what the AI already learned",
+      "Works on any phone with Wi-Fi: no app, no account, no setup",
     ],
-    // yzma is a Go library: if your Uno Q code was written in Go, add "Go" here.
-    builtWith: ["Arduino Uno Q", "Raspberry Pi", "Python", "Hugging Face", "Llama", "yzma", "WebSockets", "NetworkManager", "React"],
-    footnote: "Team: Vrushang, Rachit, Steven and Ritvik",
+    builtWith: ["Arduino Uno Q", "Raspberry Pi", "Python", "asyncio", "WebSockets", "yzma", "llama.cpp", "SmolLM2", "Hugging Face", "Go", "NetworkManager", "JavaScript", "HTML", "CSS", "GitHub"],
+    footnote: "Built at IrvineHacks 2026 (Qualcomm track) by Vrushang, Rachit, Steven and Ritvik.",
   },
 
   /* ---------- Autonomous RC Rover ---------- */
