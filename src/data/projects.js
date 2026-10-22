@@ -247,140 +247,200 @@ export const projects = [
     footnote: "Capstone project for IEEE at UCI Open Project Space.",
   },
 
-  /* ---------- IoT Weather Station ---------- */
+    /* ---------- IoT Weather Station ---------- */
   {
-    id: "iot-weather-station",
+    id: "iot-weather-station", // URL slug + thumbnail key: never change
     featured: true,
     title: "IoT Weather Station",
-    subtitle: "ESP32, MQTT, Amazon MQ, 9x battery life",
-    summary: "An ESP32 sensor node that publishes readings over MQTT to Amazon MQ and deep-sleeps between them for 9x battery life.",
-    category: "IoT",
+    subtitle: "Two ESP32s, an LCD, and a cloud link in progress",
+    category: "IoT · Embedded",
     year: "2026",
-    tagline: "The fix for battery life wasn't a bigger battery",
-    status: "Evolved from IEEE OPS Project 6",
-    blurb:
-      "A class radio project rebuilt as a cloud-connected ESP32 node publishing to Amazon MQ, with battery life stretched from 3 days to 4 weeks.",
     description:
-      "A class radio project grown into a cloud-connected sensor node. It started as two Arduino Nanos, a DHT11 and an NRF24 radio printing to an LCD. I rebuilt it on an ESP32 that publishes over MQTT to an Amazon MQ broker, and made the same battery last 4 weeks instead of 3 days.",
-    tags: ["ESP32", "MQTT", "Amazon MQ", "Low power"],
-    image: "/projects/weather-v1.webp",
-    imageAlt: "",
+      "A two-board ESP32 weather station that reports temperature, humidity and daylight every 10 seconds. Next step: sending it to AWS so anyone can see it live.",
+    // Same text as description, kept in case the home card still reads "blurb"
+    blurb:
+      "A two-board ESP32 weather station that reports temperature, humidity and daylight every 10 seconds. Next step: sending it to AWS so anyone can see it live.",
+    tags: ["ESP32-C3", "ESP-NOW", "I2C", "AHT20", "C++"],
+
+    role: "Everything, solo",
+    team: "Solo",
+    timeline: "Ongoing",
+    status: "In progress: cloud link",
     links: [
-      { label: "Source", url: "" }, // add link later
-      { label: "Dashboard screenshot", url: "" }, // add link later
+      { label: "Source", url: "" }, // paste the GitHub repo link here (empty = hidden)
     ],
-    badges: ["9x battery life", "under 2 s to dashboard", "Amazon MQ"],
+
+    image: "/projects/weather-tx-v1.webp",
+    imageAlt: "The transmitter: an ESP32-C3 on a breadboard with an AHT20 temperature and humidity sensor and a photoresistor",
+    imageCaption: "The transmitter: reads the sensors and sends a report every 10 seconds.",
+    media: [
+      {
+        src: "/projects/weather-rx-v1.webp",
+        alt: "The receiver: an ESP32-C3 on a breadboard wired to a 16x2 LCD showing temperature, humidity and day or night",
+        caption: "The receiver: shows the latest report on a 16x2 LCD.",
+      },
+    ],
+
+    stats: [
+      { value: "10 s", label: "between reports" },
+      { value: "3", label: "readings per report" },
+      { value: "2", label: "ESP32 boards" },
+    ],
+
+    heroAt: 2,
     hero: {
       type: "compare",
       columns: [
-        {
-          title: "OPS Project 6",
-          items: ["2 Arduino Nanos", "DHT11 + light sensor", "NRF24 radio link", "LCD over I2C", "Data stays in the room"],
-        },
-        {
-          title: "The rebuild",
-          items: ["1 ESP32", "DHT11", "MQTT over TLS to Amazon MQ", "Live dashboard, under 2 s", "Deep sleep: 4 weeks per battery"],
-        },
+        { title: "Today", items: ["AHT20 + photoresistor on an ESP32", "ESP-NOW to a second ESP32", "16x2 LCD", "Data stays in the room"] },
+        { title: "Next", items: ["Same sensor station", "MQTT to a broker on AWS", "Live public dashboard", "Anyone can see it"] },
       ],
-      caption: "Same sensor, new reach.",
+      caption: "Where it is, and where it's going.",
     },
     article: [
       {
         body: [
-          "It began as Open Project Space Project 6. An outdoor Arduino Nano read a DHT11 and a light sensor every 10 seconds, then radioed the report over an NRF24 to an indoor Nano, which printed it on an LCD over I2C. One build, three protocols: single-wire to the sensor, SPI to the radio, I2C to the display. **But the data never left the room.**",
-          "After earning the AWS Certified Solutions Architect Associate, I wanted to use it on hardware. I moved the node to an ESP32 and replaced the radio link with MQTT. Each reading is published to an Amazon MQ broker running the ActiveMQ engine, which accepts MQTT over TLS on port 8883 ([AWS docs](https://docs.aws.amazon.com/amazon-mq/latest/developer-guide/general.html)), and a dashboard subscribes to it. **A managed broker meant no server of my own to patch**, and readings reach the dashboard in under 2 seconds.",
-          "The first battery version died in 3 days. An ESP32 left awake with Wi-Fi on burns power every second, even though a reading takes a fraction of one. **The battery wasn't too small. The board was awake for no reason.**",
-          "Before it could sleep, it had to stop misbehaving. Sensor timing faults could hang a read and keep the chip awake, so they had to be isolated first.",
-          "Then came the duty cycle: wake on a timer, read the DHT11, connect, publish to Amazon MQ, and drop into deep sleep until the next reading. In deep sleep the ESP32 draws microamps instead of the tens of milliamps it pulls awake, so nearly all of its life is spent asleep. Runtime went from 3 days to 4 weeks, about 9 times longer, on the same battery.",
+          "A two-board weather station: an outdoor ESP32 reads temperature, humidity and light every 10 seconds and sends a report to an indoor ESP32, which shows it on an LCD. It started as Project 6 of IEEE at UCI's Open Project Space, and I'm now taking it past the course.",
+          "**The goal: readings anyone can see on a public dashboard, not just whoever is standing next to the screen.**",
         ],
-        diagram: {
-          type: "flow",
-          steps: ["Wake on timer", "Read DHT11", "Connect Wi-Fi", "Publish to Amazon MQ"],
-          note: "Deep sleep for the rest of the cycle, then wake again",
-          caption: "4 awake steps take seconds. Deep sleep fills the rest, which is where the 9x comes from.",
-        },
+      },
+      {
+        heading: "The station",
+        body: [
+          "The transmitter reads an AHT20 temperature and humidity sensor over I2C and a photoresistor on an analog pin, where a reading above 2000 (out of 4095) counts as day. It packs all three into one report and sends it over **ESP-NOW**, a direct board-to-board Wi-Fi link with no router in between.",
+          "The receiver keeps the latest report and redraws its 16x2 LCD every 10 seconds, also over I2C: temperature and humidity on the top line, day or night on the bottom.",
+        ],
+      },
+      {
+        heading: "Next: the cloud",
+        body: [
+          "Right now the data stops at the LCD. The plan is for the transmitter to publish each report over **MQTT**, a lightweight publish/subscribe protocol built for small devices, to a broker on AWS. A dashboard subscribes to it and shows live readings to anyone.",
+          "I'm researching Amazon MQ for the broker and how to connect an ESP32 to it securely. This section will grow as the cloud link comes together.",
+        ],
+      },
+      {
+        heading: "My part",
+        body: [
+          "Everything, solo. I built both stations, wrote both sketches, and met every Project 6 requirement: readings every 10 seconds, sent the moment they're taken, shown on the LCD exactly as sent.",
+          "The ESP-NOW link runs on a library I didn't write (WiFiConfig). The cloud extension is my own work, beyond what the course asked for.",
+        ],
+      },
+      {
+        heading: "The hard part",
+        body: [
+          "AWS. Wiring sensors is familiar ground; cloud infrastructure is not. A broker, credentials, certificates and permissions all have to line up before a single reading arrives, and each piece has its own settings to get right.",
+          "**I'm still working through it.** This article will be updated when the first reading reaches the cloud.",
+        ],
       },
     ],
+
     highlights: [
-      "9x battery life with no new hardware: the fix was the schedule, not the battery",
-      "Within Amazon MQ, only the ActiveMQ engine speaks MQTT, so the engine choice decided whether the ESP32 could publish to the broker directly",
-      "One sensor node, three protocols in its first life: single-wire to the DHT11, SPI to the NRF24 radio, I2C to the LCD",
-      "Timing faults fixed before sleep was added, because a board that hangs on a bad read can never get back to sleep",
-      "Under 2 seconds from sensor read to dashboard over MQTT",
+      "One I2C bus per board: the AHT20 on the transmitter, the LCD on the receiver",
+      "Day or night from a single analog read: above 2000 out of 4095 is day",
+      "ESP-NOW links the boards directly, with no router",
+      "Next up: MQTT to AWS so the readings leave the room",
     ],
-    builtWith: ["ESP32", "C++", "MQTT", "Amazon MQ (ActiveMQ)", "DHT11", "Arduino Nano", "NRF24L01", "I2C LCD"],
-    footnote:
-      "Started as IEEE at UCI Open Project Space Project 6; the ESP32 rebuild, cloud link and power work are my own.",
+    builtWith: ["ESP32-C3", "C++", "Arduino IDE", "ESP-NOW", "AHT20", "Photoresistor", "I2C", "16x2 LCD"],
+    footnote: "Started as Project 6 of IEEE at UCI Open Project Space.",
   },
 
   /* ===== More work (small gallery on /projects) ===== */
 
-  /* ---------- This website ---------- */
+    /* ---------- This website ---------- */
   {
-    id: "ritviksingh-net",
+    id: "ritviksingh-net", // URL slug + thumbnail key: never change
     featured: false, // set to true to show it in the big rows instead
     title: "ritviksingh.net",
-    subtitle: "This site: spec-driven, AI-written, human-verified",
-    summary: "This portfolio, built by directing AI against a written spec and scoring 100 in all four Lighthouse categories.",
-    category: "Web",
+    subtitle: "Designed like a circuit board, built by directing Claude",
+    category: "Web · React",
     year: "2026",
-    tagline: "The spec the AI wasn't allowed to break",
-    status: "Live",
-    blurb:
-      "This site: a 7-page React portfolio built by directing Claude and Cursor against a written spec. 100 in all four Lighthouse categories.",
     description:
-      "A 7-page React portfolio built in 3 to 4 weeks by directing Claude and Cursor against a written spec, scoring 100 in all four Lighthouse categories. Every feature branch passed a production build before it merged. The AI wrote the code; it never got to make a decision.",
-    tags: ["React", "Vite", "Firebase", "Cloudflare"],
-    image: "/og-image.png",
-    imageAlt: "Preview card for ritviksingh.net",
+      "This portfolio, drawn like a circuit board and built in 3 weeks by directing Claude against a written spec. The traces between cards are computed live from the page.",
+    // Same text as description, kept in case the home card still reads "blurb"
+    blurb:
+      "This portfolio, drawn like a circuit board and built in 3 weeks by directing Claude against a written spec. The traces between cards are computed live from the page.",
+    tags: ["React", "Vite", "Firebase", "Cloudflare", "Claude"],
+
+    role: "Spec, design decisions, QA",
+    team: "Solo, directing Claude",
+    timeline: "3 weeks",
+    status: "Live",
     links: [
       { label: "Live site", url: "https://ritviksingh.net" },
       { label: "Source", url: "https://github.com/ritviks123/my-website" },
     ],
-    badges: ["Lighthouse 100 · 100 · 100 · 100", "about $10/year"],
+
+    image: "/projects/site-home-v1.webp",
+    imageAlt: "The ritviksingh.net homepage: a black chip with copper pins showing the name Ritvik Singh, with circuit traces running across a green board",
+    imageCaption: "The homepage: the name lives inside a chip, and the board's traces run from it down the page.",
+    media: [
+      { src: "/projects/site-projects-v1.webp", alt: "The Projects page: project cards as chips, connected by computed wiring", caption: "Projects: every card is a chip, wired to its neighbors." },
+      { src: "/projects/site-article-v1.webp", alt: "A project article: spec strip, photo carousel, key numbers, and sections as chips in a two-column grid", caption: "An article page: sections become chips in a 2-column grid." },
+      { src: "/projects/site-work-v1.webp", alt: "The Work page: job, education and certification chips", caption: "Work: experience and education as chips." },
+      { src: "/projects/site-about-v1.webp", alt: "The About page: photo, bio and now chips", caption: "About." },
+      { src: "/projects/site-resume-v1.webp", alt: "The Resume page: a download button and the resume PDF inside a chip", caption: "Resume: the PDF sits inside its own chip." },
+      { src: "/projects/site-phone-v1.webp", alt: "The site on a phone: chips stacked in one column with no wiring", caption: "On a phone: the wiring switches off and chips stack cleanly." },
+    ],
+
+    stats: [
+      { value: "3 wk", label: "start to live" },
+      { value: "7", label: "page templates" },
+      { value: "~$10", label: "per year, just the domain" },
+      { value: "1", label: "spec every chat starts from" },
+    ],
+
     heroAt: 2,
     hero: {
       type: "flow",
-      steps: ["Write the spec", "AI writes the code", "I check it", "Build + preview", "Merge by PR"],
-      note: "Next feature: new branch, same spec",
-      caption: "The build loop, repeated for every feature.",
+      steps: ["Write the spec", "Claude lays out options", "I make the call", "Claude writes one step", "I test, then commit"],
+      note: "Next feature: new branch, fresh chat, same spec",
+      caption: "The loop behind every feature on this site.",
     },
     article: [
       {
         body: [
-          "Ask an AI for a website one prompt at a time and you get a collage. Each answer is reasonable on its own, and no two pages agree on a color, a spacing or a hover rule. **The AI isn't wrong. It just has no memory of what it promised.**",
-          "So before any code, I wrote the spec. It pinned the environment (Windows, PowerShell, Vite, React Router v8), exact color tokens, fonts, breakpoints, hover rules and class names. It also listed **locked decisions the AI was told never to undo**, plus process rules: one branch per feature, a production build before every merge, and a checklist after every step.",
-          "The first weeks went to deciding, not building. I weighed hosting, frameworks, page structure and layout, and at every fork the AI's job was to lay out options and trade-offs. I made the calls: Vite over Create React App, Firebase Hosting, Web3Forms over Firebase for the contact form.",
-          "The hero had one job: **show that the same person designs the hardware and writes the software.** So it's a circuit board drawn in code, with signal pulses running along its traces. Beside it, a serial monitor types a boot log one character at a time, the way a microcontroller talks over UART.",
-          "The bugs were the honest part. A finished footer vanished because I pulled `main` before its pull request had actually merged. **The hero image that \"wouldn't load\" had never existed**: the server was quietly answering with the app's own 404 page. The domain refused to verify because the IP sat in the DNS Name field instead of the value. All six fixes are written up below.",
-          "It ships for about $10 a year, and the domain is the only cost. The repo holds **42 commits across 8 feature branches**, each merged through a pull request. The AI wrote most of the code; the spec, every decision and every check were mine, and I can walk through how any part of it works.",
+          "This site is my portfolio, drawn like a circuit board. Every card is a chip with copper pins, and the traces between them are computed from where the chips actually sit on the page. **The goal was a design you remember, one that says hardware before you read a word.**",
+          "I built it in about 3 weeks by directing Claude. Claude wrote most of the code; I wrote the spec, made every design call, and tested every change before it shipped. **The real engineering wasn't any one component. It was the system for getting an AI to build what I actually meant.**",
         ],
       },
       {
-        heading: "All six corrections",
-        table: {
-          columns: ["Problem", "Cause", "Fix"],
-          rows: [
-            ["Footer vanished after a merge", "Pulled `main` before the PR merged", "Merged the PR, rebuilt the branch from the updated `main`"],
-            ["Article pages were unstyled", "Their CSS was overwritten during an earlier file swap", "Found it with a project-wide search, restored and reorganized the stylesheets"],
-            ["Hero image was broken", "The file never existed; the server returned the app's 404 page", "Recreated the image at the right path"],
-            ["Underlines kept showing on hover", "A global `a:hover` rule overrode component styles", "Removed it, set one hover rule site-wide"],
-            ["Domain wouldn't verify", "IP typed into the DNS Name field, Cloudflare proxy on", "`@` as the name, IP as the value, DNS only"],
-            ["Deploys looked delayed", "Browser caching", "Added Cache-Control headers"],
-          ],
-        },
+        heading: "The board",
+        body: [
+          "The chips are plain HTML. One stylesheet turns existing cards into chip packages and draws their pins in CSS, so no extra markup is needed. The wiring is a single SVG behind the page: code measures every chip, works out where its pins are, and routes traces between neighbors with 45° jogs and vias, skipping any route that would cross text.",
+          "Wires draw in only once the chips they connect have scrolled into view, and they re-measure whenever the page resizes or fonts load. **Every screen was planned:** below 900px the wiring switches off and the chips stack cleanly, so phones get a fast, readable page instead of a squeezed circuit.",
+        ],
+      },
+      {
+        heading: "Shipping it",
+        body: [
+          "It's a Vite + React app on Firebase Hosting, with the domain registered and served through Cloudflare. Pages always revalidate while built files cache for a year, so a deploy shows up at once without slowing repeat visits. **The only cost is the domain: about $10 a year.**",
+          "Security got the same care as design: security headers on every response, SPF and DMARC records so nobody can send email pretending to be the domain, two-factor on every account, and the contact form's key kept in a local env file that never reaches GitHub.",
+        ],
+      },
+      {
+        heading: "My part",
+        body: [
+          "I owned every decision. Before any code, I wrote the spec: the environment (Windows, PowerShell, Vite, React Router), exact color tokens, fonts, breakpoints, hover rules, class naming, and a list of **locked decisions Claude was never allowed to undo.**",
+          "At every fork, Claude's job was to lay out options and trade-offs; mine was to choose. Every change went on its own branch, passed a production build, and merged through a pull request after I'd checked it on real devices.",
+        ],
+      },
+      {
+        heading: "The hard part",
+        body: [
+          "Getting Claude to do what I meant across weeks of long chats. Long chats drift: answers grow and early rules fade. So I wrote **handoff docs** that set how Claude must reply (one step at a time, exact Find/Replace blocks, a short checklist) and opened every new chat with one, so a fresh session picked up exactly where the last left off.",
+          "I also kept the work **modular**, with a separate chat for each part of the site (layout, content, each article), so every change had a place to trace back to. The two real problems were design balance (how much circuit before it fights the content; the homepage ended up deliberately simpler than the inner pages) and the domain, which refused to verify until I found the IP typed into the DNS record's name instead of its value.",
+        ],
       },
     ],
+
     highlights: [
-      "A missing file can fail without an error: the host answered the \"broken\" hero request with the app's own 404 page, so the bug looked like an image problem and was really a path problem",
-      "Locked decisions beat clever prompts: telling the AI what it may never undo kept 7 pages consistent across weeks of separate sessions",
-      "A pull request can look merged when it isn't: pulling `main` too early made a finished footer disappear",
-      "Domain verification hinged on one field: the IP belongs in the record's value, not its name, with the Cloudflare proxy off",
-      "Pages always revalidate while build files cache for a year, so a deploy shows up at once without slowing repeat visits",
-      "SPF and DMARC records stop anyone from sending email that pretends to come from the domain",
+      "A spec beats a clever prompt: every chat starts from the same rules, so weeks of separate sessions still agree",
+      "One chat per part of the site, so every change has a place to trace back to",
+      "Wires are computed, not drawn: they re-measure on resize, font load and scroll so they always land on a pin",
+      "Built for every screen: wiring turns on at 900px, phones get clean stacked chips",
+      "SPF and DMARC records stop anyone sending email as the domain",
+      "The domain came down to one field: the IP belongs in the record's value, not its name",
     ],
-    builtWith: ["React", "Vite", "React Router v8", "CSS", "Firebase Hosting", "Cloudflare DNS", "Web3Forms", "GitHub", "Claude", "Cursor"],
-    footnote: "",
+    builtWith: ["React", "Vite", "React Router", "CSS", "SVG", "Firebase Hosting", "Cloudflare", "Web3Forms", "GitHub", "Claude"],
   },
 ];
 
