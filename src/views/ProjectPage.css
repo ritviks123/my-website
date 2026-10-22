@@ -720,3 +720,72 @@
     transform: none;
   }
 }
+
+/* ===== Article sections as A chips: 1 column on phones, 2 on desktop ===== */
+.project-intro > :last-child {
+  margin-bottom: 0;
+}
+
+.project-grid {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.project-section-chip {
+  padding: 1.4rem;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--copper) 35%, transparent);
+}
+
+.project-section-chip > :last-child {
+  margin-bottom: 0;
+}
+
+.project-section-chip .project-section-heading {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+}
+
+.project-section-chip p {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* Diagram inside a chip: the chip is already the frame */
+.project-section-chip .project-diagram {
+  margin: 1.25rem 0 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.project-section-chip .project-table-wrap {
+  margin-top: 1rem;
+}
+
+.project-hero-end {
+  margin-top: 3rem;
+}
+
+.project-hero-end .project-figure {
+  margin-bottom: 0;
+}
+
+@media (min-width: 900px) {
+  .project-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem 3rem;
+  }
+
+  /* Diagrams, wide: true sections, and a leftover last chip take the full row */
+  .project-section-chip.is-wide,
+  .project-section-chip:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  .project-section-chip .project-table {
+    min-width: 0;
+  }
+}

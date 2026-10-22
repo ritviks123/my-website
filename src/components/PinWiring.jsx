@@ -23,7 +23,7 @@ const VIAS = [2.5, 3.2, 4, 5, 6]; // via sizes to pick from
 // Which cards are which package (keep in sync with chips.css)
 const PACKAGES = [
   // A: pins down both sides
-  { kind: 'A', select: '.project-card, .project-sidebar, .work-job, .work-split div.work-card, .about-bio, .about-now', sides: ['left', 'right'], pitch: 26, inset: 14 },
+  { kind: 'A', select: '.project-card, .project-sidebar, .project-section-chip, .work-job, .work-split div.work-card, .about-bio, .about-now', sides: ['left', 'right'], pitch: 26, inset: 14 },
   // A, turned: pins on top and bottom
   { kind: 'AV', select: '[data-wire^="tk-"], .project-stat', sides: ['top', 'bottom'], pitch: 26, inset: 14 },
   // B: quad package
