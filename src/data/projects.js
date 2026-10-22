@@ -114,12 +114,7 @@ export const projects = [
         heading: "The hard part",
         body: [
           "Getting yzma onto the Uno Q. The board was new and it was our first time using it, so I learned by studying how other builders had run models on it, then read up on how WebSockets work until the board could join the relay like any other client. **Under the drone and the AI, the whole project is one idea done carefully: a WebSocket connection.**",
-        ],
-      },
-      {
-        heading: "What we tested",
-        body: [
-          "We had one drone, so the demo ran a single relay node with a phone, the responder screen and the Uno Q all connected. Every feature worked: auto-replies, urgency flags and information gathering. **The mesh scales by adding Pis**, but we never measured how many phones one node can hold. That's the first test I'd run next.",
+          "We had one drone, so the demo ran a single relay node, and every feature worked: auto-replies, urgency flags and information gathering. **The mesh scales by adding Pis**, but we never measured how many phones one node can hold. That's the first test I'd run next.",
         ],
       },
     ],
@@ -135,58 +130,121 @@ export const projects = [
     footnote: "Built at IrvineHacks 2026 (Qualcomm track) by Vrushang, Rachit, Steven and Ritvik.",
   },
 
-  /* ---------- Autonomous RC Rover ---------- */
+  /* ---------- RC Rover ---------- */
   {
-    id: "autonomous-rc-rover",
+    id: "autonomous-rc-rover", // URL slug + thumbnail key: never change
     featured: true,
-    title: "Autonomous RC Rover",
-    subtitle: "Custom PCB, sensor fusion, PD control",
-    summary: "A self-steering rover on a 2-layer PCB I designed, fusing IR and ultrasonic sensors into a PD controller that avoided 90% of obstacles.",
-    category: "Embedded · PCB",
+    title: "RC Rover",
+    subtitle: "Joystick remote on a custom PCB, with an obstacle-avoiding auto mode",
+    category: "PCB · Embedded",
     year: "2026",
-    tagline: "A controller tuned by watching its own mistakes",
-    status: "Complete, IEEE OPS capstone",
-    blurb:
-      "A self-steering rover on a 2-layer PCB I designed in KiCad, with a PD controller that fuses IR and ultrasonic distance. 90% obstacle avoidance in testing.",
     description:
-      "A rover that steers around obstacles on its own, built as the capstone of IEEE at UCI's year-long embedded systems program. Five separate modules collapse onto one 2-layer PCB I designed in KiCad, and a PD controller on the ESP32 fuses IR and ultrasonic distance into a single steering signal. 90% obstacle avoidance in testing, with every gain earned from data, not guessed.",
-    tags: ["ESP32", "KiCad", "C++", "PD control"],
-    image: "/projects/rover-v1.webp",
-    imageAlt: "",
+      "A rover driven by a joystick remote over ESP-NOW, with a custom KiCad PCB and a button that flips it into an auto mode that scans for the clearest path.",
+    // Same text as description, kept in case the home card still reads "blurb"
+    blurb:
+      "A rover driven by a joystick remote over ESP-NOW, with a custom KiCad PCB and a button that flips it into an auto mode that scans for the clearest path.",
+    tags: ["ESP32-C3", "ESP-NOW", "KiCad", "C++", "Ultrasonic"],
+
+    role: "Everything: PCB, firmware, build",
+    team: "Solo",
+    timeline: "3 to 4 weeks",
+    status: "Complete",
     links: [
-      { label: "Test-run video", url: "" }, // add link later
-      { label: "Source", url: "" }, // add link later
-      { label: "KiCad files", url: "" }, // add link later
+      { label: "Test video", url: "" }, // paste the YouTube link here (empty = hidden)
+      { label: "Source", url: "https://github.com/ritviks123/RC-Rover" },
     ],
-    badges: ["90% avoidance", "2-layer PCB", "ESP32"],
-    heroAt: 4,
+    image: "/projects/rover-v1.webp",
+    imageAlt: "The rover on a wooden chassis: an ultrasonic sensor in a purple 3D-printed mount up front, a breadboard with the ESP32-C3 and L293D, and two yellow gearbox wheels",
+    imageCaption: "The rover: one ultrasonic sensor up front, everything else on a breadboard.",
+    media: [
+      {
+        src: "/projects/rover-top-v1.webp",
+        alt: "Top-down view of the rover's breadboard: ESP32-C3, L293D motor driver, buzzer, and jumper wires running to the sensor and motors",
+        caption: "From above: the ESP32-C3 at the back, the L293D H-bridge in the middle, the buzzer beside it.",
+      },
+      {
+        src: "/projects/rover-remote-v1.webp",
+        alt: "The finished remote: an analog joystick module plugged into the edge of a green custom PCB, with a red LED, a green LED and an ESP32-C3 board soldered on",
+        caption: "The remote, built on my PCB. The joystick plugs into a header on the board's edge.",
+      },
+      {
+        src: "/projects/rover-pcb-v1.webp",
+        alt: "The bare green PCB as it arrived from the manufacturer, before any parts were soldered",
+        caption: "The board as it arrived from the fab, before soldering.",
+      },
+      {
+        src: "/projects/rover-kicad-v1.webp",
+        alt: "KiCad PCB layout of the remote: red front traces, blue back copper, the ESP32-C3 footprint, joystick header J1, and two LED and resistor pairs",
+        caption: "The layout in KiCad: two copper layers, the joystick header J1 at the top edge.",
+      },
+      {
+        src: "/projects/rover-schematic-v1.webp",
+        alt: "KiCad schematic: an ESP32-C3 core board with the joystick on IO0, IO1 and IO3, and two LEDs through resistors on IO8 and IO10",
+        caption: "The schematic: joystick on IO0, IO1 and IO3, status LEDs on IO8 and IO10.",
+      },
+    ],
+
+    stats: [
+      { value: "25 cm", label: "auto mode backs off" },
+      { value: "8", label: "directions scanned" },
+      { value: "50 ms", label: "between joystick packets" },
+      { value: "200 / 160", label: "motor trim (PWM)" },
+    ],
+
+    heroAt: 2,
     hero: {
       type: "flow",
-      steps: ["Read IR + ultrasonic", "Fuse into one error", "PD controller", "PWM duty per motor", "L293D drives motors"],
-      note: "The rover moves, and the next loop reads the sensors again",
-      caption: "The control loop: 5 stages, 1 feedback path.",
+      steps: ["Measure distance ahead", "Under 25 cm: beep, back up", "Turn in 8 steps, measure each", "Face the clearest path", "Drive forward"],
+      note: "Every direction under 15 cm: back up further and scan again",
+      caption: "Auto mode, one loop.",
     },
     article: [
       {
         body: [
-          "A rover that works on a bench can fail on the floor. Breadboard prototypes are fragile: jumpers shake loose as the chassis vibrates, and long wires running past the motors pick up noise the sensors then read as distance. **A noisy distance reading is worse than none, because the rover swerves at walls that aren't there.**",
-          "So the first decision was the board. I merged 5 separate modules (the ESP32, an L293D motor driver, IR and ultrasonic sensors, and power regulation) onto one 2-layer KiCad PCB. **A full ground plane gives motor current a short path home**, which keeps its noise off the sensor lines.",
-          "The second decision was how to see. IR and ultrasonic sensors fail in opposite ways: IR struggles with dark or shiny surfaces, ultrasonic with soft or angled ones. The firmware fuses both into one distance error, so **one sensor's blind spot is covered by the other.**",
-          "That error drives a PD loop. The P term reacts to how far off the rover is; the D term reacts to how fast that is changing and damps the swing. Think of P as the steering wheel and D as the hand that stops you from oversteering. The output becomes a PWM duty cycle for each motor through the L293D H-bridge.",
-          "The gains weren't calculated. They were found. Every loop printed its error over serial, and I tuned Kp and Kd against those live traces: **too much P and the rover weaves, too little D and it overshoots into the wall.** Across 40+ timed 30-second runs, the collision rate fell from 90% to 10%.",
+          "The capstone of IEEE at UCI's Open Project Space: a rover you drive with a joystick, where the remote runs on a PCB you design and have manufactured yourself. I built it solo in 3 to 4 weeks, then went past the spec. **One press of the joystick button turns it into a rover that finds its own way around obstacles.**",
+          "Two ESP32-C3 boards do the talking. The remote sends the joystick's position over **ESP-NOW**, a direct board-to-board Wi-Fi link with no router in between, and the rover turns each packet into motor commands through an L293D H-bridge.",
+        ],
+      },
+      {
+        heading: "The remote",
+        body: [
+          "The remote is the part that had to be a real board. I drew the schematic and laid out the PCB in KiCad to the manufacturer's design rules, then ordered it. The joystick plugs into a header on the board's edge, and two LEDs show what the rover is doing: **red when it's idle, green when it's moving or driving itself.**",
+          "Every 50 ms the remote reads the joystick, scales each axis to one byte, and sends a packet. A deadzone around the joystick's real resting point (209 and 217 on mine, not the middle) keeps the rover from creeping when nobody's touching it.",
+        ],
+      },
+      {
+        heading: "Auto mode",
+        body: [
+          "The rover sees with one ultrasonic sensor. While the way is clear past 25 cm, it drives forward. Closer than that, it stops, beeps and backs up to give itself room. Then it turns in 8 short steps, measuring at each one, and heads for the clearest. **One sensor can't look everywhere, so the rover turns the sensor instead.**",
+          "Press the button again and you're driving instantly, even mid-scan. Every wait in auto mode checks the button every 10 ms instead of freezing the board, so the rover never ignores you.",
+        ],
+      },
+      {
+        heading: "My part",
+        body: [
+          "Everything, solo: the remote's schematic and PCB layout, ordering the board, wiring the rover, and both sketches. The ESP-NOW link runs on a library I didn't write (WiFiConfig); everything built on top of it is mine.",
+          "I met every capstone requirement, then added more: a **deeper obstacle algorithm** than the spec asked for, a **backup beeper** like a reversing truck, and the mode LEDs on the remote.",
+        ],
+      },
+      {
+        heading: "The hard part",
+        body: [
+          "Debugging auto mode. The logic was simple on paper, but on the floor the rover wouldn't drive straight, so every scan and every 'forward' drifted off course. The cause wasn't the code: **the two motors weren't equally efficient.** Same PWM, different speeds.",
+          // Check: confirm this matches what you actually tuned.
+          "I trimmed them by testing until it tracked straight: one motor runs at 200 out of 255, the other at 160. Then I tuned how long each scan step turns and how far it backs up, until the rover could pick a path and hold it.",
         ],
       },
     ],
+
     highlights: [
-      "A ground plane is a noise fix, not a layout nicety: it shortens the path motor current takes home, away from the sensor traces",
-      "Two cheap sensors beat one good one when they fail differently: IR misses dark surfaces, ultrasonic misses soft and angled ones",
-      "The D term is a brake on the steering: it reacts to how fast the error changes, not how big it is",
-      // Check: confirm this matches your real reasoning.
-      "No integral term on purpose: dodging a wall doesn't require holding an exact distance, and I-term windup would only add lag",
-      "Gains tuned against live serial traces over 40+ runs, cutting collisions from 90% to 10%",
+      "One sensor, eight looks: the rover turns to scan instead of adding more sensors",
+      "Never stuck in auto: every wait checks the button every 10 ms, so the joystick takes over instantly",
+      "Same PWM isn't same speed: trimming the motors to 200 and 160 made it drive straight",
+      "A deadzone around the joystick's real resting point stops the rover creeping",
+      "ESP-NOW links the two boards directly, with no router",
     ],
-    builtWith: ["C++", "ESP32", "KiCad", "L293D H-bridge", "IR sensor", "Ultrasonic sensor", "PWM", "PD control"],
-    footnote: "Capstone of IEEE at UCI Open Project Space: 7 guided builds, then this one designed from scratch.",
+    builtWith: ["ESP32-C3", "ESP-NOW", "C++", "Arduino IDE", "KiCad", "L293D H-bridge", "Ultrasonic sensor", "PWM", "Analog joystick"],
+    footnote: "Capstone project for IEEE at UCI Open Project Space.",
   },
 
   /* ---------- IoT Weather Station ---------- */

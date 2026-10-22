@@ -21,6 +21,7 @@
 /* Every chip anchors its pins (pages that need sticky cards override this later) */
 .project-card,
 .project-sidebar,
+.project-section-chip,
 .work-job,
 .work-split div.work-card,
 .about-bio,
@@ -41,6 +42,7 @@
 /* ===== A: edge pins down both sides ===== */
 .project-card::before,
 .project-sidebar::before,
+.project-section-chip::before
 .work-job::before,
 .work-split div.work-card::before,
 .about-bio::before,
@@ -76,6 +78,7 @@
 /* Pin-1 dot in the top-left corner of every A chip */
 .project-card::after,
 .project-sidebar::after,
+.project-section-chip::after,
 .work-job::after,
 .work-split div.work-card::after,
 .about-bio::after,

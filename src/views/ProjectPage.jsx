@@ -182,6 +182,9 @@ export function ProjectPage() {
   const highlights = project.highlights ?? [];
   const builtWith = project.builtWith ?? [];
   const article = project.article ?? [];
+  // First section (no heading) is the intro beside the sidebar; the rest become chips in a grid
+  const intro = article[0] && !article[0].heading ? article[0] : null;
+  const sections = intro ? article.slice(1) : article;
   const stats = project.stats ?? [];
   // Where the big diagram sits: 'top', 'bottom', or a number (after that paragraph)
   const heroAt = project.heroAt ?? 'top';
@@ -275,60 +278,74 @@ export function ProjectPage() {
             </ul>
           )}
 
-          {/* ===== Body: article left, sidebar right (stacked on phones) ===== */}
-          <div className="project-layout">
-            <article className="project-article">
-              {heroAt === 'top' && heroFigure}
+                    {/* ===== Body: intro + sidebar, then section chips (2 columns on desktop) ===== */}
+          <article className="project-article">
+            <div className="project-layout">
+              <div className="project-intro">
+                {(heroAt === 'top' || (!intro && typeof heroAt === 'number')) && heroFigure}
+                {intro?.body?.map((paragraph, j) => (
+                  <Fragment key={j}>
+                    <p>{renderInline(paragraph)}</p>
+                    {heroAt === j + 1 && heroFigure}
+                  </Fragment>
+                ))}
+                {intro?.diagram && <ProjectDiagram diagram={intro.diagram} />}
+                {intro?.table && <ProjectTable table={intro.table} label="Table" />}
+              </div>
 
-              {article.map((section, i) => (
-                <section key={i} className="project-section">
-                  {section.heading && <h2 className="project-section-heading">{section.heading}</h2>}
-                  {section.body?.map((paragraph, j) => (
-                    <Fragment key={j}>
-                      <p>{renderInline(paragraph)}</p>
-                      {i === 0 && heroAt === j + 1 && heroFigure}
-                    </Fragment>
-                  ))}
-                  {section.diagram && <ProjectDiagram diagram={section.diagram} />}
-                  {section.table && <ProjectTable table={section.table} label={section.heading || 'Table'} />}
-                </section>
-              ))}
+              {(highlights.length > 0 || builtWith.length > 0) && (
+                <aside className="project-sidebar">
+                  {highlights.length > 0 && (
+                    <section>
+                      <h2 className="project-label">
+                        <span aria-hidden="true">// </span>highlights
+                      </h2>
+                      <ul className="project-highlights">
+                        {highlights.map((item) => (
+                          <li key={item}>{renderInline(item)}</li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
 
-              {heroAt === 'bottom' && heroFigure}
+                  {builtWith.length > 0 && (
+                    <section>
+                      <h2 className="project-label">
+                        <span aria-hidden="true">// </span>built with
+                      </h2>
+                      <ul className="project-built">
+                        {builtWith.map((item) => (
+                          <li key={item}>{renderInline(item)}</li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+                </aside>
+              )}
+            </div>
 
-              {project.footnote && <p className="project-footnote">{renderInline(project.footnote)}</p>}
-            </article>
-
-            {(highlights.length > 0 || builtWith.length > 0) && (
-              <aside className="project-sidebar">
-                {highlights.length > 0 && (
-                  <section>
-                    <h2 className="project-label">
-                      <span aria-hidden="true">// </span>highlights
-                    </h2>
-                    <ul className="project-highlights">
-                      {highlights.map((item) => (
-                        <li key={item}>{renderInline(item)}</li>
-                      ))}
-                    </ul>
+            {sections.length > 0 && (
+              <div className="project-grid">
+                {sections.map((section, i) => (
+                  <section
+                    key={i}
+                    className={`project-section project-section-chip${section.diagram || section.wide ? ' is-wide' : ''}`}
+                  >
+                    {section.heading && <h2 className="project-section-heading">{section.heading}</h2>}
+                    {section.body?.map((paragraph, j) => (
+                      <p key={j}>{renderInline(paragraph)}</p>
+                    ))}
+                    {section.diagram && <ProjectDiagram diagram={section.diagram} />}
+                    {section.table && <ProjectTable table={section.table} label={section.heading || 'Table'} />}
                   </section>
-                )}
-
-                {builtWith.length > 0 && (
-                  <section>
-                    <h2 className="project-label">
-                      <span aria-hidden="true">// </span>built with
-                    </h2>
-                    <ul className="project-built">
-                      {builtWith.map((item) => (
-                        <li key={item}>{renderInline(item)}</li>
-                      ))}
-                    </ul>
-                  </section>
-                )}
-              </aside>
+                ))}
+              </div>
             )}
-          </div>
+
+            {heroAt === 'bottom' && <div className="project-hero-end">{heroFigure}</div>}
+
+            {project.footnote && <p className="project-footnote">{renderInline(project.footnote)}</p>}
+          </article>
 
           {/* ===== Previous / next project ===== */}
           {next && next.id !== project.id && (
