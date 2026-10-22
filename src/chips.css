@@ -42,7 +42,7 @@
 /* ===== A: edge pins down both sides ===== */
 .project-card::before,
 .project-sidebar::before,
-.project-section-chip::before
+.project-section-chip::before,
 .work-job::before,
 .work-split div.work-card::before,
 .about-bio::before,
